@@ -15,7 +15,7 @@ class WidgetHelper {
       leading:
           isBack
               ? IconButton(
-                onPressed: () => Get.back,
+                onPressed: () => Get.back(),
                 icon: Icon(
                   Icons.arrow_back_ios_new_rounded,
                   color: Colors.black,

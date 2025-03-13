@@ -80,7 +80,7 @@ class SignInScreen extends StatelessWidget {
                     ),
                     const Spacer(),
                     TextButton(
-                      onPressed: () => Get.to(ForgetPassScreen()),
+                      onPressed: () => Get.toNamed(AppRoutes.forget),
                       child: Text(
                         'Forget Password?',
                         style: AppStyles.smallText.copyWith(
