@@ -7,6 +7,9 @@ class DefaultTheme {
   static ThemeData theme = ThemeData(
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+        ),
         backgroundColor: WidgetStatePropertyAll(AppStyles.primaryColor),
         foregroundColor: WidgetStatePropertyAll(Colors.white),
       ),

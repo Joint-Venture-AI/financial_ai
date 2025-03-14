@@ -10,6 +10,8 @@ class AppStyles extends GetxController {
   static Color lightGreyColor = Color(0xffE0E0E0);
   static Color bgColor = Color(0xffFFFFFF);
   static Color greyColor = Color(0xff707070);
+  static Color simpleGrey = Color(0xffF5F5F5);
+  static Color filledColor = Color(0xffF5F5F5);
 
   ///text_styles
   static TextStyle largeText = TextStyle(

@@ -17,6 +17,13 @@ class GlobTextButton extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
+        style: ButtonStyle(
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+          ),
+          backgroundColor: WidgetStatePropertyAll(AppStyles.primaryColor),
+          foregroundColor: WidgetStatePropertyAll(Colors.white),
+        ),
         onPressed: onTap,
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 10.h),

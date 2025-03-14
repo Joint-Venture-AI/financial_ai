@@ -5,6 +5,7 @@ import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:financial_ai_mobile/views/screens/auth/forget_pass_screen.dart';
+import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_chose_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -74,7 +75,6 @@ class SignInScreen extends StatelessWidget {
                       'Remember Me',
                       style: AppStyles.smallText.copyWith(
                         color: Colors.black,
-
                         fontSize: 12.sp,
                       ),
                     ),
@@ -93,7 +93,10 @@ class SignInScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 24.h),
-                GlobTextButton(buttonText: 'SignUp', onTap: () {}),
+                GlobTextButton(
+                  buttonText: 'SignIn',
+                  onTap: () => Get.to(UserChoseScreen()),
+                ),
                 SizedBox(height: 32.h),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
