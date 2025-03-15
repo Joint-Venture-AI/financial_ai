@@ -103,7 +103,7 @@ class SignInScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already have a account?',
+                      'Don\'t have a account?',
                       style: AppStyles.smallText.copyWith(
                         color: AppStyles.greyColor,
                         fontSize: 12.sp,
@@ -113,7 +113,7 @@ class SignInScreen extends StatelessWidget {
                     InkWell(
                       onTap: () => Get.back(),
                       child: Text(
-                        'SignIn',
+                        'SignUp',
                         style: AppStyles.smallText.copyWith(
                           color: AppStyles.primaryColor,
                           fontWeight: FontWeight.bold,
