@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 class AppStyles extends GetxController {
   ///colors
   static Color primaryColor = Color(0xff1F9A90);
+  static Color primarySecondColor = Color(0xff0A3431);
+
   static Color secondaryColor = Color(0xff0C0C0C);
   static Color lightGreyColor = Color(0xffE0E0E0);
   static Color bgColor = Color(0xffFFFFFF);

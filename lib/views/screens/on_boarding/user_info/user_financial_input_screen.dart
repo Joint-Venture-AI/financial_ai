@@ -4,6 +4,8 @@ import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/second_textfeild.dart';
+import 'package:financial_ai_mobile/views/screens/home/home_screen.dart';
+import 'package:financial_ai_mobile/views/screens/bottom_nav/tab_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,7 +64,10 @@ class UserFinancialInputScreen extends StatelessWidget {
             SizedBox(height: 5.h),
             SecondTextfeild(hintText: 'Ex 30,000\$'),
             SizedBox(height: 20.h),
-            GlobTextButton(buttonText: 'Finish', onTap: () {}),
+            GlobTextButton(
+              buttonText: 'Finish',
+              onTap: () => Get.to(MainScreen()),
+            ),
             SizedBox(height: 15.h),
 
             InkWell(
