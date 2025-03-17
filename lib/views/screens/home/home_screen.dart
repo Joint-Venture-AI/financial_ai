@@ -1,6 +1,8 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:financial_ai_mobile/views/screens/expense_details/espense_details_screen.dart';
+import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
+import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_screen.dart';
+import 'package:financial_ai_mobile/views/screens/home/subs_screen/expense_details/espense_details_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,7 +32,7 @@ class HomeScreen extends StatelessWidget {
                     custom_app_bar(),
                     SizedBox(height: 26.h),
                     InkWell(
-                      onTap: () => Get.to(ExpenseDetailsScreen()),
+                      onTap: () => Get.to(AccountsScreen()),
                       child: header_body_section(),
                     ),
                     SizedBox(height: 15.h),
@@ -45,10 +47,13 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        Text(
-                          'See all',
-                          style: AppStyles.smallText.copyWith(
-                            color: AppStyles.greyColor,
+                        TextButton(
+                          onPressed: () => Get.to(CoursesScreen()),
+                          child: Text(
+                            'See all',
+                            style: AppStyles.smallText.copyWith(
+                              color: AppStyles.greyColor,
+                            ),
                           ),
                         ),
                       ],
@@ -58,7 +63,10 @@ class HomeScreen extends StatelessWidget {
               ),
               course_section(),
               SizedBox(height: 15.h),
-              financial_health(),
+              InkWell(
+                onTap: () => Get.to(ExpenseDetailsScreen()),
+                child: financial_health(),
+              ),
               SizedBox(height: 15.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),

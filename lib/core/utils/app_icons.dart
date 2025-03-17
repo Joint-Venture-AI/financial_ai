@@ -14,6 +14,7 @@ class AppIcons {
   static String foodIcon = '$iconsPath/food_icon.svg';
   static String carIcon = '$iconsPath/car_icon.svg';
   static String arrowDownIcon = '$iconsPath/arrow_down.svg';
+  static String filterIcon = '$iconsPath/filter_icon.svg';
 
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';
