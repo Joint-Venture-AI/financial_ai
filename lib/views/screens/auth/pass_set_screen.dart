@@ -22,6 +22,7 @@ class PassSetScreen extends StatelessWidget {
         title: 'Password Set',
         isCenter: false,
         isBack: true,
+        showActions: false,
       ),
       backgroundColor: AppStyles.bgColor,
       body: Padding(

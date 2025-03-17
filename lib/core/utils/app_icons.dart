@@ -8,7 +8,12 @@ class AppIcons {
   static String marketIcon = '$iconsPath/market_icon.svg';
   static String backIcon = '$iconsPath/arrow_back_icon.svg';
   static String bellIcon = '$iconsPath/bell_icon.svg'; // Changed to SVG
-  static String profileIcon = '$iconsPath/profile_icon.svg'; // Changed to SVG
+  static String profileIcon = '$iconsPath/profile_icon.svg';
+  static String moreIcon = '$iconsPath/more_icon.svg';
+  static String houseIcon = '$iconsPath/house_icon.svg';
+  static String foodIcon = '$iconsPath/food_icon.svg';
+  static String carIcon = '$iconsPath/car_icon.svg';
+  static String arrowDownIcon = '$iconsPath/arrow_down.svg';
 
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';
@@ -21,4 +26,6 @@ class AppIcons {
 
   /// app_brand_logo
   static String appBrandLogo = '$imagesPath/logo.png';
+
+  static String coverImage = '$imagesPath/cover_image.png';
 }

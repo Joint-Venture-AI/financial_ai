@@ -22,6 +22,7 @@ class VerifyOtpScreen extends StatelessWidget {
         title: 'OTP Verify',
         isCenter: false,
         isBack: true,
+        showActions: false,
       ),
 
       body: Padding(

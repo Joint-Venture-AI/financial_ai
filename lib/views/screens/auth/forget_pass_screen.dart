@@ -21,6 +21,7 @@ class ForgetPassScreen extends StatelessWidget {
         title: 'Forget Password',
         isCenter: false,
         isBack: true,
+        showActions: false,
       ),
 
       body: Padding(
