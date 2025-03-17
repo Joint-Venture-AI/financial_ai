@@ -23,7 +23,7 @@ class WidgetHelper {
                   color: Colors.black,
                 ),
               )
-              : null,
+              : SizedBox(),
 
       title: Text(
         title,

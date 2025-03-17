@@ -1,5 +1,6 @@
 import 'package:financial_ai_mobile/controller/tab_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/add/add_screen.dart';
 import 'package:financial_ai_mobile/views/screens/bottom_nav/components/tab_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,9 +34,7 @@ class MainScreen extends StatelessWidget {
       ),
       floatingActionButton: InkWell(
         borderRadius: BorderRadius.circular(100.r),
-        onTap: () {
-          tabController.changeTabIndex(2);
-        },
+        onTap: () => Get.to(AddScreen()),
         child: Container(
           width: 56.w,
           height: 56.h,
