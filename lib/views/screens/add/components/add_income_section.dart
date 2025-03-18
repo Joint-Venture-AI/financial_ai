@@ -150,19 +150,25 @@ class AddIncomeSection extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Pay method',
-                              enabled: false,
-                              suffixIconConstraints: BoxConstraints(
-                                maxWidth: 24.w,
-                                maxHeight: 24.h,
-                              ),
-                              suffixIcon: SvgPicture.asset(
-                                width: 24.w,
-                                height: 24.h,
-                                AppIcons.dropDownMenu,
-                                color: Colors.black,
+                          child: InkWell(
+                            onTap:
+                                () => BaseHelper.showPayBottomSheet(
+                                  context: context,
+                                ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Pay method',
+                                enabled: false,
+                                suffixIconConstraints: BoxConstraints(
+                                  maxWidth: 24.w,
+                                  maxHeight: 24.h,
+                                ),
+                                suffixIcon: SvgPicture.asset(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  AppIcons.dropDownMenu,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),

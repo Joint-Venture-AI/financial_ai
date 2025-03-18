@@ -22,12 +22,16 @@ class AppIcons {
   static String bonus = '$iconsPath/bonus_icon.svg';
   static String myFoodIcon = '$iconsPath/my_food_icon.svg';
   static String socialIcon = '$iconsPath/social_icon.svg';
-  static String petsIcon = '$iconsPath/per_icon.svg';
+  static String petsIcon = '$iconsPath/pet_icon.svg';
   static String educationIcon = '$iconsPath/education_icon.svg';
   static String gitIcon = '$iconsPath/gift_icon.svg';
   static String transpost = '$iconsPath/transport_icon.svg';
   static String rentIcon = '$iconsPath/rent_icon.svg';
   static String apprarelIcon = '$iconsPath/apparel_icon.svg';
+  static String beautyIcon = '$iconsPath/beauty_icon.svg';
+  static String healthIcon = '$iconsPath/health_icon.svg';
+  static String cardIcon = '$iconsPath/card_icon.svg';
+  static String myCashIcon = '$iconsPath/cash_icon.svg';
 
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';

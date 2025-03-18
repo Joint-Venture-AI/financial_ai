@@ -1,5 +1,6 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/add/components/base_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -121,9 +122,16 @@ class AddExpenseSection extends StatelessWidget {
                         Expanded(
                           flex: 2,
 
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Add your purpose',
+                          child: InkWell(
+                            onTap:
+                                () => BaseHelper.showExpenseBottomSheet(
+                                  context: context,
+                                ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                enabled: false,
+                                hintText: 'Add your purpose',
+                              ),
                             ),
                           ),
                         ),
@@ -143,19 +151,25 @@ class AddExpenseSection extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Pay method',
-                              enabled: false,
-                              suffixIconConstraints: BoxConstraints(
-                                maxWidth: 24.w,
-                                maxHeight: 24.h,
-                              ),
-                              suffixIcon: SvgPicture.asset(
-                                width: 24.w,
-                                height: 24.h,
-                                AppIcons.dropDownMenu,
-                                color: Colors.black,
+                          child: InkWell(
+                            onTap:
+                                () => BaseHelper.showPayBottomSheet(
+                                  context: context,
+                                ),
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: 'Pay method',
+                                enabled: false,
+                                suffixIconConstraints: BoxConstraints(
+                                  maxWidth: 24.w,
+                                  maxHeight: 24.h,
+                                ),
+                                suffixIcon: SvgPicture.asset(
+                                  width: 24.w,
+                                  height: 24.h,
+                                  AppIcons.dropDownMenu,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ),
