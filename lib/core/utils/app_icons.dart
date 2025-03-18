@@ -15,6 +15,19 @@ class AppIcons {
   static String carIcon = '$iconsPath/car_icon.svg';
   static String arrowDownIcon = '$iconsPath/arrow_down.svg';
   static String filterIcon = '$iconsPath/filter_icon.svg';
+  static String dropDownMenu = '$iconsPath/drop_down_menu_icon.svg';
+  static String addImage = '$iconsPath/add_image.svg';
+  static String saleryIcon = '$iconsPath/salery_icon.svg';
+  static String cashIcon = '$iconsPath/pretty_cash.svg';
+  static String bonus = '$iconsPath/bonus_icon.svg';
+  static String myFoodIcon = '$iconsPath/my_food_icon.svg';
+  static String socialIcon = '$iconsPath/social_icon.svg';
+  static String petsIcon = '$iconsPath/per_icon.svg';
+  static String educationIcon = '$iconsPath/education_icon.svg';
+  static String gitIcon = '$iconsPath/gift_icon.svg';
+  static String transpost = '$iconsPath/transport_icon.svg';
+  static String rentIcon = '$iconsPath/rent_icon.svg';
+  static String apprarelIcon = '$iconsPath/apparel_icon.svg';
 
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';
