@@ -1,5 +1,6 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/notification/notification_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,12 +38,15 @@ class WidgetHelper {
       actions:
           showActions
               ? [
-                SvgPicture.asset(
-                  AppIcons.bellIcon,
-                  width: 24.w,
-                  height: 24.h,
-                  color: Colors.black,
-                  placeholderBuilder: (context) => const Icon(Icons.error),
+                InkWell(
+                  onTap: () => Get.to(NotificationScreen()),
+                  child: SvgPicture.asset(
+                    AppIcons.bellIcon,
+                    width: 24.w,
+                    height: 24.h,
+                    color: Colors.black,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
                 ),
                 SizedBox(width: 10.w),
                 SvgPicture.asset(

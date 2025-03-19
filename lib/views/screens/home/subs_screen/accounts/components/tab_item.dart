@@ -1,3 +1,4 @@
+import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
 import 'package:financial_ai_mobile/controller/home/accounts_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,7 @@ class TabItem extends StatelessWidget {
     required this.onTap,
   });
 
-  final _accountController = Get.find<AccountsController>();
+  final _analyzeController = Get.find<AnalyzeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,7 @@ class TabItem extends StatelessWidget {
         decoration: BoxDecoration(
           color:
               isSelected
-                  ? _accountController.selectedTab.value.contains('Income')
+                  ? _analyzeController.selectedTab.value.contains('Income')
                       ? AppStyles.primaryColor
                       : AppStyles.redColor
                   : Colors.transparent,
