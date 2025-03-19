@@ -9,6 +9,7 @@ import 'package:get/get_core/src/get_main.dart';
 
 class BaseHelper {
   static showIncomeBottomSheet({required BuildContext context}) {
+    final addController = Get.find<AddDataController>();
     return showBottomSheet(
       context: context,
       builder: (context) {
@@ -53,6 +54,7 @@ class BaseHelper {
                             _buildCategoryCell(
                               text: 'Salery',
                               iconPath: AppIcons.saleryIcon,
+                              isIncome: true,
                             ),
                             VerticalDivider(
                               width: 1,
@@ -62,6 +64,7 @@ class BaseHelper {
                             _buildCategoryCell(
                               text: 'Prety Cash',
                               iconPath: AppIcons.cashIcon,
+                              isIncome: true,
                             ),
                             VerticalDivider(
                               width: 1,
@@ -71,6 +74,7 @@ class BaseHelper {
                             _buildCategoryCell(
                               text: 'Bonus',
                               iconPath: AppIcons.bonus,
+                              isIncome: true,
                             ),
                           ],
                         ),
@@ -83,19 +87,26 @@ class BaseHelper {
                       ),
                       SizedBox(height: 8.h),
                       Center(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add, color: Colors.white),
-                            Text(
-                              'Other',
-                              style: AppStyles.mediumText.copyWith(
-                                color: Colors.white,
-                                fontSize: 16.sp,
+                        child: InkWell(
+                          onTap: () {
+                            final controller = Get.find<AddDataController>();
+                            controller.selectedIncomeCategory.value = 'Ohter';
+                            Get.back();
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.add, color: Colors.white),
+                              Text(
+                                'Other',
+                                style: AppStyles.mediumText.copyWith(
+                                  color: Colors.white,
+                                  fontSize: 16.sp,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                       SizedBox(height: 8.h),
@@ -165,14 +176,17 @@ class BaseHelper {
                         _buildCategoryCell(
                           iconPath: AppIcons.myFoodIcon,
                           text: 'Food',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.socialIcon,
                           text: 'Social Life',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.petsIcon,
                           text: 'Pets',
+                          isIncome: false,
                         ),
                       ],
                     ),
@@ -182,14 +196,17 @@ class BaseHelper {
                         _buildCategoryCell(
                           iconPath: AppIcons.educationIcon,
                           text: 'Education',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.gitIcon,
                           text: 'Gift',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.transpost,
                           text: 'Transport',
+                          isIncome: false,
                         ),
                       ],
                     ),
@@ -199,14 +216,17 @@ class BaseHelper {
                         _buildCategoryCell(
                           iconPath: AppIcons.rentIcon,
                           text: 'Rent',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.apprarelIcon,
                           text: 'Apparel',
+                          isIncome: false,
                         ),
                         _buildCategoryCell(
                           iconPath: AppIcons.beautyIcon,
                           text: 'Beauty',
+                          isIncome: false,
                         ),
                       ],
                     ),
@@ -216,28 +236,38 @@ class BaseHelper {
                         _buildCategoryCell(
                           iconPath: AppIcons.healthIcon,
                           text: 'Health',
+                          isIncome: false,
                         ),
                         TableCell(child: SizedBox.shrink()),
                         TableCell(
                           child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 24.w,
-                                ),
-                                SizedBox(width: 5.w),
-                                Text(
-                                  'Other',
-                                  style: AppStyles.mediumText.copyWith(
+                            child: InkWell(
+                              onTap: () {
+                                final controller =
+                                    Get.find<AddDataController>();
+                                controller.selectedExpenseCategory.value =
+                                    'Ohter';
+                                Get.back();
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.add,
                                     color: Colors.white,
-                                    fontSize: 12.sp,
+                                    size: 24.w,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(width: 5.w),
+                                  Text(
+                                    'Other',
+                                    style: AppStyles.mediumText.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -301,11 +331,11 @@ class BaseHelper {
                     // Row 1: Food, Social Life, Pets
                     TableRow(
                       children: [
-                        _buildCategoryCell(
+                        _buildPayCell(
                           iconPath: AppIcons.myCashIcon,
                           text: 'Cash',
                         ),
-                        _buildCategoryCell(
+                        _buildPayCell(
                           iconPath: AppIcons.cardIcon,
                           text: 'Card',
                         ),
@@ -324,12 +354,46 @@ class BaseHelper {
   static Widget _buildCategoryCell({
     required String iconPath,
     required String text,
+    required bool isIncome,
   }) {
     return InkWell(
       onTap: () {
         final controller = Get.find<AddDataController>();
-        controller.selectedIncomeCategory.value =
-            text; // Assuming this works for expenses too
+        isIncome
+            ? controller.selectedIncomeCategory.value = text
+            : controller.selectedExpenseCategory.value = text;
+        Get.back();
+      },
+      child: Padding(
+        padding: EdgeInsets.all(10.w), // Responsive padding
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SvgPicture.asset(iconPath, width: 24.w, height: 24.h),
+            SizedBox(width: 5.w),
+            Text(
+              text,
+              style: AppStyles.mediumText.copyWith(
+                color: Colors.white,
+                fontSize: 12.sp,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static Widget _buildPayCell({
+    required String iconPath,
+    required String text,
+  }) {
+    return InkWell(
+      onTap: () {
+        final controller = Get.find<AddDataController>();
+        controller.selectedPayMethod.value = text;
+        Get.back();
       },
       child: Padding(
         padding: EdgeInsets.all(10.w), // Responsive padding

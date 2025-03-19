@@ -1,14 +1,20 @@
+import 'dart:io';
+
+import 'package:financial_ai_mobile/controller/add_data_controller/add_data_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/glob_widgets/gradiunt_global_button.dart';
 import 'package:financial_ai_mobile/views/screens/add/components/base_helper.dart';
+import 'package:financial_ai_mobile/views/screens/add/components/image_chosed_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
 class AddIncomeSection extends StatelessWidget {
   AddIncomeSection({super.key});
-
+  final addController = Get.find<AddDataController>();
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -19,16 +25,13 @@ class AddIncomeSection extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -48,7 +51,6 @@ class AddIncomeSection extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Expanded(
                           flex: 2,
                           child: Text(
@@ -73,10 +75,8 @@ class AddIncomeSection extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Expanded(
                           flex: 2,
-
                           child: TextField(
                             decoration: InputDecoration(hintText: 'Amount'),
                           ),
@@ -90,16 +90,13 @@ class AddIncomeSection extends StatelessWidget {
             SizedBox(height: 10.h),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -119,21 +116,26 @@ class AddIncomeSection extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: InkWell(
-                            onTap:
-                                () => BaseHelper.showIncomeBottomSheet(
-                                  context: context,
+                        Obx(() {
+                          return Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap:
+                                  () => BaseHelper.showIncomeBottomSheet(
+                                    context: context,
+                                  ),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  enabled: false,
+                                  hintText:
+                                      addController
+                                          .selectedIncomeCategory
+                                          .value,
                                 ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                enabled: false,
-                                hintText: 'Add your purpose',
                               ),
                             ),
-                          ),
-                        ),
+                          );
+                        }),
                       ],
                     ),
                     SizedBox(height: 10.h),
@@ -150,28 +152,31 @@ class AddIncomeSection extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: InkWell(
-                            onTap:
-                                () => BaseHelper.showPayBottomSheet(
-                                  context: context,
-                                ),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                hintText: 'Pay method',
-                                enabled: false,
-                                suffixIconConstraints: BoxConstraints(
-                                  maxWidth: 24.w,
-                                  maxHeight: 24.h,
-                                ),
-                                suffixIcon: SvgPicture.asset(
-                                  width: 24.w,
-                                  height: 24.h,
-                                  AppIcons.dropDownMenu,
-                                  color: Colors.black,
+                          child: Obx(() {
+                            return InkWell(
+                              onTap:
+                                  () => BaseHelper.showPayBottomSheet(
+                                    context: context,
+                                  ),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                  hintText:
+                                      addController.selectedPayMethod.value,
+                                  enabled: false,
+                                  suffixIconConstraints: BoxConstraints(
+                                    maxWidth: 24.w,
+                                    maxHeight: 24.h,
+                                  ),
+                                  suffixIcon: SvgPicture.asset(
+                                    width: 24.w,
+                                    height: 24.h,
+                                    AppIcons.dropDownMenu,
+                                    color: Colors.black,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
+                            );
+                          }),
                         ),
                       ],
                     ),
@@ -205,16 +210,13 @@ class AddIncomeSection extends StatelessWidget {
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -233,14 +235,51 @@ class AddIncomeSection extends StatelessWidget {
                           ),
                         ),
                         const Spacer(),
-                        SvgPicture.asset(
-                          AppIcons.addImage,
-                          color: Colors.black,
-                          width: 24.w,
-                          height: 24.h,
+                        InkWell(
+                          onTap: () async {
+                            await addController.imageChoser();
+                          },
+                          child: SvgPicture.asset(
+                            AppIcons.addImage,
+                            color: Colors.black,
+                            width: 24.w,
+                            height: 24.h,
+                          ),
                         ),
                       ],
                     ),
+                    SizedBox(height: 5.h),
+
+                    Obx(() {
+                      return addController
+                              .images
+                              .isNotEmpty // Check if list is not empty
+                          ? SingleChildScrollView(
+                            // Wrap with SingleChildScrollView
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children:
+                                  addController.images.map((image) {
+                                    final index = addController.images.indexOf(
+                                      image,
+                                    );
+                                    return Padding(
+                                      padding: EdgeInsets.only(
+                                        right: 8.w,
+                                      ), // Add some spacing
+                                      child: ImageChosedItem(
+                                        onDelete:
+                                            () => addController.removeImage(
+                                              index,
+                                            ),
+                                        imageFile: image,
+                                      ),
+                                    );
+                                  }).toList(),
+                            ),
+                          )
+                          : const SizedBox(); // Return an empty SizedBox if no images
+                    }),
                     SizedBox(height: 5.h),
                     Divider(color: AppStyles.lightGreyColor, height: 1),
                     SizedBox(height: 8.h),
@@ -258,6 +297,8 @@ class AddIncomeSection extends StatelessWidget {
                 ),
               ),
             ),
+            SizedBox(height: 15.h),
+            GradiuntGlobalButton(text: 'Save', onTap: () {}),
           ],
         ),
       ),
