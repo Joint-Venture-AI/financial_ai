@@ -31,10 +31,19 @@ class AppIcons {
   static String beautyIcon = '$iconsPath/beauty_icon.svg';
   static String healthIcon = '$iconsPath/health_icon.svg';
   static String cardIcon = '$iconsPath/card_icon.svg';
+
   static String myCashIcon = '$iconsPath/cash_icon.svg';
+
   static String crownIcon = '$iconsPath/crown_icon.svg';
   static String lockIcon = '$iconsPath/lock_icon.svg';
   static String logOut = '$iconsPath/logout_icon.svg';
+
+  static String verticalSend = '$iconsPath/vertical_send_icon.svg';
+  static String transportIcon = '$iconsPath/transportation_icon.svg';
+
+  static String house2dIcon = '$iconsPath/home_2d_icon.svg';
+  static String health2dIcon = '$iconsPath/health_2d_icon.svg';
+  static String apparel2dIcon = '$iconsPath/apparel_2d_icon.svg';
 
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';
