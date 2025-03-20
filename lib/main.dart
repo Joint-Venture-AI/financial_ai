@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       designSize: Size(375, 812),
       builder: (context, child) {
         return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: DefaultTheme.theme,
           initialRoute: AppRoutes.onBoarding,
           initialBinding: AppBindings.bindings,

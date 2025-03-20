@@ -39,7 +39,7 @@ class AppStyles extends GetxController {
 
   static TextStyle smallText = TextStyle(
     fontSize: 16.sp,
-    color: Colors.white,
+    color: Colors.black,
     fontWeight: FontWeight.w400,
   );
 }

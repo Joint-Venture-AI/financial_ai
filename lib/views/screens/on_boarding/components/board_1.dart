@@ -8,22 +8,19 @@ class BoardOneView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppStyles.bgColor,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Your Financial Journey Starts Here!',
-              textAlign: TextAlign.center,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 10.h),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            'Your Financial Journey Starts Here!',
+            textAlign: TextAlign.center,
 
-              style: AppStyles.largeText,
-            ),
-          ],
-        ),
+            style: AppStyles.largeText,
+          ),
+        ],
       ),
     );
   }

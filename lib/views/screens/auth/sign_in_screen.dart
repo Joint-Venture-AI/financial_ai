@@ -10,15 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends StatelessWidget {
   SignInScreen({super.key});
 
-  @override
-  State<SignInScreen> createState() => _SignInScreenState();
-}
-
-class _SignInScreenState extends State<SignInScreen> {
-  final _formKey = GlobalKey<FormState>(); // Key for the Form widget
+  final _formKey = GlobalKey<FormState>();
+  // Key for the Form widget
   final authController = Get.find<AuthController>();
 
   @override
