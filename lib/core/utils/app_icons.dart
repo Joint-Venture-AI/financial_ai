@@ -45,6 +45,9 @@ class AppIcons {
   static String health2dIcon = '$iconsPath/health_2d_icon.svg';
   static String apparel2dIcon = '$iconsPath/apparel_2d_icon.svg';
 
+  static String masterCardIcon = '$iconsPath/master_card.svg';
+  static String visa = '$iconsPath/visa_icon.svg';
+
   /// tab_icons
   static String home = '$iconsPath/home_icon.svg';
   static String analyze = '$iconsPath/analyze_icon.svg';

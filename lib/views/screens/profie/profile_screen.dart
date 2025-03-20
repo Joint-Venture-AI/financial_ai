@@ -1,8 +1,16 @@
+
 import 'package:financial_ai_mobile/controller/profile_controller.dart';
+import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
+
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+
 import 'package:financial_ai_mobile/views/screens/profie/component/profile_header.dart';
+
+import 'package:financial_ai_mobile/views/screens/profie/upgrade/components/upgrade_widget_helper.dart';
+import 'package:financial_ai_mobile/views/screens/profie/upgrade/upgrade_sceen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -97,7 +105,7 @@ class ProfileScreen extends StatelessWidget {
               _buildProfileOption(
                 icon: SvgPicture.asset(AppIcons.crownIcon),
                 title: "Upgrade Plan",
-                ontap: () {},
+                ontap: () => Get.to(UpgradeScreen()),
               ),
               _buildProfileOption(
                 icon: SvgPicture.asset(AppIcons.lockIcon),
@@ -113,7 +121,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 title: "Logout",
                 hasLast: false,
-                ontap: () {},
+                ontap: () => UpgradeWidgetHelper.showLogOutSheet(context),
               ),
             ],
           ),
