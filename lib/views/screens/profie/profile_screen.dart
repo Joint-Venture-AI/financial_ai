@@ -102,7 +102,9 @@ class ProfileScreen extends StatelessWidget {
               _buildProfileOption(
                 icon: SvgPicture.asset(AppIcons.lockIcon),
                 title: "Privacy Policy",
-                ontap: () {},
+                ontap: () {
+                  Get.toNamed(AppRoutes.privacyPolicy);
+                },
               ),
               _buildProfileOption(
                 icon: SvgPicture.asset(

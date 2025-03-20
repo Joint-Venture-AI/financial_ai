@@ -8,7 +8,7 @@ AppBar profileAppBar(title) => AppBar(
     onTap: () {
       Get.back();
     },
-    child: Icon(Icons.chevron_left),
+    child: Icon(Icons.chevron_left, size: 32),
   ),
   title: Text(title, style: AppStyles.mediumText),
   actions: [Icon(Icons.more_vert)],
