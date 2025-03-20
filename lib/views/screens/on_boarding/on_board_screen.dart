@@ -4,14 +4,12 @@ import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:financial_ai_mobile/views/screens/auth/sign_up_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class OnBoarding extends StatelessWidget {
-  OnBoarding({super.key});
+  OnBoarding({Key? key}) : super(key: key);
 
   final welcomeController = Get.find<WelcomeController>();
 
@@ -67,13 +65,13 @@ class OnBoarding extends StatelessWidget {
                         if (welcomeController.currentIndex.value <
                             welcomeController.boadring_views.length - 1) {
                           welcomeController.pageController.nextPage(
-                            duration: Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 500),
                             curve: Curves.ease,
                           );
                         } else {
-                          // Navigate to the next screen (e.g., login or home screen)
-                          //  Replace 'YourNextScreen()' with the actual screen you want to navigate to.
-                          Get.offAll(SignUpScreen());
+                          Get.offAll(
+                            SignUpScreen(),
+                          ); // Navigate to SignUpScreen
                         }
                       },
                     ),

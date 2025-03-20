@@ -26,20 +26,20 @@ class AppStyles extends GetxController {
 
   ///text_styles
   static TextStyle largeText = TextStyle(
-    fontSize: 40.sp,
+    fontSize: 40,
     color: Colors.black,
     fontWeight: FontWeight.w800,
   );
 
   static TextStyle mediumText = TextStyle(
-    fontSize: 18.sp,
+    fontSize: 18,
     color: Colors.black,
     fontWeight: FontWeight.w500,
   );
 
   static TextStyle smallText = TextStyle(
-    fontSize: 16.sp,
-    color: Colors.black,
+    fontSize: 16,
+    color: Colors.white,
     fontWeight: FontWeight.w400,
   );
 }

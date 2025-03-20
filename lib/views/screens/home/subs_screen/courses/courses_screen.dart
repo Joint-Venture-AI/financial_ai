@@ -149,18 +149,28 @@ class CoursesScreen extends StatelessWidget {
                                 ),
                                 const Spacer(),
                                 ElevatedButton(
-                                  onPressed: () {},
                                   style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                        12,
+                                      ), // Set the radius here
+                                    ),
+                                    backgroundColor:
+                                        AppStyles
+                                            .primaryColor, // Set background color if needed
                                     padding: EdgeInsets.symmetric(
-                                      horizontal: 12.w,
-                                      vertical: 8.h,
-                                    ), //responsive padding
-                                    textStyle: AppStyles.mediumText.copyWith(
+                                      horizontal: 16,
+                                      vertical: 12,
+                                    ), // Adjust padding if needed
+                                  ),
+                                  onPressed: () {},
+                                  child: Text(
+                                    'Enroll Now',
+                                    style: AppStyles.mediumText.copyWith(
                                       color: Colors.white,
-                                      fontSize: 12.sp,
+                                      fontSize: 12,
                                     ),
                                   ),
-                                  child: Text('Enroll Now'),
                                 ),
                               ],
                             ),

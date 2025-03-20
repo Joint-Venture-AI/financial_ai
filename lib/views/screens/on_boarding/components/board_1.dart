@@ -1,10 +1,9 @@
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BoardOneView extends StatelessWidget {
-  const BoardOneView({super.key});
+  const BoardOneView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,6 @@ class BoardOneView extends StatelessWidget {
           Text(
             'Your Financial Journey Starts Here!',
             textAlign: TextAlign.center,
-
             style: AppStyles.largeText,
           ),
         ],

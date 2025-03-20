@@ -1,6 +1,7 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_expense_details_screen.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
@@ -515,18 +516,28 @@ class HomeScreen extends StatelessWidget {
                         ),
                         const Spacer(),
                         ElevatedButton(
-                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                12,
+                              ), // Set the radius here
+                            ),
+                            backgroundColor:
+                                AppStyles
+                                    .primaryColor, // Set background color if needed
                             padding: EdgeInsets.symmetric(
-                              horizontal: 12.w,
-                              vertical: 8.h,
-                            ), //responsive padding
-                            textStyle: AppStyles.mediumText.copyWith(
+                              horizontal: 16,
+                              vertical: 12,
+                            ), // Adjust padding if needed
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            'Enroll Now',
+                            style: AppStyles.mediumText.copyWith(
                               color: Colors.white,
-                              fontSize: 12.sp,
+                              fontSize: 12,
                             ),
                           ),
-                          child: Text('Enroll Now'),
                         ),
                       ],
                     ),

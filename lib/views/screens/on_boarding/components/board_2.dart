@@ -1,10 +1,9 @@
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BoardTwoView extends StatelessWidget {
-  const BoardTwoView({super.key});
+  const BoardTwoView({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,6 @@ class BoardTwoView extends StatelessWidget {
           Text(
             'Unlock the Power of Smart Money Management!',
             textAlign: TextAlign.center,
-
             style: AppStyles.largeText,
           ),
         ],
