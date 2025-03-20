@@ -70,7 +70,7 @@ class CoursesScreen extends StatelessWidget {
                   child: Padding(
                     padding: EdgeInsets.all(12),
                     child: SvgPicture.asset(
-                      AppIcons.filterIcon,
+                      AppIcons.searchIcon,
                       color: Colors.black,
                     ),
                   ),
@@ -83,7 +83,7 @@ class CoursesScreen extends StatelessWidget {
                 itemCount: 10,
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: EdgeInsets.only(top: 10.h),
+                    padding: EdgeInsets.only(top: 5.h),
                     child: SizedBox(
                       width: 242.w,
                       height: 150.h,
@@ -143,17 +143,24 @@ class CoursesScreen extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 12.sp,
                                   ),
+                                  maxLines:
+                                      2, // Added maxLines and overflow properties
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                SizedBox(height: 15.h),
+                                const Spacer(),
                                 ElevatedButton(
                                   onPressed: () {},
-                                  child: Text(
-                                    'Enroll Now',
-                                    style: AppStyles.mediumText.copyWith(
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                      vertical: 8.h,
+                                    ), //responsive padding
+                                    textStyle: AppStyles.mediumText.copyWith(
                                       color: Colors.white,
                                       fontSize: 12.sp,
                                     ),
                                   ),
+                                  child: Text('Enroll Now'),
                                 ),
                               ],
                             ),

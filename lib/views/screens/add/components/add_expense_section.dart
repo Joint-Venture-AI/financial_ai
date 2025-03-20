@@ -25,16 +25,13 @@ class AddExpenseSection extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -54,16 +51,22 @@ class AddExpenseSection extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            'Mar 10, 2025  01:20 pm',
-                            style: AppStyles.smallText.copyWith(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                            ),
-                          ),
+                          child: Obx(() {
+                            return InkWell(
+                              onTap: () {
+                                addController.pickDateTime(context);
+                              },
+                              child: Text(
+                                addController.formattedDateTime,
+                                style: AppStyles.smallText.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                            );
+                          }),
                         ),
                       ],
                     ),
@@ -79,10 +82,8 @@ class AddExpenseSection extends StatelessWidget {
                             ),
                           ),
                         ),
-
                         Expanded(
                           flex: 2,
-
                           child: TextField(
                             decoration: InputDecoration(hintText: 'Amount'),
                           ),
@@ -96,16 +97,13 @@ class AddExpenseSection extends StatelessWidget {
             SizedBox(height: 10.h),
             Container(
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -125,12 +123,12 @@ class AddExpenseSection extends StatelessWidget {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
-                          child: Obx(() {
-                            return InkWell(
+                        Obx(() {
+                          return Expanded(
+                            flex: 2,
+                            child: InkWell(
                               onTap:
-                                  () => BaseHelper.showExpenseBottomSheet(
+                                  () => BaseHelper.showIncomeBottomSheet(
                                     context: context,
                                   ),
                               child: TextField(
@@ -138,13 +136,13 @@ class AddExpenseSection extends StatelessWidget {
                                   enabled: false,
                                   hintText:
                                       addController
-                                          .selectedExpenseCategory
+                                          .selectedIncomeCategory
                                           .value,
                                 ),
                               ),
-                            );
-                          }),
-                        ),
+                            ),
+                          );
+                        }),
                       ],
                     ),
                     SizedBox(height: 10.h),
@@ -219,16 +217,13 @@ class AddExpenseSection extends StatelessWidget {
             Container(
               width: double.infinity,
               decoration: BoxDecoration(
-                color: Colors.white, // White background
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(16.r),
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 36,
-                    color: Colors.black.withOpacity(0.1), // More visible shadow
-                    offset: const Offset(
-                      0,
-                      4,
-                    ), // Slight offset for better effect
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
                 ],
               ),
@@ -261,11 +256,13 @@ class AddExpenseSection extends StatelessWidget {
                       ],
                     ),
                     SizedBox(height: 5.h),
-                    Divider(color: AppStyles.lightGreyColor, height: 1),
-                    SizedBox(height: 5.h),
+
                     Obx(() {
-                      return addController.images.isNotEmpty
+                      return addController
+                              .images
+                              .isNotEmpty // Check if list is not empty
                           ? SingleChildScrollView(
+                            // Wrap with SingleChildScrollView
                             scrollDirection: Axis.horizontal,
                             child: Row(
                               children:
@@ -274,18 +271,21 @@ class AddExpenseSection extends StatelessWidget {
                                       image,
                                     );
                                     return Padding(
-                                      padding: EdgeInsets.only(right: 8.w),
+                                      padding: EdgeInsets.only(
+                                        right: 8.w,
+                                      ), // Add some spacing
                                       child: ImageChosedItem(
+                                        onDelete:
+                                            () => addController.removeImage(
+                                              index,
+                                            ),
                                         imageFile: image,
-                                        onDelete: () {
-                                          addController.removeImage(index);
-                                        },
                                       ),
                                     );
                                   }).toList(),
                             ),
                           )
-                          : SizedBox();
+                          : const SizedBox(); // Return an empty SizedBox if no images
                     }),
                     SizedBox(height: 5.h),
                     Divider(color: AppStyles.lightGreyColor, height: 1),

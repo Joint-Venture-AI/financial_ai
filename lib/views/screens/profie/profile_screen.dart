@@ -1,4 +1,3 @@
-
 import 'package:financial_ai_mobile/controller/profile_controller.dart';
 import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 
@@ -23,11 +22,11 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppStyles.bgColor,
-        appBar: profileAppBar("Profile"),
-        body: Padding(
+    return Scaffold(
+      backgroundColor: AppStyles.bgColor,
+      appBar: profileAppBar("Profile"),
+      body: SafeArea(
+        child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
           child: Column(
             children: [

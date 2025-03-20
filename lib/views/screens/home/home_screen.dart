@@ -32,11 +32,11 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    custom_app_bar(),
+                    customAppBar(),
                     SizedBox(height: 26.h),
                     InkWell(
                       onTap: () => Get.to(AccountsScreen()),
-                      child: header_body_section(),
+                      child: headerBodySection(),
                     ),
                     SizedBox(height: 15.h),
                     Row(
@@ -47,6 +47,7 @@ class HomeScreen extends StatelessWidget {
                           'Financial Academy',
                           style: AppStyles.mediumText.copyWith(
                             color: Colors.black,
+                            fontSize: 16.sp, //Added font size responsiveness
                           ),
                         ),
                         const Spacer(),
@@ -56,6 +57,7 @@ class HomeScreen extends StatelessWidget {
                             'See all',
                             style: AppStyles.smallText.copyWith(
                               color: AppStyles.greyColor,
+                              fontSize: 12.sp, //Added font size responsiveness
                             ),
                           ),
                         ),
@@ -64,11 +66,11 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              course_section(),
+              courseSection(),
               SizedBox(height: 15.h),
               InkWell(
                 onTap: () => Get.to(ExpenseDetailsScreen()),
-                child: financial_health(),
+                child: financialHealth(),
               ),
               SizedBox(height: 15.h),
               InkWell(
@@ -134,6 +136,7 @@ class HomeScreen extends StatelessWidget {
                                     color:
                                         Colors
                                             .black, // You can adjust the color if needed
+                                    fontSize: 12.sp, // Make it responsive
                                   ),
                                 ),
                                 TextSpan(
@@ -148,13 +151,13 @@ class HomeScreen extends StatelessWidget {
                           ),
                           SizedBox(height: 20.h),
 
-                          financial_item(
+                          financialItem(
                             iconPath: AppIcons.houseIcon,
                             title: 'Housing',
                             percents: 30,
                           ),
                           SizedBox(height: 5.h),
-                          financial_item(
+                          financialItem(
                             iconPath: AppIcons.foodIcon,
                             title: 'Food & Groceries',
                             percents: 10,
@@ -174,7 +177,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Container financial_item({
+  Container financialItem({
     required String iconPath,
     required String title,
     required int percents,
@@ -207,11 +210,15 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             SizedBox(width: 12.w),
-            Text(
-              title,
-              style: AppStyles.smallText.copyWith(
-                color: Colors.black,
-                fontSize: 14.sp,
+            Expanded(
+              // Added Expanded widget
+              child: Text(
+                title,
+                style: AppStyles.smallText.copyWith(
+                  color: Colors.black,
+                  fontSize: 14.sp,
+                ),
+                overflow: TextOverflow.ellipsis, // Added overflow property
               ),
             ),
             const Spacer(), // To align the CircularPercentIndicator properly
@@ -220,7 +227,7 @@ class HomeScreen extends StatelessWidget {
               animation: true,
               radius: 25.0, // Adjust radius if necessary for smaller screens
               lineWidth: 10.0, // Set width to 10
-              percent: 0.3, // 30% progress
+              percent: percents / 100, //Progress should be between 0 to 1
               center: Text(
                 "$percents%",
                 style: AppStyles.smallText.copyWith(
@@ -239,7 +246,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Padding financial_health() {
+  Padding financialHealth() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Column(
@@ -259,7 +266,7 @@ class HomeScreen extends StatelessWidget {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(20),
+              padding: EdgeInsets.all(20.r), //Make padding responsive
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -269,10 +276,16 @@ class HomeScreen extends StatelessWidget {
                         'Your Financial Health',
                         style: AppStyles.mediumText.copyWith(
                           color: Colors.black,
+                          fontSize: 16.sp, //Added font size responsiveness
                         ),
                       ),
-                      const Spacer(),
-                      SvgPicture.asset(AppIcons.moreIcon, color: Colors.grey),
+                      // const Spacer(),
+                      // SvgPicture.asset(
+                      //   AppIcons.moreIcon,
+                      //   color: Colors.grey,
+                      //   width: 20.w,
+                      //   height: 20.h,
+                      // ), //make it responsive
                     ],
                   ),
                   SizedBox(height: 15.h),
@@ -292,11 +305,14 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 5.w),
-                                Text(
-                                  'Total cost in month',
-                                  style: AppStyles.smallText.copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
+                                Expanded(
+                                  child: Text(
+                                    'Total cost in month',
+                                    style: AppStyles.smallText.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -313,11 +329,14 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 5.w),
-                                Text(
-                                  'Save in month',
-                                  style: AppStyles.smallText.copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
+                                Expanded(
+                                  child: Text(
+                                    'Save in month',
+                                    style: AppStyles.smallText.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
                               ],
@@ -329,6 +348,8 @@ class HomeScreen extends StatelessWidget {
                                 color: Colors.grey,
                                 fontSize: 12.sp,
                               ),
+                              textAlign:
+                                  TextAlign.start, // Added text alignment
                             ),
                           ],
                         ),
@@ -342,15 +363,30 @@ class HomeScreen extends StatelessWidget {
                               PieChartSectionData(
                                 value: 93,
                                 title: '93%',
-
+                                radius: 30, //Added radius
+                                titleStyle: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ), //Added text style
                                 color: AppStyles.orangeColor,
                               ),
                               PieChartSectionData(
                                 value: 7,
                                 title: '7%',
+                                radius: 30, //Added radius
+                                titleStyle: TextStyle(
+                                  fontSize: 10.sp,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ), //Added text style
                                 color: AppStyles.primaryColor,
                               ),
                             ],
+                            centerSpaceRadius:
+                                0, // remove space around piechart
+                            borderData: FlBorderData(show: false),
+                            sectionsSpace: 0,
                           ),
                         ),
                       ),
@@ -365,7 +401,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Row custom_app_bar() {
+  Row customAppBar() {
     return Row(
       children: [
         SizedBox(
@@ -373,6 +409,7 @@ class HomeScreen extends StatelessWidget {
           height: 32.h,
           child: Image.asset(
             AppIcons.appBrandLogo,
+            fit: BoxFit.contain, //Added fit
             errorBuilder: (context, error, stackTrace) {
               return const Icon(Icons.error);
             },
@@ -380,7 +417,7 @@ class HomeScreen extends StatelessWidget {
         ),
         const Spacer(),
         InkWell(
-          onTap: ()=> Get.to(NotificationScreen()),
+          onTap: () => Get.to(NotificationScreen()),
           child: SvgPicture.asset(
             AppIcons.bellIcon,
             width: 24.w,
@@ -407,7 +444,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  SingleChildScrollView course_section() {
+  Widget courseSection() {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -473,17 +510,23 @@ class HomeScreen extends StatelessWidget {
                             color: Colors.white,
                             fontSize: 12.sp,
                           ),
+                          maxLines: 2, // Added maxLines and overflow properties
+                          overflow: TextOverflow.ellipsis,
                         ),
-                        SizedBox(height: 15.h),
+                        const Spacer(),
                         ElevatedButton(
                           onPressed: () {},
-                          child: Text(
-                            'Enroll Now',
-                            style: AppStyles.mediumText.copyWith(
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12.w,
+                              vertical: 8.h,
+                            ), //responsive padding
+                            textStyle: AppStyles.mediumText.copyWith(
                               color: Colors.white,
                               fontSize: 12.sp,
                             ),
                           ),
+                          child: Text('Enroll Now'),
                         ),
                       ],
                     ),
@@ -497,7 +540,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget header_body_section() {
+  Widget headerBodySection() {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white, // White background
@@ -511,7 +554,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(8.r), //responsive padding
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -529,7 +572,7 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(15),
+                padding: EdgeInsets.all(15.r), //responsive padding
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -542,10 +585,10 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 16.sp,
                           ) ??
-                          const TextStyle(
+                          TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
-                            fontSize: 16,
+                            fontSize: 16.sp, // responsive font size
                           ),
                     ),
                     SizedBox(height: 6.h),
@@ -557,10 +600,10 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             fontSize: 14.sp,
                           ) ??
-                          const TextStyle(
+                          TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
-                            fontSize: 14,
+                            fontSize: 14.sp, // responsive font size
                           ),
                     ),
                     SizedBox(height: 6.h),
@@ -572,10 +615,10 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             fontSize: 40.sp,
                           ) ??
-                          const TextStyle(
+                          TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
-                            fontSize: 40,
+                            fontSize: 40.sp, // responsive font size
                           ),
                     ),
                     SizedBox(height: 6.h),
@@ -587,10 +630,10 @@ class HomeScreen extends StatelessWidget {
                             fontWeight: FontWeight.w400,
                             fontSize: 14.sp,
                           ) ??
-                          const TextStyle(
+                          TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w400,
-                            fontSize: 14,
+                            fontSize: 14.sp, // responsive font size
                           ),
                     ),
                   ],
@@ -611,8 +654,9 @@ class HomeScreen extends StatelessWidget {
                           style:
                               AppStyles.smallText?.copyWith(
                                 color: Colors.black,
+                                fontSize: 14.sp, // responsive font size
                               ) ??
-                              const TextStyle(color: Colors.black),
+                              TextStyle(color: Colors.black, fontSize: 14.sp),
                         ),
                         SizedBox(height: 5.h),
                         Text(
@@ -621,8 +665,9 @@ class HomeScreen extends StatelessWidget {
                               AppStyles.smallText?.copyWith(
                                 color: Colors.green,
                                 fontWeight: FontWeight.w600,
+                                fontSize: 14.sp, // responsive font size
                               ) ??
-                              const TextStyle(color: Colors.green),
+                              TextStyle(color: Colors.green, fontSize: 14.sp),
                         ),
                       ],
                     ),
@@ -641,8 +686,9 @@ class HomeScreen extends StatelessWidget {
                           style:
                               AppStyles.smallText?.copyWith(
                                 color: Colors.black,
+                                fontSize: 14.sp, // responsive font size
                               ) ??
-                              const TextStyle(color: Colors.black),
+                              TextStyle(color: Colors.black, fontSize: 14.sp),
                         ),
                         SizedBox(height: 5.h),
                         Text(
@@ -651,8 +697,9 @@ class HomeScreen extends StatelessWidget {
                               AppStyles.smallText?.copyWith(
                                 color: Colors.red,
                                 fontWeight: FontWeight.w600,
+                                fontSize: 14.sp, // responsive font size
                               ) ??
-                              const TextStyle(color: Colors.red),
+                              TextStyle(color: Colors.red, fontSize: 14.sp),
                         ),
                       ],
                     ),

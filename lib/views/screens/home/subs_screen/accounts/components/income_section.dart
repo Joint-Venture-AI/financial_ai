@@ -56,13 +56,12 @@ class IncomeSection extends StatelessWidget {
             ),
           ],
         ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return BudgetItem(isExpense: false);
-            },
-          ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return BudgetItem(isExpense: false);
+          },
         ),
       ],
     );

@@ -77,11 +77,11 @@ class AccountScreen extends StatelessWidget {
                     ),
                   );
                 }),
-                const Spacer(),
-                SvgPicture.asset(
-                  AppIcons.filterIcon,
-                  color: AppStyles.darkGreyColor,
-                ),
+                // const Spacer(),
+                // SvgPicture.asset(
+                //   AppIcons.filterIcon,
+                //   color: AppStyles.darkGreyColor,
+                // ),
               ],
             ),
 

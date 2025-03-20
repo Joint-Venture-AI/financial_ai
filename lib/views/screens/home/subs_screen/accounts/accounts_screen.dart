@@ -7,11 +7,12 @@ import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/comp
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class AccountsScreen extends StatelessWidget {
   AccountsScreen({super.key});
+
   final accountController = Get.put(AccountsController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,34 +23,20 @@ class AccountsScreen extends StatelessWidget {
         isCenter: false,
         showActions: true,
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 15.h),
-          Padding(
+      body: SafeArea(
+        // Add SafeArea to avoid overlapping with system UI
+        child: SingleChildScrollView(
+          // Wrap everything in SingleChildScrollView
+          scrollDirection: Axis.vertical,
+          child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                SizedBox(height: 15.h),
                 header_body_section(),
                 SizedBox(height: 15.h),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white, // White background
-                    borderRadius: BorderRadius.circular(32.r),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 36,
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ), // More visible shadow
-                        offset: const Offset(
-                          0,
-                          4,
-                        ), // Slight offset for better effect
-                      ),
-                    ],
-                  ),
-                ),
+                // Removed the empty Container
                 SizedBox(height: 20.h),
                 Container(
                   decoration: BoxDecoration(
@@ -95,7 +82,6 @@ class AccountsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 10.h),
                 SizedBox(
-                  height: 350.h, // Or any appropriate fixed height
                   child: Obx(() {
                     return accountController.selectedTab.value.contains(
                           'Income',
@@ -104,10 +90,13 @@ class AccountsScreen extends StatelessWidget {
                         : ExpenseSection();
                   }),
                 ),
+                SizedBox(
+                  height: 20.h,
+                ), // Add some space at the bottom. Consider removing
               ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

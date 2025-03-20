@@ -43,19 +43,22 @@ class PieChartSample2State extends State<PieChartSample2> {
         const SizedBox(height: 20),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _buildLegendItem(AppStyles.orangeColor, 'Food'),
-              const SizedBox(width: 10),
-              _buildLegendItem(AppStyles.redColor, 'Apparel'),
-              const SizedBox(width: 10),
-              _buildLegendItem(AppStyles.blueColor, 'Gift'),
-              const SizedBox(width: 10),
-              _buildLegendItem(AppStyles.purpleColor, 'Health'),
-              const SizedBox(width: 10),
-              _buildLegendItem(AppStyles.simpleBlueColor, 'Education'),
-            ],
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildLegendItem(AppStyles.orangeColor, 'Food'),
+                const SizedBox(width: 10),
+                _buildLegendItem(AppStyles.redColor, 'Apparel'),
+                const SizedBox(width: 10),
+                _buildLegendItem(AppStyles.blueColor, 'Gift'),
+                const SizedBox(width: 10),
+                _buildLegendItem(AppStyles.purpleColor, 'Health'),
+                const SizedBox(width: 10),
+                _buildLegendItem(AppStyles.simpleBlueColor, 'Education'),
+              ],
+            ),
           ),
         ),
       ],

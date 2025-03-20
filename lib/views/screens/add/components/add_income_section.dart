@@ -53,13 +53,20 @@ class AddIncomeSection extends StatelessWidget {
                         ),
                         Expanded(
                           flex: 2,
-                          child: Text(
-                            'Mar 10, 2025  01:20 pm',
-                            style: AppStyles.smallText.copyWith(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                            ),
-                          ),
+                          child: Obx(() {
+                            return InkWell(
+                              onTap: () {
+                                addController.pickDateTime(context);
+                              },
+                              child: Text(
+                                addController.formattedDateTime,
+                                style: AppStyles.smallText.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 16.sp,
+                                ),
+                              ),
+                            );
+                          }),
                         ),
                       ],
                     ),

@@ -57,7 +57,7 @@ class UserChoseItem extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SvgPicture.asset(
-                    AppIcons.shopingBag,
+                    iconPath,
                     color: isSelected ? Colors.white : AppStyles.greyColor,
                   ),
                 ),

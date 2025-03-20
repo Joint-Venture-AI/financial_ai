@@ -178,71 +178,79 @@ class UpgradeWidgetHelper {
     );
   }
 
-  static showLogOutSheet(BuildContext context) {
+  static Future<void> showLogOutSheet(BuildContext context) {
     return showModalBottomSheet(
       context: context,
-      builder: ((context) {
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+      ),
+      builder: (context) {
         return Container(
           width: double.infinity,
-          height: 250.h,
+          padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
           decoration: BoxDecoration(
             color: Colors.white,
-
             borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 16.h),
-            child: Column(
-              children: [
-                Container(
-                  width: 38.w,
-                  height: 3.h,
-                  decoration: BoxDecoration(color: AppStyles.lightGreyColor),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 38.w,
+                height: 3.h,
+                decoration: BoxDecoration(
+                  color: AppStyles.lightGreyColor,
+                  borderRadius: BorderRadius.circular(2.r),
                 ),
-                SizedBox(height: 30.h),
-                Text(
-                  'Logout',
-                  style: AppStyles.largeText.copyWith(
-                    color: AppStyles.redColor,
-                    fontSize: 24.sp,
-                  ),
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                'Logout',
+                style: AppStyles.largeText.copyWith(
+                  color: AppStyles.redColor,
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.bold,
                 ),
-                SizedBox(height: 10.h),
-                const Divider(),
-                SizedBox(height: 15.h),
-                Text(
-                  'Are you sure want to logout?',
-                  style: AppStyles.largeText.copyWith(
-                    color: Colors.black,
-                    fontSize: 20.sp,
-                  ),
+              ),
+              SizedBox(height: 10.h),
+              Divider(thickness: 1, color: AppStyles.lightGreyColor),
+              SizedBox(height: 15.h),
+              Text(
+                'Are you sure you want to logout?',
+                textAlign: TextAlign.center,
+                style: AppStyles.mediumText.copyWith(
+                  color: Colors.black,
+                  fontSize: 18.sp,
                 ),
-                SizedBox(height: 20.h),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: CustomButton(
-                        text: 'Cancel',
-                        isOutline: true,
-                        onTap: () {},
-                      ),
+              ),
+              SizedBox(height: 20.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Cancel',
+                      isOutline: true,
+                      onTap: () => Navigator.pop(context),
                     ),
-                    SizedBox(width: 15.w),
-                    Expanded(
-                      child: CustomButton(
-                        text: 'Yes, Logout',
-                        isOutline: false,
-                        onTap: () {},
-                      ),
+                  ),
+                  SizedBox(width: 15.w),
+                  Expanded(
+                    child: CustomButton(
+                      text: 'Yes, Logout',
+                      isOutline: false,
+                      onTap: () {
+                        // Handle logout logic here
+                        Navigator.pop(context);
+                      },
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 10.h),
+            ],
           ),
         );
-      }),
+      },
     );
   }
 }
