@@ -1,6 +1,7 @@
 import 'package:financial_ai_mobile/controller/tab_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/ai_chat/ai_chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -46,7 +47,9 @@ class FloatingBottomNavBar extends StatelessWidget {
   Widget _buildNavItem(String icon, int index, String label) {
     return GestureDetector(
       onTap: () {
-        tabController.changeTabIndex(index);
+        index == 4
+            ? Get.to(AiChatScreen())
+            : tabController.changeTabIndex(index);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

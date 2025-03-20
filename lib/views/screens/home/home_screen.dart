@@ -1,9 +1,12 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/analyze/ai_expense_details_screen.dart';
+import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/expense_details/espense_details_screen.dart';
+import 'package:financial_ai_mobile/views/screens/notification/notification_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,94 +71,97 @@ class HomeScreen extends StatelessWidget {
                 child: financial_health(),
               ),
               SizedBox(height: 15.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white, // White background
-                    borderRadius: BorderRadius.circular(32.r),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 36,
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ), // More visible shadow
-                        offset: const Offset(
-                          0,
-                          4,
-                        ), // Slight offset for better effect
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15.w,
-                      vertical: 20.h,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Ai',
-                              style: AppStyles.mediumText.copyWith(
-                                color: AppStyles.primaryColor,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                            SizedBox(width: 5.w),
-                            Text(
-                              'Financial Alert!',
-                              style: AppStyles.mediumText.copyWith(
-                                color: Colors.black,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                          ],
+              InkWell(
+                onTap: () => Get.to(AiOptimizesScreen()),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white, // White background
+                      borderRadius: BorderRadius.circular(32.r),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 36,
+                          color: Colors.black.withOpacity(
+                            0.1,
+                          ), // More visible shadow
+                          offset: const Offset(
+                            0,
+                            4,
+                          ), // Slight offset for better effect
                         ),
-                        Text.rich(
-                          TextSpan(
-                            text: "You're Spending ",
-                            style: AppStyles.smallText.copyWith(
-                              color: Colors.grey,
-                              fontSize: 12.sp,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '93%',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold, // Make it bold
-                                  color:
-                                      Colors
-                                          .black, // You can adjust the color if needed
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15.w,
+                        vertical: 20.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Ai',
+                                style: AppStyles.mediumText.copyWith(
+                                  color: AppStyles.primaryColor,
+                                  fontSize: 20.sp,
                                 ),
                               ),
-                              TextSpan(
-                                text: ' of your income',
-                                style: AppStyles.smallText.copyWith(
-                                  color: Colors.grey,
-                                  fontSize: 12.sp,
+                              SizedBox(width: 5.w),
+                              Text(
+                                'Financial Alert!',
+                                style: AppStyles.mediumText.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 20.sp,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 20.h),
+                          Text.rich(
+                            TextSpan(
+                              text: "You're Spending ",
+                              style: AppStyles.smallText.copyWith(
+                                color: Colors.grey,
+                                fontSize: 12.sp,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '93%',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold, // Make it bold
+                                    color:
+                                        Colors
+                                            .black, // You can adjust the color if needed
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' of your income',
+                                  style: AppStyles.smallText.copyWith(
+                                    color: Colors.grey,
+                                    fontSize: 12.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 20.h),
 
-                        financial_item(
-                          iconPath: AppIcons.houseIcon,
-                          title: 'Housing',
-                          percents: 30,
-                        ),
-                        SizedBox(height: 5.h),
-                        financial_item(
-                          iconPath: AppIcons.foodIcon,
-                          title: 'Food & Groceries',
-                          percents: 10,
-                        ),
-                        SizedBox(height: 5.h),
-                      ],
+                          financial_item(
+                            iconPath: AppIcons.houseIcon,
+                            title: 'Housing',
+                            percents: 30,
+                          ),
+                          SizedBox(height: 5.h),
+                          financial_item(
+                            iconPath: AppIcons.foodIcon,
+                            title: 'Food & Groceries',
+                            percents: 10,
+                          ),
+                          SizedBox(height: 5.h),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -373,12 +379,15 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        SvgPicture.asset(
-          AppIcons.bellIcon,
-          width: 24.w,
-          height: 24.h,
-          color: Colors.black,
-          placeholderBuilder: (context) => const Icon(Icons.error),
+        InkWell(
+          onTap: ()=> Get.to(NotificationScreen()),
+          child: SvgPicture.asset(
+            AppIcons.bellIcon,
+            width: 24.w,
+            height: 24.h,
+            color: Colors.black,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         SizedBox(width: 10.w),
         GestureDetector(
