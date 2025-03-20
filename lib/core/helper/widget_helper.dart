@@ -1,4 +1,5 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
+import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,12 +46,17 @@ class WidgetHelper {
                   placeholderBuilder: (context) => const Icon(Icons.error),
                 ),
                 SizedBox(width: 10.w),
-                SvgPicture.asset(
-                  AppIcons.profileIcon,
-                  width: 24.w,
-                  height: 24.h,
-                  color: Colors.black,
-                  placeholderBuilder: (context) => const Icon(Icons.error),
+                GestureDetector(
+                  onTap: () {
+                    Get.toNamed(AppRoutes.profile);
+                  },
+                  child: SvgPicture.asset(
+                    AppIcons.profileIcon,
+                    width: 24.w,
+                    height: 24.h,
+                    color: Colors.black,
+                    placeholderBuilder: (context) => const Icon(Icons.error),
+                  ),
                 ),
                 SizedBox(width: 10.w),
               ]

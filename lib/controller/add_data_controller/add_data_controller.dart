@@ -1,4 +1,3 @@
-import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/income_section.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +14,7 @@ class AddDataController extends GetxController {
   Future<void> imageChoser() async {
     try {
       final pickedImages = await picker.pickMultiImage();
+      // ignore: unnecessary_null_comparison
       if (pickedImages != null) {
         images.addAll(pickedImages); // Add new images to the list
       }

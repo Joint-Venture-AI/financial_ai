@@ -1,4 +1,5 @@
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
+import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_screen.dart';
@@ -8,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -381,12 +381,17 @@ class HomeScreen extends StatelessWidget {
           placeholderBuilder: (context) => const Icon(Icons.error),
         ),
         SizedBox(width: 10.w),
-        SvgPicture.asset(
-          AppIcons.profileIcon,
-          width: 24.w,
-          height: 24.h,
-          color: Colors.black,
-          placeholderBuilder: (context) => const Icon(Icons.error),
+        GestureDetector(
+          onTap: () {
+            Get.toNamed(AppRoutes.profile);
+          },
+          child: SvgPicture.asset(
+            AppIcons.profileIcon,
+            width: 24.w,
+            height: 24.h,
+            color: Colors.black,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         SizedBox(width: 10.w),
       ],
