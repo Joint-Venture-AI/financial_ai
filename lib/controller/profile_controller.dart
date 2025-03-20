@@ -1,3 +1,25 @@
-import 'package:get/get_state_manager/get_state_manager.dart';
+import 'dart:io';
 
-class ProfileController extends GetxController {}
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
+
+class ProfileController extends GetxController {
+  Rx<File?> pickedImage = Rx<File?>(null);
+
+  final TextEditingController fullNameController = TextEditingController();
+  final TextEditingController nickNameController = TextEditingController();
+  final TextEditingController dobController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController addressController = TextEditingController();
+
+  Future pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    // Pick an image.
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      pickedImage.value = File(image.path);
+    }
+  }
+}

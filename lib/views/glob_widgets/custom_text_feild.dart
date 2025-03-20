@@ -33,46 +33,52 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      style: AppStyles.smallText.copyWith(color: Colors.black),
-      controller: widget.controller,
-      obscureText: _obscureText,
-      keyboardType: widget.type,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: Colors.grey[50],
-        hintText: widget.hintText,
-        hintStyle: AppStyles.smallText.copyWith(color: Colors.grey),
-        contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-        border: OutlineInputBorder(
-          borderSide: BorderSide(width: 1.w, color: AppStyles.lightGreyColor),
-          borderRadius: BorderRadius.circular(8.r),
-        ),
-        suffixIcon:
-            widget.isObsecure
-                ? Padding(
-                  padding: EdgeInsets.only(right: 10.w),
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _obscureText = !_obscureText;
-                      });
-                    },
-                    child: SizedBox(
-                      width: 16.w,
-                      height: 16.h,
-                      child: SvgPicture.asset(
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: AppStyles.lightGreyColor),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: TextField(
+        style: AppStyles.smallText.copyWith(color: Colors.black),
+        controller: widget.controller,
+        obscureText: _obscureText,
+        keyboardType: widget.type,
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: Colors.white,
+          hintText: widget.hintText,
+          hintStyle: AppStyles.smallText.copyWith(color: Colors.grey),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 12.h,
+          ),
+          border: InputBorder.none,
+          suffixIcon:
+              widget.isObsecure
+                  ? Padding(
+                    padding: EdgeInsets.only(right: 10.w),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                      child: SizedBox(
                         width: 16.w,
                         height: 16.h,
-                        _obscureText
-                            ? AppIcons.visibleIcon
-                            : AppIcons.inVisibleIcon,
-                        color: Colors.black,
+                        child: SvgPicture.asset(
+                          width: 16.w,
+                          height: 16.h,
+                          _obscureText
+                              ? AppIcons.visibleIcon
+                              : AppIcons.inVisibleIcon,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
-                  ),
-                )
-                : null,
+                  )
+                  : null,
+        ),
       ),
     );
   }
