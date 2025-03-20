@@ -1,12 +1,17 @@
+import 'dart:io';
+import 'package:financial_ai_mobile/controller/chat_controller.dart';
 import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AiChatScreen extends StatelessWidget {
-  const AiChatScreen({super.key});
+  AiChatScreen({super.key});
+  final ChatController chatController = Get.put(ChatController());
 
   @override
   Widget build(BuildContext context) {
@@ -59,41 +64,98 @@ class AiChatScreen extends StatelessWidget {
                 topLeft: Radius.circular(20.r),
               ),
             ),
-            child: Row(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                /// **Message Input Field**
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15.w),
-                    decoration: BoxDecoration(
-                      color: Color(0xffF3F3F3),
-                      borderRadius: BorderRadius.circular(20.r),
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        hintText: 'Message with AI Financial...',
-                        hintStyle: TextStyle(
-                          color: Colors.grey.shade500,
-                          fontSize: 14.sp,
+                /// **Selected Image (Aligned Center-Left)**
+                Obx(() {
+                  return chatController.selectedImage.value != null
+                      ? Padding(
+                        padding: EdgeInsets.only(bottom: 8.h),
+                        child: Row(
+                          children: [
+                            /// **Image Preview**
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  child: Image.file(
+                                    chatController.selectedImage.value!,
+                                    width: 50.w,
+                                    height: 50.w,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+
+                                /// **Delete Icon**
+                                Positioned(
+                                  top: -4,
+                                  right: -4,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      chatController.removeImage();
+                                    },
+                                    child: Container(
+                                      width: 18.w,
+                                      height: 18.h,
+                                      decoration: BoxDecoration(
+                                        color: Colors.red,
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.close,
+                                        size: 12.sp,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        border: InputBorder.none,
+                      )
+                      : SizedBox.shrink();
+                }),
+
+                /// **Message Input Field**
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        decoration: BoxDecoration(
+                          color: Color(0xffF3F3F3),
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Message with AI Financial...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 14.sp,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
 
-                SizedBox(width: 10.w),
+                    SizedBox(width: 10.w),
 
-                /// **Add Image Icon**
-                GestureDetector(
-                  onTap: () {
-                    // Handle image upload
-                  },
-                  child: SvgPicture.asset(
-                    AppIcons.addImage,
-                    width: 24.w,
-                    height: 24.h,
-                  ),
+                    /// **Add Image Icon (Click to Open Gallery)**
+                    GestureDetector(
+                      onTap: () async {
+                        await chatController.pickImage();
+                      },
+                      child: SvgPicture.asset(
+                        AppIcons.addImage,
+                        width: 24.w,
+                        height: 24.h,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -11,6 +11,8 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../notification/notification_screen.dart';
+
 class AnalyzeScreen extends StatelessWidget {
   AnalyzeScreen({super.key});
   final analyzeController = Get.put(AnalyzeController());
@@ -92,12 +94,15 @@ class AnalyzeScreen extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        SvgPicture.asset(
-          AppIcons.bellIcon,
-          width: 24.w,
-          height: 24.h,
-          color: Colors.black,
-          placeholderBuilder: (context) => const Icon(Icons.error),
+        InkWell(
+          onTap: ()=> Get.to(NotificationScreen()),
+          child: SvgPicture.asset(
+            AppIcons.bellIcon,
+            width: 24.w,
+            height: 24.h,
+            color: Colors.black,
+            placeholderBuilder: (context) => const Icon(Icons.error),
+          ),
         ),
         SizedBox(width: 10.w),
         SvgPicture.asset(
