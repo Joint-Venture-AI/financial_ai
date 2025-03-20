@@ -33,6 +33,11 @@ class AppIcons {
   static String cardIcon = '$iconsPath/card_icon.svg';
 
   static String myCashIcon = '$iconsPath/cash_icon.svg';
+
+  static String crownIcon = '$iconsPath/crown_icon.svg';
+  static String lockIcon = '$iconsPath/lock_icon.svg';
+  static String logOut = '$iconsPath/logout_icon.svg';
+
   static String verticalSend = '$iconsPath/vertical_send_icon.svg';
   static String transportIcon = '$iconsPath/transportation_icon.svg';
 
