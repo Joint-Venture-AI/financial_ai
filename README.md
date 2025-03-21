@@ -1,16 +1,17 @@
-# financial_ai_mobile
+# Financial ai mobile
 
-A new Flutter project.
+## Project Details
 
-## Getting Started
+![Finance AI Cover](assets/finance_ai_cover.png)
 
-This project is a starting point for a Flutter application.
+**Finance Tracking:** Users log income & expenses for real-time monitoring.
 
-A few resources to get you started if this is your first Flutter project:
+**AI Insights & Optimization:** AI analyzes data & provides financial tips.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**Seamless User Experience:** Designed an intuitive UI for easy navigation.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+**Notification Features:** The app includes notification capabilities.
+
+**Admin Panel Push Notifications:** Admins can send push notifications from the admin panel.
+
+**Collaboration:** Working with AI developers & backend team for smooth integration.
