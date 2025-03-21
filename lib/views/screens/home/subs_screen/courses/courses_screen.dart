@@ -68,7 +68,7 @@ class CoursesScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                   ),
                   child: Padding(
-                    padding: EdgeInsets.all(12),
+                    padding: EdgeInsets.all(16),
                     child: SvgPicture.asset(
                       AppIcons.searchIcon,
                       color: Colors.black,
