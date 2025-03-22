@@ -34,6 +34,7 @@ class AppIcons {
   static String beautyIcon = '$iconsPath/beauty_icon.svg';
   static String healthIcon = '$iconsPath/health_icon.svg';
   static String cardIcon = '$iconsPath/card_icon.svg';
+  static String sendIcon = '$iconsPath/send_icon.svg';
 
   static String myCashIcon = '$iconsPath/cash_icon.svg';
 

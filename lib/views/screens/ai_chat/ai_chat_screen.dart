@@ -155,6 +155,18 @@ class AiChatScreen extends StatelessWidget {
                         height: 24.h,
                       ),
                     ),
+
+                    SizedBox(width: 5.w),
+
+                    /// **Add Image Icon (Click to Open Gallery)**
+                    GestureDetector(
+                      onTap: () async {},
+                      child: SvgPicture.asset(
+                        AppIcons.sendIcon,
+                        width: 24.w,
+                        height: 24.h,
+                      ),
+                    ),
                   ],
                 ),
               ],
