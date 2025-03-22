@@ -128,7 +128,7 @@ class AddExpenseSection extends StatelessWidget {
                             flex: 2,
                             child: InkWell(
                               onTap:
-                                  () => BaseHelper.showIncomeBottomSheet(
+                                  () => BaseHelper.showExpenseBottomSheet(
                                     context: context,
                                   ),
                               child: TextField(
@@ -136,7 +136,7 @@ class AddExpenseSection extends StatelessWidget {
                                   enabled: false,
                                   hintText:
                                       addController
-                                          .selectedIncomeCategory
+                                          .selectedExpenseCategory
                                           .value,
                                 ),
                               ),

@@ -8,4 +8,8 @@ class AnalyzeController extends GetxController {
   var selectedTab = 'Income'.obs;
   var selectedIndexTab = 0.obs;
   var tabListWidget = [AnalyzeExpenseSection(), AnalyzeExpenseSection()].obs;
+
+  var showHousingDetails = false.obs;
+  var showTransportationDetails = false.obs;
+  var showFoodDetails = false.obs;
 }
