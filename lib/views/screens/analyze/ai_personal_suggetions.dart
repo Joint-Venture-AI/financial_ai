@@ -1,3 +1,4 @@
+import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -8,15 +9,11 @@ class AiPersonalSuggetions extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppStyles.bgColor,
-      appBar: AppBar(
-        title: const Text('AI Optimizes'),
-        leading: const BackButton(),
-        actions: const [
-          Icon(Icons.notifications_none),
-          SizedBox(width: 10),
-          Icon(Icons.account_circle_outlined),
-          SizedBox(width: 10),
-        ],
+      appBar: WidgetHelper.showAppBar(
+        isBack: true,
+        title: 'Ai Optimizes',
+        isCenter: false,
+        showActions: true,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),

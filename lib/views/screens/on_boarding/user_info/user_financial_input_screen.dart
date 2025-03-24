@@ -170,17 +170,21 @@ class UserFinancialInputScreen extends StatelessWidget {
 
   Widget _buildInputField(String hint) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
       height: 50.h,
+      padding: EdgeInsets.symmetric(horizontal: 12.w),
       decoration: BoxDecoration(
         color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(10.r),
       ),
-      child: Align(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          hint,
-          style: TextStyle(color: Colors.grey, fontSize: 14.sp),
+      child: Center(
+        child: TextField(
+          keyboardType: TextInputType.number,
+          style: TextStyle(fontSize: 14.sp, color: Colors.black),
+          decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: hint,
+            hintStyle: TextStyle(color: Colors.grey, fontSize: 14.sp),
+          ),
         ),
       ),
     );
