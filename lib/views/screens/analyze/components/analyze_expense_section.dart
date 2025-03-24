@@ -2,6 +2,7 @@ import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_expense_details_screen.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
+import 'package:financial_ai_mobile/views/screens/analyze/ai_personal_suggetions.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/components/custom_slider.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/components/expense_pie_chart.dart';
 import 'package:flutter/material.dart';
@@ -86,6 +87,71 @@ class AnalyzeExpenseSection extends StatelessWidget {
               ),
             ),
             SizedBox(height: 10.h),
+            InkWell(
+              onTap: () => Get.to(AiPersonalSuggetions()),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.r),
+                  gradient: LinearGradient(
+                    colors: [AppStyles.primaryColor, Color(0xff0A3431)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.w,
+                    vertical: 8.h,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              'AI Personal Suggestion',
+                              style: AppStyles.largeText.copyWith(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'AI will suggest how to spend your money & make a batter savings suggestion',
+                              style: AppStyles.smallText.copyWith(
+                                fontSize: 12.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 8.w),
+                      Container(
+                        width: 32.w,
+                        height: 32.h,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100.r),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: SvgPicture.asset(
+                            AppIcons.verticalSend,
+                            color: AppStyles.primaryColor,
+                            width: 16.w,
+                            height: 16.h,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10.h),
+
             InkWell(
               onTap: () => Get.to(AiOptimizesScreen()),
               borderRadius: BorderRadius.circular(32.r),
