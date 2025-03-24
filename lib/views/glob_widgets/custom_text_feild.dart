@@ -67,15 +67,34 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
             obscureText: _obscureText,
             keyboardType: widget.type,
             decoration: InputDecoration(
-              filled: true,
-              fillColor: Colors.white,
               hintText: widget.hintText,
               hintStyle: AppStyles.smallText.copyWith(color: Colors.grey),
               contentPadding: EdgeInsets.symmetric(
                 horizontal: 16.w,
                 vertical: 12.h,
               ),
-              border: InputBorder.none,
+              filled: true,
+              fillColor: Colors.white,
+              // 👇 Clear, visible border styles
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(
+                  color: AppStyles.lightGreyColor,
+                  width: 1.5,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.black, width: 1.5),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.red, width: 1.5),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.red, width: 1.5),
+              ),
               suffixIcon:
                   widget.isObsecure
                       ? GestureDetector(
