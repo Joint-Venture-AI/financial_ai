@@ -12,7 +12,9 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
 class VerifyOtpScreen extends StatelessWidget {
-  VerifyOtpScreen({super.key});
+  final String email;
+  final bool isForgetPass;
+  VerifyOtpScreen({super.key, required this.email, required this.isForgetPass});
   final authContrller = Get.find<AuthController>();
   @override
   Widget build(BuildContext context) {
@@ -35,7 +37,7 @@ class VerifyOtpScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
-                    'Code has been send to infogmaila@gmail.com',
+                    'Code has been send to $email',
                     style: AppStyles.smallText.copyWith(
                       color: Colors.black,
                       fontSize: 12.sp,
@@ -48,7 +50,7 @@ class VerifyOtpScreen extends StatelessWidget {
                       fieldHeight: 61.h,
                       fieldWidth: 71.w,
                       numberOfFields: 4,
-                      borderColor: Color(0xFF512DA8),
+                      borderColor: Color.fromARGB(255, 34, 31, 41),
                       //set to true to show as box or false to show as dash
                       showFieldAsBox: true,
                       //runs when a code is typed in
@@ -56,16 +58,44 @@ class VerifyOtpScreen extends StatelessWidget {
                         //handle validation or checks here
                       },
                       //runs when every textfield is filled
-                      onSubmit: (String verificationCode) {}, // end onSubmit
+                      onSubmit: (String verificationCode) async {
+                        authContrller.otpController.text = verificationCode;
+                        await authContrller.verifyOtp(
+                          email,
+                          verificationCode,
+                          isForgetPass,
+                        );
+                      }, // end onSubmit
                     ),
                   ),
                 ],
               ),
             ),
             SizedBox(height: 180.h),
-            GlobTextButton(
-              buttonText: 'Continue',
-              onTap: () => Get.to(PassSetScreen()),
+            SizedBox(
+              width: double.infinity,
+              child: Obx(() {
+                return ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                      authContrller.otpController.text.length == 4
+                          ? AppStyles.primaryColor
+                          : Color.fromARGB(255, 34, 31, 41),
+                    ),
+                  ),
+                  onPressed: () async {
+                    await authContrller.verifyOtp(
+                      email,
+                      authContrller.otpController.text.trim(),
+                      isForgetPass,
+                    );
+                  },
+                  child:
+                      authContrller.isLoading.value
+                          ? CupertinoActivityIndicator()
+                          : Text('Continue'),
+                );
+              }),
             ),
             SizedBox(height: 80.h),
           ],

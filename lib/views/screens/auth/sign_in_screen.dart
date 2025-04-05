@@ -1,4 +1,5 @@
 import 'package:financial_ai_mobile/controller/auth_controller.dart';
+import 'package:financial_ai_mobile/core/models/user_model.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
@@ -106,15 +107,31 @@ class SignInScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 24.h),
-                GlobTextButton(
-                  buttonText: 'SignIn',
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Form is valid, proceed with sign-in logic
-                      Get.to(UserChoseScreen()); // Example navigation
-                    } else
-                      return;
-                  },
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        final user = {
+                          'email': authController.emailController.text,
+                          'password': authController.passController.text,
+                        };
+                        await authController.signInUser(user);
+                      } else
+                        return;
+                    },
+                    child: Obx(() {
+                      return authController.isLoading.value
+                          ? const CupertinoActivityIndicator()
+                          : Text(
+                            'Login',
+                            style: AppStyles.smallText.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                            ),
+                          );
+                    }),
+                  ),
                 ),
                 SizedBox(height: 32.h),
                 Row(

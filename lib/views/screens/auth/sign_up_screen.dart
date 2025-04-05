@@ -1,7 +1,9 @@
 import 'package:financial_ai_mobile/controller/auth_controller.dart';
+import 'package:financial_ai_mobile/core/models/user_model.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:flutter/material.dart';
@@ -112,28 +114,42 @@ class SignUpScreen extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 24.h),
-                GlobTextButton(
-                  buttonText: 'SignUp',
-                  onTap: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Form is valid, proceed with sign-up logic
-                      if (authController.isChecked.value) {
-                        // Agreement to terms is checked
-                        // Implement signup logic here (e.g., API call)
-                        print('Signup successful!');
-                        Get.toNamed(AppRoutes.signIn); // Example navigation
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        // Form is valid, proceed with sign-up logic
+                        if (authController.isChecked.value) {
+                          // Create a new user object
+                          final user = UserModel(
+                            name: authController.nameController.text,
+                            email: authController.emailController.text,
+                            password: authController.passController.text,
+                          );
+                          // Call the createUser method from the controller
+                          await authController.createUser(user);
+                        } else {
+                          GlobalBase.showToast('Please check policy', true);
+                        }
                       } else {
-                        // Show an error if the agreement is not checked
-                        Get.snackbar(
-                          'Error',
-                          'Please agree to the processing of Personal data',
-                          snackPosition: SnackPosition.BOTTOM,
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                        );
+                        return;
                       }
-                    }
-                  },
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Obx(() {
+                        return authController.isLoading.value
+                            ? Center(child: CircularProgressIndicator())
+                            : Text(
+                              'Sign Up',
+                              style: AppStyles.smallText.copyWith(
+                                color: Colors.white,
+                              ),
+                            );
+                      }),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 32.h),
                 Row(

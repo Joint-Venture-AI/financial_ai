@@ -55,9 +55,26 @@ class ForgetPassScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 180.h),
-            GlobTextButton(
-              buttonText: 'Continue',
-              onTap: () => Get.to(VerifyOtpScreen()),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await authContrller.forgetPassword(
+                    authContrller.emailController.text.trim(),
+                  );
+                },
+                child: Obx(() {
+                  return authContrller.isLoading.value
+                      ? CupertinoActivityIndicator()
+                      : Text(
+                        'Send OTP',
+                        style: AppStyles.mediumText.copyWith(
+                          color: Colors.white,
+                          fontSize: 16.sp,
+                        ),
+                      );
+                }),
+              ),
             ),
             SizedBox(height: 80.h),
           ],

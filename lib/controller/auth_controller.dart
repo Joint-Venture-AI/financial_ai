@@ -1,10 +1,150 @@
+import 'package:financial_ai_mobile/core/models/user_model.dart';
+import 'package:financial_ai_mobile/core/services/api_services.dart';
+import 'package:financial_ai_mobile/core/services/pref_helper.dart';
+import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
+import 'package:financial_ai_mobile/core/utils/app_routes.dart';
+import 'package:financial_ai_mobile/core/utils/global_base.dart';
+import 'package:financial_ai_mobile/core/utils/utils.dart';
+import 'package:financial_ai_mobile/views/screens/auth/pass_set_screen.dart';
+import 'package:financial_ai_mobile/views/screens/auth/sign_in_screen.dart';
+import 'package:financial_ai_mobile/views/screens/auth/verify_otp_screen.dart';
+import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_chose_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'dart:convert';
 
 class AuthController extends GetxController {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passController = TextEditingController();
 
+  final newPassController = TextEditingController();
+  final rePassController = TextEditingController();
+
+  var isLoading = false.obs;
   var isChecked = false.obs;
+  var otpController = TextEditingController();
+
+  Future<void> createUser(UserModel user) async {
+    try {
+      isLoading.value = true;
+      final response = await ApiServices().postData(
+        ApiEndpoint.register,
+        user.toJson(),
+      );
+      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (data["success"] == true) {
+          isLoading.value = false;
+          GlobalBase.showToast('User Created Successfully', false);
+          Get.to(
+            VerifyOtpScreen(
+              email: emailController.text.trim(),
+              isForgetPass: false,
+            ),
+          );
+        }
+      }
+      throw Exception(data['message']);
+    } catch (e) {
+      throw Exception('Error creating user: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> signInUser(Map<String, dynamic> user) async {
+    try {
+      isLoading.value = true;
+      final response = await ApiServices().postData(ApiEndpoint.login, user);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (data["success"] == true) {
+          await PrefHelper.setString(Utils.TOKEN, data['data']['accessToken']);
+
+          GlobalBase.showToast('Login Successfully', false);
+          Get.to(UserChoseScreen());
+        } else {
+          GlobalBase.showToast(data['message'], true);
+        }
+      }
+    } catch (e) {
+      throw Exception('Error signing in user: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> forgetPassword(String email) async {
+    try {
+      isLoading.value = true;
+      final repsonse = await ApiServices().updateUser(
+        ApiEndpoint.forgotPassword,
+        {"email": email},
+        null,
+      );
+      final data = json.decode(repsonse.body);
+      if (repsonse.statusCode == 200) {
+        if (data["success"] == true) {
+          GlobalBase.showToast('Check your email for OTP', false);
+          Get.to(VerifyOtpScreen(email: email, isForgetPass: true));
+        } else {
+          GlobalBase.showToast(data['message'], true);
+        }
+      } else {
+        GlobalBase.showToast(data['message'], true);
+      }
+    } catch (e) {
+      throw Exception('Error sending forgot password request: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> verifyOtp(String email, String otp, bool isForget) async {
+    try {
+      final response = await ApiServices().updateUser(ApiEndpoint.verifyOtp, {
+        "email": email,
+        "otp": otp,
+      }, null);
+      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (data["success"] == true) {
+          print('>>>>>>>----Token--->>>>>>${data['data']['token']}');
+          await PrefHelper.setString(Utils.TOKEN, data['data']['token']);
+          GlobalBase.showToast('OTP verified successfully', false);
+          Get.to(isForget ? PassSetScreen() : UserChoseScreen());
+        } else {
+          GlobalBase.showToast(data['message'], true);
+        }
+      } else {
+        GlobalBase.showToast(data['message'], true);
+      }
+    } catch (e) {
+      throw Exception('Error verifying OTP: $e');
+    }
+  }
+
+  Future<void> resetPassword(Map<String, dynamic> passwords) async {
+    try {
+      final response = await ApiServices().updateUser(
+        ApiEndpoint.resetPassword,
+        passwords,
+        {'Authorization': 'Bearer ${await PrefHelper.getString(Utils.TOKEN)}'},
+      );
+      final data = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (data["success"] == true) {
+          GlobalBase.showToast('Password reset successfully', false);
+          Get.offAll(SignInScreen());
+        } else {
+          GlobalBase.showToast(data['message'], true);
+        }
+      } else {
+        GlobalBase.showToast(data['message'], true);
+      }
+    } catch (e) {
+      throw Exception('Error resetting password: $e');
+    }
+  }
 }

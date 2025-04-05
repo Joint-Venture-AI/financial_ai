@@ -50,7 +50,7 @@ class PassSetScreen extends StatelessWidget {
                         hintText: 'Enter your password',
                         type: TextInputType.text,
                         isObsecure: true,
-                        controller: authController.passController,
+                        controller: authController.newPassController,
                       ),
 
                       SizedBox(height: 10.h),
@@ -61,14 +61,34 @@ class PassSetScreen extends StatelessWidget {
                         hintText: 'Re-type your password',
                         type: TextInputType.text,
                         isObsecure: true,
-                        controller: authController.passController,
+                        controller: authController.rePassController,
                       ),
                     ],
                   ),
                 ),
                 SizedBox(height: 32.h),
-
-                GlobTextButton(buttonText: 'Continue', onTap: () {}),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await authController.resetPassword({
+                        "new_password": authController.newPassController.text,
+                        "confirm_password":
+                            authController.rePassController.text,
+                      });
+                    },
+                    child: Obx(() {
+                      return authController.isLoading.value
+                          ? const CupertinoActivityIndicator()
+                          : Text(
+                            'Set Password',
+                            style: AppStyles.mediumText.copyWith(
+                              color: Colors.white,
+                            ),
+                          );
+                    }),
+                  ),
+                ),
               ],
             ),
           ),
