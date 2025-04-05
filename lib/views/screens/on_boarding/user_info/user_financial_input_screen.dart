@@ -63,26 +63,6 @@ class UserFinancialInputScreen extends StatelessWidget {
 
             SizedBox(height: 16.h),
 
-            // Monthly Expense
-            Text(
-              'Monthly Expense',
-              style: AppStyles.mediumText.copyWith(fontSize: 14.sp),
-            ),
-            SizedBox(height: 6.h),
-            _buildInputField('Ex 30,000\$'),
-
-            SizedBox(height: 16.h),
-
-            // Current Balance
-            Text(
-              'Current Balance',
-              style: AppStyles.mediumText.copyWith(fontSize: 14.sp),
-            ),
-            SizedBox(height: 6.h),
-            _buildInputField('Ex 12,000\$'),
-
-            SizedBox(height: 16.h),
-
             // Fixed Expense Row
             Text(
               'Add Fixed Expense',
