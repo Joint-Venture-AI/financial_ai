@@ -8,6 +8,7 @@ import 'package:financial_ai_mobile/core/utils/utils.dart';
 import 'package:financial_ai_mobile/views/screens/auth/pass_set_screen.dart';
 import 'package:financial_ai_mobile/views/screens/auth/sign_in_screen.dart';
 import 'package:financial_ai_mobile/views/screens/auth/verify_otp_screen.dart';
+import 'package:financial_ai_mobile/views/screens/bottom_nav/tab_screen.dart';
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_chose_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
@@ -25,6 +26,37 @@ class AuthController extends GetxController {
   var isChecked = false.obs;
   var otpController = TextEditingController();
 
+  @override
+  onInit() {
+    super.onInit();
+    nameController.clear();
+    emailController.clear();
+    passController.clear();
+    newPassController.clear();
+    rePassController.clear();
+    otpController.clear();
+  }
+
+  onDispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passController.dispose();
+    newPassController.dispose();
+    rePassController.dispose();
+    otpController.dispose();
+  }
+
+  @override
+  void onClose() {
+    nameController.clear();
+    emailController.clear();
+    passController.clear();
+    newPassController.clear();
+    rePassController.clear();
+    otpController.clear();
+    super.onClose();
+  }
+
   Future<void> createUser(UserModel user) async {
     try {
       isLoading.value = true;
@@ -36,6 +68,9 @@ class AuthController extends GetxController {
       if (response.statusCode == 200) {
         if (data["success"] == true) {
           isLoading.value = false;
+
+          ///saving user email for further uses
+          await PrefHelper.setString(Utils.EMAIL, user.email);
           GlobalBase.showToast('User Created Successfully', false);
           Get.to(
             VerifyOtpScreen(
@@ -63,7 +98,7 @@ class AuthController extends GetxController {
           await PrefHelper.setString(Utils.TOKEN, data['data']['accessToken']);
 
           GlobalBase.showToast('Login Successfully', false);
-          Get.to(UserChoseScreen());
+          Get.offAll(MainScreen());
         } else {
           GlobalBase.showToast(data['message'], true);
         }
@@ -110,8 +145,12 @@ class AuthController extends GetxController {
       final data = json.decode(response.body);
       if (response.statusCode == 200) {
         if (data["success"] == true) {
-          print('>>>>>>>----Token--->>>>>>${data['data']['token']}');
-          await PrefHelper.setString(Utils.TOKEN, data['data']['token']);
+          final token = data['data']['token'];
+          if (token != null) {
+            printInfo(info: '>>>>>>>----Token--->>>>>>$token');
+            await PrefHelper.setString(Utils.TOKEN, token);
+          }
+
           GlobalBase.showToast('OTP verified successfully', false);
           Get.to(isForget ? PassSetScreen() : UserChoseScreen());
         } else {

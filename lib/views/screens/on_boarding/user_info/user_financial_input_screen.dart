@@ -59,7 +59,7 @@ class UserFinancialInputScreen extends StatelessWidget {
               style: AppStyles.mediumText.copyWith(fontSize: 14.sp),
             ),
             SizedBox(height: 6.h),
-            _buildInputField('Ex 50,000\$'),
+            _buildInputField('Enter your monthly income'),
 
             SizedBox(height: 16.h),
 
@@ -96,29 +96,87 @@ class UserFinancialInputScreen extends StatelessWidget {
               ),
             ),
 
-            SizedBox(height: 30.h),
+            SizedBox(height: 10.h),
+            Obx(() {
+              return welcomeController.fixedMonthAmounts.isNotEmpty
+                  ? SizedBox(
+                    height: 25.h,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: welcomeController.fixedMonthAmounts.length,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () async {
+                            welcomeController.fixedMonthAmounts.removeAt(index);
 
+                            welcomeController.fixedMonthAmounts.refresh();
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(right: 8.w),
+                            padding: EdgeInsets.symmetric(horizontal: 12.w),
+                            decoration: BoxDecoration(
+                              color: Colors.teal,
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${welcomeController.fixedMonthAmounts[index]['category']}: ${welcomeController.fixedMonthAmounts[index]['amount']}',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  Icon(
+                                    Icons.cancel,
+                                    color: Colors.white,
+                                    size: 18.sp,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                  : const SizedBox.shrink();
+            }),
+            SizedBox(height: 16.h),
             // Next Button
-            SizedBox(
-              width: double.infinity,
-              height: 50.h,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+            Obx(() {
+              return SizedBox(
+                width: double.infinity,
+                height: 50.h,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
                   ),
+                  onPressed: () async {
+                    await welcomeController.saveUserFixedData();
+                  },
+                  child:
+                      welcomeController.isLoading.value
+                          ? const CupertinoActivityIndicator(
+                            color: Colors.white,
+                          )
+                          : Text(
+                            'Next',
+                            style: AppStyles.mediumText.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                            ),
+                          ),
                 ),
-                onPressed: () => Get.to(MainScreen()),
-                child: Text(
-                  'Next',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
+              );
+            }),
 
             SizedBox(height: 20.h),
 
@@ -158,6 +216,7 @@ class UserFinancialInputScreen extends StatelessWidget {
       ),
       child: Center(
         child: TextField(
+          controller: welcomeController.monthlyIncomeController,
           keyboardType: TextInputType.number,
           style: TextStyle(fontSize: 14.sp, color: Colors.black),
           decoration: InputDecoration(

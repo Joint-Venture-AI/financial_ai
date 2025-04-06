@@ -7,4 +7,6 @@ class ApiEndpoint {
   static const String verifyOtp = '$baseUrl/auth/verify-user';
   static const String resetPassword = '$baseUrl/auth/reset-password';
   static const String updatePassword = '$baseUrl/auth/update-password';
+  static const String saveFixedData =
+      '$baseUrl/user-expense-plan/add-expense-plan';
 }

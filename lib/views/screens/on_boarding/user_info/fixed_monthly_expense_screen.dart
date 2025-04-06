@@ -1,9 +1,12 @@
+import 'package:financial_ai_mobile/controller/welcome_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class FixedMonthlyExpenseScreen extends StatelessWidget {
-  const FixedMonthlyExpenseScreen({super.key});
+  FixedMonthlyExpenseScreen({super.key});
+
+  final welcomeController = Get.find<WelcomeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +33,14 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 10.h),
+
             _buildCategoryGrid(context),
             const Spacer(),
             SizedBox(
               width: double.infinity,
               height: 50.h,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
                   shape: RoundedRectangleBorder(
@@ -211,7 +215,12 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 50.h,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    Get.find<WelcomeController>().fixedMonthAmounts.add({
+                      'category': category,
+                      'amount': _controller.text,
+                    });
+
                     // Handle save logic here
                     Get.back();
                   },

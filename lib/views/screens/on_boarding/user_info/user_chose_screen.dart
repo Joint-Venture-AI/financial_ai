@@ -1,5 +1,7 @@
 import 'package:financial_ai_mobile/controller/welcome_controller.dart';
+import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/core/utils/utils.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/components/user_chose_item.dart';
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_financial_input_screen.dart';
@@ -69,7 +71,18 @@ class UserChoseScreen extends StatelessWidget {
               SizedBox(height: 40.h),
               GlobTextButton(
                 buttonText: 'Next',
-                onTap: () => Get.to(UserFinancialInputScreen()),
+                onTap: () async {
+                  await PrefHelper.setString(
+                    Utils.PROFESSION,
+                    welcomeController.selectedUser.value,
+                  );
+                  printInfo(
+                    info:
+                        'User Profession: ${welcomeController.selectedUser.value}',
+                  );
+                  // Navigate to the next screen
+                  Get.to(() => UserFinancialInputScreen());
+                },
               ),
             ],
           ),

@@ -6,6 +6,7 @@ import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -140,7 +141,11 @@ class SignUpScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(8.0),
                       child: Obx(() {
                         return authController.isLoading.value
-                            ? Center(child: CircularProgressIndicator())
+                            ? Center(
+                              child: CupertinoActivityIndicator(
+                                color: Colors.white,
+                              ),
+                            )
                             : Text(
                               'Sign Up',
                               style: AppStyles.smallText.copyWith(
