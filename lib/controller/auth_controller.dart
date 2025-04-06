@@ -67,8 +67,6 @@ class AuthController extends GetxController {
       final data = json.decode(response.body);
       if (response.statusCode == 200) {
         if (data["success"] == true) {
-          isLoading.value = false;
-
           ///saving user email for further uses
           await PrefHelper.setString(Utils.EMAIL, user.email);
           GlobalBase.showToast('User Created Successfully', false);
@@ -145,6 +143,7 @@ class AuthController extends GetxController {
       final data = json.decode(response.body);
       if (response.statusCode == 200) {
         if (data["success"] == true) {
+          await PrefHelper.setString(Utils.EMAIL, email);
           final token = data['data']['token'];
           if (token != null) {
             printInfo(info: '>>>>>>>----Token--->>>>>>$token');

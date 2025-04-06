@@ -9,4 +9,7 @@ class ApiEndpoint {
   static const String updatePassword = '$baseUrl/auth/update-password';
   static const String saveFixedData =
       '$baseUrl/user-expense-plan/add-expense-plan';
+
+  static const String getPresentMonth =
+      '$baseUrl/finance-report/get-present-month-summary';
 }

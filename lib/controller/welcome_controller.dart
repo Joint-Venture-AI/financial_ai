@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:financial_ai_mobile/views/screens/auth/sign_in_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:financial_ai_mobile/core/services/api_services.dart';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
@@ -67,7 +68,7 @@ class WelcomeController extends GetxController {
       // }
 
       final userData = {
-        "userEmail": "150@gmail.com",
+        "userEmail": await PrefHelper.getString(Utils.EMAIL),
         "data": {
           "balance": {
             "income": int.tryParse(monthlyIncomeController.text.trim()) ?? 0,
@@ -90,7 +91,7 @@ class WelcomeController extends GetxController {
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['success'] == true) {
         GlobalBase.showToast('Data saved successfully', false);
-        Get.offAll(() => MainScreen(), transition: Transition.leftToRight);
+        Get.offAll(() => SignInScreen(), transition: Transition.leftToRight);
       } else {
         GlobalBase.showToast(data['message'] ?? 'Server error', true);
       }

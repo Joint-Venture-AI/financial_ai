@@ -1,3 +1,4 @@
+import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
@@ -16,7 +17,8 @@ import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  HomeScreen({super.key});
+  final homeController = Get.find<HomeController>();
 
   @override
   Widget build(BuildContext context) {
