@@ -73,6 +73,7 @@ class ApiServices {
   Future<http.Response> getUserData(String url) async {
     try {
       final token = await PrefHelper.getString(Utils.TOKEN);
+      print('====> $token');
 
       if (token == null || token.isEmpty) {
         print('====> $token');
@@ -82,7 +83,7 @@ class ApiServices {
 
       final request = await http.get(
         Uri.parse(url),
-        headers: {'Authorization': token},
+        headers: {'Authorization': 'Bearer $token'},
       );
       final data = json.decode(request.body);
       if (request.statusCode == 200) {

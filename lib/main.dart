@@ -1,6 +1,7 @@
 import 'package:financial_ai_mobile/core/utils/app_bindings.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/themes/default_theme.dart';
+import 'package:financial_ai_mobile/views/screens/bottom_nav/tab_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           theme: DefaultTheme.theme,
           initialRoute: AppRoutes.onBoarding,
+          // home: MainScreen(),
           initialBinding: AppBindings.bindings,
           getPages: AppRoutes.pages,
         );

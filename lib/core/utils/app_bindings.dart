@@ -17,6 +17,5 @@ class AppBindings {
     Get.lazyPut(() => AddDataController(), fenix: true);
     Get.lazyPut(() => AnalyzeController(), fenix: true);
     Get.lazyPut(() => ProfileController(), fenix: true);
-    Get.lazyPut(() => HomeController(), fenix: true);
   });
 }

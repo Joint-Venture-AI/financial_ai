@@ -12,4 +12,5 @@ class ApiEndpoint {
 
   static const String getPresentMonth =
       '$baseUrl/finance-report/get-present-month-summary';
+  static const String getCoursesList = '$baseUrl/course?limit=5';
 }
