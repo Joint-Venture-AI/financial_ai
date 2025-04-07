@@ -15,6 +15,8 @@ class GlobalBase {
         color: Colors.white,
       ),
       duration: Duration(seconds: 2),
+      snackPosition: SnackPosition.BOTTOM,
+      margin: EdgeInsets.all(16),
     );
   }
 }
