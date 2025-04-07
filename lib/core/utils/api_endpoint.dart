@@ -1,4 +1,6 @@
 class ApiEndpoint {
+  static const String mainBase = 'http://192.168.10.18:5000';
+
   static const String baseUrl = 'http://192.168.10.18:5000/api';
 
   static const String login = '$baseUrl/auth/login';
