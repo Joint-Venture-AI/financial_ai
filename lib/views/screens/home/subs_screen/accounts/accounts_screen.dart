@@ -1,4 +1,5 @@
 import 'package:financial_ai_mobile/controller/home/accounts_controller.dart';
+import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart' show AppStyles;
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/expense_section.dart';
@@ -12,7 +13,7 @@ class AccountsScreen extends StatelessWidget {
   AccountsScreen({super.key});
 
   final accountController = Get.put(AccountsController());
-
+  final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,7 +35,7 @@ class AccountsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 15.h),
-                header_body_section(),
+                headerBodySection(homeController),
                 SizedBox(height: 15.h),
                 // Removed the empty Container
                 SizedBox(height: 20.h),
@@ -101,172 +102,178 @@ class AccountsScreen extends StatelessWidget {
     );
   }
 
-  Widget header_body_section() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white, // White background
-        borderRadius: BorderRadius.circular(32.r),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 36,
-            color: Colors.black.withOpacity(0.1), // More visible shadow
-            offset: const Offset(0, 4), // Slight offset for better effect
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(28.r),
-                gradient: LinearGradient(
-                  colors: [
-                    AppStyles.primaryColor ?? Colors.blue,
-                    AppStyles.primarySecondColor ?? Colors.green,
-                  ],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'USD',
-                      style:
-                          AppStyles.smallText?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16.sp,
-                          ) ??
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      'Available Balance',
-                      style:
-                          AppStyles.smallText?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.sp,
-                          ) ??
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      '\$10,000',
-                      style:
-                          AppStyles.smallText?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 40.sp,
-                          ) ??
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 40,
-                          ),
-                    ),
-                    SizedBox(height: 6.h),
-                    Text(
-                      'Today (-\$140)',
-                      style:
-                          AppStyles.smallText?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14.sp,
-                          ) ??
-                          const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w400,
-                            fontSize: 14,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 10.h),
-            SizedBox(
-              height: 60.h,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Income',
-                          style:
-                              AppStyles.smallText?.copyWith(
-                                color: Colors.black,
-                              ) ??
-                              const TextStyle(color: Colors.black),
-                        ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          '\$32,000.00',
-                          style:
-                              AppStyles.smallText?.copyWith(
-                                color: Colors.green,
-                                fontWeight: FontWeight.w600,
-                              ) ??
-                              const TextStyle(color: Colors.green),
-                        ),
-                      ],
-                    ),
-                  ),
-                  VerticalDivider(
-                    width: 1,
-                    thickness: 1,
-                    color: AppStyles.lightGreyColor ?? Colors.grey,
-                  ),
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Expense',
-                          style:
-                              AppStyles.smallText?.copyWith(
-                                color: Colors.black,
-                              ) ??
-                              const TextStyle(color: Colors.black),
-                        ),
-                        SizedBox(height: 5.h),
-                        Text(
-                          '\$22,000.00',
-                          style:
-                              AppStyles.smallText?.copyWith(
-                                color: Colors.red,
-                                fontWeight: FontWeight.w600,
-                              ) ??
-                              const TextStyle(color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+  Widget headerBodySection(HomeController homeController) {
+    return Obx(() {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(32.r),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 36,
+              color: Colors.black.withOpacity(0.1),
+              offset: const Offset(0, 4),
             ),
           ],
         ),
-      ),
-    );
+        child: Padding(
+          padding: EdgeInsets.all(8.r),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28.r),
+                  gradient: LinearGradient(
+                    colors: [
+                      AppStyles.primaryColor ?? Colors.blue,
+                      AppStyles.primarySecondColor ?? Colors.green,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(15.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'USD',
+                        style:
+                            AppStyles.smallText?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ) ??
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16.sp,
+                            ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'Available Balance',
+                        style:
+                            AppStyles.smallText?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ) ??
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        '\$${homeController.availableMoney.value.toStringAsFixed(2)}',
+                        style:
+                            AppStyles.smallText?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 40.sp,
+                            ) ??
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 40.sp,
+                            ),
+                      ),
+                      SizedBox(height: 6.h),
+                      Text(
+                        'Today (-\$${homeController.todayExpense.value.toStringAsFixed(2)})',
+                        style:
+                            AppStyles.smallText?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ) ??
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14.sp,
+                            ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 10.h),
+              SizedBox(
+                height: 60.h,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Income',
+                            style:
+                                AppStyles.smallText?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                ) ??
+                                TextStyle(color: Colors.black, fontSize: 14.sp),
+                          ),
+                          SizedBox(height: 5.h),
+                          Text(
+                            '\$${homeController.totalIncome.value.toStringAsFixed(2)}',
+                            style:
+                                AppStyles.smallText?.copyWith(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                ) ??
+                                TextStyle(color: Colors.green, fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+                    VerticalDivider(
+                      width: 1,
+                      thickness: 1,
+                      color: AppStyles.lightGreyColor ?? Colors.grey,
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Expense',
+                            style:
+                                AppStyles.smallText?.copyWith(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                ) ??
+                                TextStyle(color: Colors.black, fontSize: 14.sp),
+                          ),
+                          SizedBox(height: 5.h),
+                          Text(
+                            '\$${homeController.totalExpense.value.toStringAsFixed(2)}',
+                            style:
+                                AppStyles.smallText?.copyWith(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                ) ??
+                                TextStyle(color: Colors.red, fontSize: 14.sp),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
   }
 }

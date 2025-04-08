@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 import 'package:financial_ai_mobile/core/models/courses_model.dart';
+import 'package:financial_ai_mobile/core/models/notifications_model.dart';
 import 'package:financial_ai_mobile/core/services/api_services.dart';
 import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
+import 'package:financial_ai_mobile/core/utils/global_base.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,11 +22,14 @@ class HomeController extends GetxController {
 
   RxList<Course> coursesModel = <Course>[].obs;
 
+  RxList<NotificationModel> notifications = <NotificationModel>[].obs;
+
   @override
   void onInit() async {
     super.onInit();
     await getUserPresentMonthData();
     await getCourses();
+    await getAllNotification();
   }
 
   Future<void> getUserPresentMonthData() async {
@@ -84,6 +90,29 @@ class HomeController extends GetxController {
   Future<void> launchCourseUrl(lunchUrl) async {
     if (!await launchUrl(Uri.parse(lunchUrl))) {
       throw Exception('Could not launch $lunchUrl');
+    }
+  }
+
+  Future<void> getAllNotification() async {
+    try {
+      isLoading.value = true;
+      final request = await ApiServices().getUserData(
+        ApiEndpoint.getNotification,
+      );
+      final data = jsonDecode(request.body);
+      for (var notification in data['data']) {
+        notifications.add(NotificationModel.fromJson(notification));
+      }
+
+      if (request.statusCode == 200 && data['message']) {
+        printInfo(info: 'Got all the notification');
+      }
+    } catch (e) {
+      printInfo(info: 'failed to get the notification');
+
+      printError(info: 'error $e');
+    } finally {
+      isLoading.value = false;
     }
   }
 }
