@@ -1,16 +1,17 @@
+import 'dart:io';
+
 import 'package:financial_ai_mobile/controller/add_data_controller/add_data_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/gradiunt_global_button.dart';
 import 'package:financial_ai_mobile/views/screens/add/components/base_helper.dart';
 import 'package:financial_ai_mobile/views/screens/add/components/image_chosed_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 
 class AddExpenseSection extends StatelessWidget {
   AddExpenseSection({super.key});
@@ -85,6 +86,8 @@ class AddExpenseSection extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: TextField(
+                            controller: addController.amountController,
+                            keyboardType: TextInputType.number,
                             decoration: InputDecoration(hintText: 'Amount'),
                           ),
                         ),
@@ -202,6 +205,8 @@ class AddExpenseSection extends StatelessWidget {
                         Expanded(
                           flex: 2,
                           child: TextField(
+                            controller: addController.noteController,
+                            keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               hintText: 'Tag your cost',
                             ),
@@ -291,6 +296,8 @@ class AddExpenseSection extends StatelessWidget {
                     Divider(color: AppStyles.lightGreyColor, height: 1),
                     SizedBox(height: 8.h),
                     TextField(
+                      controller: addController.descriptionController,
+                      maxLines: 3,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Add something you want',
@@ -305,7 +312,26 @@ class AddExpenseSection extends StatelessWidget {
               ),
             ),
             SizedBox(height: 15.h),
-            GradiuntGlobalButton(text: 'Save', onTap: () {}),
+            Obx(() {
+              return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await addController.addIncomeData(false);
+                  },
+                  child:
+                      addController.isLoading.value
+                          ? CupertinoActivityIndicator(color: Colors.white)
+                          : Text(
+                            'Add Expense',
+                            style: AppStyles.mediumText.copyWith(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                            ),
+                          ),
+                ),
+              );
+            }),
           ],
         ),
       ),
