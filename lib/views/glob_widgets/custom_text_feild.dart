@@ -9,6 +9,7 @@ class CustomTextFeild extends StatefulWidget {
   final TextEditingController controller;
   final bool isObsecure;
   final TextInputType type;
+  final bool? isEnabled;
   final String? Function(String?)? validator; // Add validator function
   const CustomTextFeild({
     super.key,
@@ -16,7 +17,8 @@ class CustomTextFeild extends StatefulWidget {
     required this.isObsecure,
     required this.type,
     required this.controller,
-    this.validator, // Make validator optional
+    this.validator,
+    this.isEnabled, // Make validator optional
   });
 
   @override
@@ -62,6 +64,7 @@ class _CustomTextFeildState extends State<CustomTextFeild> {
             borderRadius: BorderRadius.circular(8),
           ),
           child: TextField(
+            enabled: widget.isEnabled ?? true,
             style: AppStyles.smallText.copyWith(color: Colors.black),
             controller: widget.controller,
             obscureText: _obscureText,

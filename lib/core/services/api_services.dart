@@ -47,6 +47,8 @@ class ApiServices {
       );
       final data = json.decode(request.body);
       if (request.statusCode == 200) {
+        GlobalBase.showToast('${data['message']}', false);
+
         return request;
       } else if (request.statusCode == 400) {
         GlobalBase.showToast('Bad request: ${data['message']}', true);

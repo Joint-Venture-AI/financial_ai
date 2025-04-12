@@ -9,6 +9,7 @@ import 'package:financial_ai_mobile/views/screens/profie/component/profile_heade
 
 import 'package:financial_ai_mobile/views/screens/profie/upgrade/components/upgrade_widget_helper.dart';
 import 'package:financial_ai_mobile/views/screens/profie/upgrade/upgrade_sceen.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,102 +29,109 @@ class ProfileScreen extends StatelessWidget {
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-          child: Column(
-            children: [
-              // ========>>>>>>> Image selector <<<<<<<<==========
-              Obx(() {
-                final image = controller.pickedImage.value;
-                return Stack(
+          child: Obx(() {
+            return controller.isLoading.value
+                ? SizedBox(child: CupertinoActivityIndicator())
+                : Column(
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        controller.pickImage();
+                    // ========>>>>>>> Image selector <<<<<<<<==========
+                    InkWell(
+                      onTap: () async {
+                        await controller.pickImage();
                       },
-                      child: CircleAvatar(
-                        radius: 70,
+                      child: Obx(() {
+                        final pickedImage = controller.pickedImage.value;
+                        final profileImage =
+                            controller.profileModel.value.image ??
+                            'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Placeholder_view_vector.svg/800px-Placeholder_view_vector.svg.png';
 
-                        child:
-                            image != null
-                                ? ClipRRect(
-                                  borderRadius: BorderRadius.circular(100),
-                                  child: Image.file(
-                                    image,
-                                    fit: BoxFit.cover,
-                                    height: 140.h,
-                                    width: 140.w,
-                                  ),
-                                )
-                                : Image.asset(
-                                  "assets/images/profile_image.png",
+                        return Stack(
+                          children: [
+                            SizedBox(
+                              width: 100.w,
+                              height: 100.h,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(50.r),
+                                child:
+                                    pickedImage != null
+                                        ? Image.file(
+                                          pickedImage,
+                                          fit: BoxFit.cover,
+                                        )
+                                        : Image.network(
+                                          profileImage,
+                                          fit: BoxFit.cover,
+                                        ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 5.w,
+                                  vertical: 5.h,
                                 ),
+                                decoration: BoxDecoration(
+                                  color: AppStyles.primaryColor,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(Icons.edit, color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                    // ========>>>>>>> Name Email <<<<<<<<==========
+                    Text(
+                      controller.profileModel.value.fullName!,
+                      style: AppStyles.mediumText.copyWith(
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 5.w,
-                          vertical: 5.h,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppStyles.primaryColor,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Icon(Icons.edit, color: Colors.white),
+                    Text(
+                      controller.profileModel.value.email!,
+                      style: AppStyles.mediumText.copyWith(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w500,
+                        color: AppStyles.greyColor,
                       ),
+                    ),
+                    Divider(),
+                    // ========>>>>>>> Profile Options <<<<<<<<==========
+                    _buildProfileOption(
+                      icon: Icon(Icons.person_3_outlined),
+                      title: "Edit Profile",
+                      ontap: () {
+                        Get.toNamed(AppRoutes.editProfile);
+                      },
+                    ),
+                    _buildProfileOption(
+                      icon: SvgPicture.asset(AppIcons.crownIcon),
+                      title: "Upgrade Plan",
+                      ontap: () => Get.to(UpgradeScreen()),
+                    ),
+                    _buildProfileOption(
+                      icon: SvgPicture.asset(AppIcons.lockIcon),
+                      title: "Privacy Policy",
+                      ontap: () {
+                        Get.toNamed(AppRoutes.privacyPolicy);
+                      },
+                    ),
+                    _buildProfileOption(
+                      icon: SvgPicture.asset(
+                        AppIcons.logOut,
+                        color: AppStyles.redColor,
+                      ),
+                      title: "Logout",
+                      hasLast: false,
+                      ontap: () => UpgradeWidgetHelper.showLogOutSheet(context),
                     ),
                   ],
                 );
-              }),
-              // ========>>>>>>> Name Email <<<<<<<<==========
-              Text(
-                "Daniel Austin",
-                style: AppStyles.mediumText.copyWith(
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(
-                "daniel_austin@yourdomain.com",
-                style: AppStyles.mediumText.copyWith(
-                  fontSize: 14.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppStyles.greyColor,
-                ),
-              ),
-              Divider(),
-              // ========>>>>>>> Profile Options <<<<<<<<==========
-              _buildProfileOption(
-                icon: Icon(Icons.person_3_outlined),
-                title: "Edit Profile",
-                ontap: () {
-                  Get.toNamed(AppRoutes.editProfile);
-                },
-              ),
-              _buildProfileOption(
-                icon: SvgPicture.asset(AppIcons.crownIcon),
-                title: "Upgrade Plan",
-                ontap: () => Get.to(UpgradeScreen()),
-              ),
-              _buildProfileOption(
-                icon: SvgPicture.asset(AppIcons.lockIcon),
-                title: "Privacy Policy",
-                ontap: () {
-                  Get.toNamed(AppRoutes.privacyPolicy);
-                },
-              ),
-              _buildProfileOption(
-                icon: SvgPicture.asset(
-                  AppIcons.logOut,
-                  color: AppStyles.redColor,
-                ),
-                title: "Logout",
-                hasLast: false,
-                ontap: () => UpgradeWidgetHelper.showLogOutSheet(context),
-              ),
-            ],
-          ),
+          }),
         ),
       ),
     );

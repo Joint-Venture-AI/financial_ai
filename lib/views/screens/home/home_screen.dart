@@ -2,8 +2,6 @@ import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
-import 'package:financial_ai_mobile/views/screens/analyze/ai_expense_details_screen.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_item.dart';
@@ -26,7 +24,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppStyles.bgColor ?? Colors.white,
+        backgroundColor: AppStyles.bgColor,
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -505,8 +503,8 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(28.r),
                   gradient: LinearGradient(
                     colors: [
-                      AppStyles.primaryColor ?? Colors.blue,
-                      AppStyles.primarySecondColor ?? Colors.green,
+                      AppStyles.primaryColor,
+                      AppStyles.primarySecondColor,
                     ],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,

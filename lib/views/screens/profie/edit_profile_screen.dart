@@ -1,8 +1,10 @@
 import 'package:financial_ai_mobile/controller/profile_controller.dart';
+import 'package:financial_ai_mobile/core/models/profile_model.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/screens/profie/component/custom_date_input.dart';
 import 'package:financial_ai_mobile/views/screens/profie/component/profile_header.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -30,7 +32,7 @@ class EditProfileScreen extends StatelessWidget {
                   Text("Full Name", style: AppStyles.mediumText),
                   SizedBox(height: 8.h),
                   CustomTextFeild(
-                    hintText: "Enter your Full Name...",
+                    hintText: controller.profileModel.value.fullName!,
                     isObsecure: false,
                     type: TextInputType.text,
                     controller: controller.fullNameController,
@@ -44,7 +46,7 @@ class EditProfileScreen extends StatelessWidget {
                   Text("Nickname", style: AppStyles.mediumText),
                   SizedBox(height: 8.h),
                   CustomTextFeild(
-                    hintText: "Enter your Nickname...",
+                    hintText: controller.profileModel.value.nickname!,
                     isObsecure: false,
                     type: TextInputType.text,
                     controller: controller.nickNameController,
@@ -60,24 +62,24 @@ class EditProfileScreen extends StatelessWidget {
                   DateInput(
                     dateController: controller.dobController,
                     icon: null,
-                    hintText: "Date of Birth",
+                    hintText: controller.profileModel.value.dateOfBirth!,
                   ),
                 ],
               ),
-              // =========>>>>>>>> Email <<<<<<<<==========
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Email", style: AppStyles.mediumText),
-                  SizedBox(height: 8.h),
-                  CustomTextFeild(
-                    hintText: "Enter your Email...",
-                    isObsecure: false,
-                    type: TextInputType.text,
-                    controller: controller.emailController,
-                  ),
-                ],
-              ),
+              // // =========>>>>>>>> Email <<<<<<<<==========
+              // Column(
+              //   crossAxisAlignment: CrossAxisAlignment.start,
+              //   children: [
+              //     Text("Email", style: AppStyles.mediumText),
+              //     SizedBox(height: 8.h),
+              //     CustomTextFeild(
+              //       hintText: controller.profileModel.value.email!,
+              //       isObsecure: false,
+              //       type: TextInputType.text,
+              //       controller: controller.emailController,
+              //     ),
+              //   ],
+              // ),
               // =========>>>>>>>> Phone <<<<<<<<==========
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -85,7 +87,7 @@ class EditProfileScreen extends StatelessWidget {
                   Text("Phone", style: AppStyles.mediumText),
                   SizedBox(height: 8.h),
                   CustomTextFeild(
-                    hintText: "Enter your Phone...",
+                    hintText: controller.profileModel.value.phone!,
                     isObsecure: false,
                     type: TextInputType.text,
                     controller: controller.phoneController,
@@ -99,7 +101,7 @@ class EditProfileScreen extends StatelessWidget {
                   Text("Address", style: AppStyles.mediumText),
                   SizedBox(height: 8.h),
                   CustomTextFeild(
-                    hintText: "Enter your Address...",
+                    hintText: controller.profileModel.value.address!,
                     isObsecure: false,
                     type: TextInputType.text,
                     controller: controller.addressController,
@@ -112,10 +114,25 @@ class EditProfileScreen extends StatelessWidget {
                 child: SizedBox(
                   height: 56,
                   width: double.infinity,
-                  child: ElevatedButton(
-                    child: Text("Update"),
-                    onPressed: () {},
-                  ),
+                  child: Obx(() {
+                    return ElevatedButton(
+                      child:
+                          controller.isLoading.value
+                              ? CupertinoActivityIndicator()
+                              : Text("Update"),
+                      onPressed: () async {
+                        final data = ProfileModel(
+                          fullName: controller.fullNameController.text,
+                          nickname: controller.nickNameController.text,
+                          dateOfBirth: controller.dobController.text,
+
+                          phone: controller.phoneController.text,
+                          address: controller.addressController.text,
+                        );
+                        await controller.updateProfile(data);
+                      },
+                    );
+                  }),
                 ),
               ),
             ],

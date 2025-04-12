@@ -19,4 +19,8 @@ class ApiEndpoint {
   static const String addIncomeData = '$baseUrl/income/add-income';
   static const String addExpenseData = '$baseUrl/expense/add-expense';
   static const String getNotification = '$baseUrl/notifications';
+
+  static const String getProfile = '$baseUrl/auth/me';
+  static const String updateProfile =
+      '$baseUrl/user-profile/update-profile-data';
 }
