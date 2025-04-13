@@ -16,6 +16,7 @@ class AccountsTabController extends GetxController {
   var selectedAccountTab = 'All'.obs;
   var selectedTimeScheduleTab = 'Daily'.obs;
 
+  ///get usre all account data
   Future<void> getAccountsData(String endPoint) async {
     try {
       final response = await ApiServices().getUserData(endPoint);

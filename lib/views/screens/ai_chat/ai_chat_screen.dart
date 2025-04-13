@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:financial_ai_mobile/controller/chat_controller.dart';
 import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/models/chat_model.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_markdown/flutter_markdown.dart' as md;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:shimmer/shimmer.dart';
 
 class AiChatScreen extends StatelessWidget {
