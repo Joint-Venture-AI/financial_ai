@@ -66,7 +66,7 @@ class ChatController extends GetxController {
         chatData.add(aiMessage);
       }
 
-      GlobalBase.showToast(responseBody['message'], true);
+      // GlobalBase.showToast(responseBody['message'], true);
     } catch (e) {
       throw Exception('error: $e');
     } finally {

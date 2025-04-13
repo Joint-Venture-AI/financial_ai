@@ -5,6 +5,7 @@ import 'package:financial_ai_mobile/core/models/chat_model.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart' as md;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -91,7 +92,6 @@ class AiChatScreen extends StatelessWidget {
   Widget _buildChatList() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 24.w),
-
       child: ListView.builder(
         itemCount: chatController.chatData.length,
         itemBuilder: (context, index) {
@@ -117,15 +117,25 @@ class AiChatScreen extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text(
-              message.message,
-              style: TextStyle(
-                color: message.isSender ? Colors.white : Colors.black,
-              ),
-            ),
+            child:
+                message.isSender
+                    ? Text(
+                      message.message,
+                      style: TextStyle(
+                        color: message.isSender ? Colors.white : Colors.black,
+                      ),
+                    )
+                    : _buildMarkdownMessage(message),
           ),
         ),
       ),
+    );
+  }
+
+  // Widget for handling Markdown message content
+  Widget _buildMarkdownMessage(ChatModel message) {
+    return Flexible(
+      child: md.MarkdownBody(selectable: true, data: message.message),
     );
   }
 
