@@ -15,4 +15,13 @@ class AccountsTabController extends GetxController {
 
   var selectedAccountTab = 'All'.obs;
   var selectedTimeScheduleTab = 'Daily'.obs;
+
+  Future<void> getAccountsData(String endPoint) async {
+    try {
+      final response = await ApiServices().getUserData(endPoint);
+      final data = jsonDecode(response.body);
+    } catch (e) {
+      throw Exception('error $e');
+    }
+  }
 }

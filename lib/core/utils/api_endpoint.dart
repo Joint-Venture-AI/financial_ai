@@ -27,4 +27,10 @@ class ApiEndpoint {
       '$baseUrl/income/get-income-data-by-date';
   static const String getDailyExpense =
       '$baseUrl/expense/get-expense-data-by-date';
+
+  static const getDaily = '$baseUrl/finance-report/get-daily-summary?page=1';
+  static const getWeek = '$baseUrl/finance-report/get-weekly-summary';
+  static const getMonthly = '$baseUrl/finance-report/get-present-month-summary';
+
+  static const chat = '$baseUrl/finance-report/get-finanse-data-from-ai';
 }
