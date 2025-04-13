@@ -1,4 +1,4 @@
-import 'package:financial_ai_mobile/controller/accounts/accounts_controller.dart';
+import 'package:financial_ai_mobile/controller/accounts/accounts_tab_controller.dart';
 import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';

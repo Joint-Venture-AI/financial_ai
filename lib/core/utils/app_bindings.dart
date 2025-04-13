@@ -1,3 +1,4 @@
+import 'package:financial_ai_mobile/controller/accounts/accounts_tab_controller.dart';
 import 'package:financial_ai_mobile/controller/add_data_controller/add_data_controller.dart';
 import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
 import 'package:financial_ai_mobile/controller/auth_controller.dart';
@@ -17,5 +18,6 @@ class AppBindings {
     Get.lazyPut(() => AddDataController(), fenix: true);
     Get.lazyPut(() => AnalyzeController(), fenix: true);
     Get.lazyPut(() => ProfileController(), fenix: true);
+    Get.lazyPut(() => AccountsTabController(), fenix: true);
   });
 }

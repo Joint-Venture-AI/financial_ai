@@ -1,10 +1,16 @@
+import 'package:financial_ai_mobile/core/models/income_expense_model.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BudgetItem extends StatelessWidget {
   final bool isExpense;
-  const BudgetItem({super.key, required this.isExpense});
+  final IncomeExpenseModel incomeExpenseModel;
+  const BudgetItem({
+    super.key,
+    required this.isExpense,
+    required this.incomeExpenseModel,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +20,7 @@ class BudgetItem extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                'Salary',
+                incomeExpenseModel.source,
                 style: AppStyles.smallText.copyWith(
                   fontSize: 14.sp,
                   color: AppStyles.greyColor,
@@ -26,7 +32,7 @@ class BudgetItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Sale Product',
+                    incomeExpenseModel.note,
                     style: AppStyles.mediumText.copyWith(
                       fontSize: 16.sp,
                       color: Colors.black,
@@ -34,7 +40,7 @@ class BudgetItem extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Card',
+                    incomeExpenseModel.method,
                     style: AppStyles.mediumText.copyWith(
                       fontSize: 12.sp,
                       color: AppStyles.greyColor,
@@ -48,7 +54,7 @@ class BudgetItem extends StatelessWidget {
               child: Align(
                 alignment: Alignment.centerRight,
                 child: Text(
-                  '\$89,000.00',
+                  '\$${incomeExpenseModel.amount}',
                   style: AppStyles.smallText.copyWith(
                     color: isExpense ? Colors.red : AppStyles.primaryColor,
                     fontSize: 14.sp,

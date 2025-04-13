@@ -72,7 +72,14 @@ class HomeScreen extends StatelessWidget {
               courseSection(homeController),
               SizedBox(height: 15.h),
               InkWell(
-                onTap: () => Get.to(ExpenseDetailsScreen()),
+                onTap:
+                    () => Get.to(
+                      ExpenseDetailsScreen(
+                        totalCost: homeController.espenseBalancePer.value,
+                        availableBalance:
+                            homeController.availableBalancePer.value,
+                      ),
+                    ),
                 child: financialHealth(homeController),
               ),
               SizedBox(height: 15.h),

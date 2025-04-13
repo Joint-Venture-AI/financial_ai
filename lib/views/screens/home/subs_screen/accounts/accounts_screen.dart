@@ -12,8 +12,14 @@ import 'package:get/get.dart';
 class AccountsScreen extends StatelessWidget {
   AccountsScreen({super.key});
 
+  // Use Get.put only once, preferably higher up if needed elsewhere,
+  // or use Get.lazyPut in bindings. For this screen, Get.put is okay.
   final accountController = Get.put(AccountsController());
-  final homeController = Get.find<HomeController>();
+  final homeController =
+      Get.find<
+        HomeController
+      >(); // Assuming HomeController is already put elsewhere
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,9 +31,7 @@ class AccountsScreen extends StatelessWidget {
         showActions: true,
       ),
       body: SafeArea(
-        // Add SafeArea to avoid overlapping with system UI
         child: SingleChildScrollView(
-          // Wrap everything in SingleChildScrollView
           scrollDirection: Axis.vertical,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24.w),
@@ -35,65 +39,54 @@ class AccountsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 15.h),
-                headerBodySection(homeController),
+                headerBodySection(homeController), // Keep your header
                 SizedBox(height: 15.h),
-                // Removed the empty Container
-                SizedBox(height: 20.h),
+                // SizedBox(height: 20.h), // Removed extra space
                 Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16.r),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 36,
-                        color: Colors.black.withOpacity(0.1),
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+                  // ... (Tab bar container decoration - Keep as is) ...
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                       horizontal: 10.w,
                       vertical: 5.h,
                     ),
                     child: Obx(() {
+                      // Obx rebuilds only this Row when selectedTab changes
                       return Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment:
-                            MainAxisAlignment.spaceAround, // Use spaceAround
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children:
                             accountController.accountTab.map((tab) {
-                              // Use map directly
                               return Expanded(
-                                // Wrap TabItem in Expanded
                                 child: TabItem(
                                   isSelected:
                                       tab ==
                                       accountController.selectedTab.value,
                                   title: tab,
                                   onTap: () {
+                                    // This automatically triggers the 'ever' listener
+                                    // in the controller to fetch new data
                                     accountController.selectedTab.value = tab;
                                   },
                                 ),
                               );
-                            }).toList(), // Convert the map to a list
+                            }).toList(),
                       );
                     }),
                   ),
                 ),
                 SizedBox(height: 10.h),
-                SizedBox(
-                  child: Obx(() {
-                    return accountController.selectedTab.value.contains(
-                          'Income',
-                        )
-                        ? IncomeSection()
-                        : ExpenseSection();
-                  }),
-                ),
-                SizedBox(
-                  height: 20.h,
-                ), // Add some space at the bottom. Consider removing
+                // Conditionally display Income or Expense Section based on selected tab
+                Obx(() {
+                  // Obx rebuilds this part when selectedTab or data changes
+                  if (accountController.selectedTab.value == 'Income') {
+                    // Pass the controller to the section
+                    return IncomeSection(controller: accountController);
+                  } else {
+                    // Pass the controller to the section
+                    return ExpenseSection(controller: accountController);
+                  }
+                }),
+                SizedBox(height: 20.h), // Keep bottom padding if desired
               ],
             ),
           ),

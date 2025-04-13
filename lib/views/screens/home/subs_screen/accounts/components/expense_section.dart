@@ -1,69 +1,63 @@
-import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+// Example Structure for ExpenseSection
+import 'package:financial_ai_mobile/controller/home/accounts_controller.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/budget_item.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ExpenseSection extends StatelessWidget {
-  const ExpenseSection({super.key});
+  final AccountsController controller;
+
+  const ExpenseSection({required this.controller, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Text(
-              '03',
-              style: AppStyles.mediumText.copyWith(
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(width: 2.w),
-            Container(
-              decoration: BoxDecoration(
-                color: AppStyles.primaryTransparent,
-                borderRadius: BorderRadius.circular(4.r),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 5.w),
-                child: Text(
-                  'Sun',
-                  style: AppStyles.smallText.copyWith(
-                    color: AppStyles.primaryColor,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 2.w),
+    return Obx(() {
+      if (controller.isLoadingExpense.value) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-            Text(
-              '12,25',
-              style: AppStyles.smallText.copyWith(
-                color: Colors.black,
-                fontSize: 12.sp,
-              ),
+      if (controller.expenseError.value.isNotEmpty) {
+        return Center(
+          child: Text(
+            controller.expenseError.value,
+            style: TextStyle(color: Colors.red),
+          ),
+        );
+      }
+
+      if (controller.expenseData.isEmpty) {
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Text(
+              'No expenses recorded for today.',
+              style: AppStyles.smallText.copyWith(color: Colors.grey),
+              textAlign: TextAlign.center,
             ),
-            const Spacer(),
-            Text(
-              '\$89,000.00',
-              style: AppStyles.smallText.copyWith(
-                color: AppStyles.redColor,
-                fontSize: 14.sp,
-              ),
-            ),
-          ],
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return BudgetItem(isExpense: true);
-          },
-        ),
-      ],
-    );
+          ),
+        );
+      }
+      // --- Similar logic as IncomeSection to display header (if needed) and ListView ---
+      return Column(
+        children: [
+          // Optional: Header for the expense day/total
+          // ...
+          ListView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: controller.expenseData.length,
+            itemBuilder: (context, index) {
+              final expenseItem = controller.expenseData[index];
+              return BudgetItem(
+                isExpense: true, // It's expense
+                incomeExpenseModel: expenseItem,
+              );
+            },
+          ),
+        ],
+      );
+    });
   }
 }

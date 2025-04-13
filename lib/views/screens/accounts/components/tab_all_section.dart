@@ -1,4 +1,4 @@
-import 'package:financial_ai_mobile/controller/accounts/accounts_controller.dart';
+import 'package:financial_ai_mobile/controller/accounts/accounts_tab_controller.dart';
 import 'package:financial_ai_mobile/views/screens/accounts/components/week_transaction_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

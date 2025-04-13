@@ -7,7 +7,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ExpenseDetailsScreen extends StatefulWidget {
-  const ExpenseDetailsScreen({super.key});
+  final double totalCost;
+  final double availableBalance;
+  const ExpenseDetailsScreen({
+    super.key,
+    required this.totalCost,
+    required this.availableBalance,
+  });
 
   @override
   State<ExpenseDetailsScreen> createState() => _ExpenseDetailsScreenState();
@@ -59,8 +65,11 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                         series: <CircularSeries>[
                           PieSeries<ChartData, String>(
                             dataSource: <ChartData>[
-                              ChartData('Available Blance', 7),
-                              ChartData('Total Cost', 93),
+                              ChartData(
+                                'Available Blance',
+                                widget.availableBalance,
+                              ),
+                              ChartData('Total Cost', widget.totalCost),
                             ],
                             xValueMapper: (ChartData data, _) => data.category,
                             yValueMapper: (ChartData data, _) => data.amount,
