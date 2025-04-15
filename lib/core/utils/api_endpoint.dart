@@ -32,5 +32,17 @@ class ApiEndpoint {
   static const getWeek = '$baseUrl/finance-report/get-weekly-summary';
   static const getMonthly = '$baseUrl/finance-report/get-present-month-summary';
 
+  static const getDailyCash =
+      '$baseUrl/finance-report/get-daily-summary?page=1&method=cash';
+
+  static const getDailyCard =
+      '$baseUrl/finance-report/get-daily-summary?page=1&method=card';
+
+  static const getWeeklyCash =
+      '$baseUrl/finance-report/get-weekly-summary?method=cash';
+  static const getWeeklyCard =
+      '$baseUrl/finance-report/get-weekly-summary?method=card';
+  static const getWeekly = '$baseUrl/finance-report/get-weekly-summary';
+
   static const chat = '$baseUrl/finance-report/get-finanse-data-from-ai';
 }
