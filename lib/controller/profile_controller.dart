@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:financial_ai_mobile/core/models/profile_model.dart';
 import 'package:financial_ai_mobile/core/services/api_services.dart';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';

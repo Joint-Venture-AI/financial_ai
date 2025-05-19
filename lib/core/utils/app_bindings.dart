@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 
 class AppBindings {
   static Bindings bindings = BindingsBuilder(() {
+    Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => WelcomeController(), fenix: true);
     Get.lazyPut(() => AuthController(), fenix: true);
     Get.lazyPut(() => MyTabController(), fenix: true);
