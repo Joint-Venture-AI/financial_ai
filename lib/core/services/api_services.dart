@@ -160,7 +160,7 @@ class ApiServices {
       final token = await PrefHelper.getString(Utils.TOKEN);
       if (token == null || token.isEmpty) {
         GlobalBase.showToast('Invalid User', true);
-        throw Exception('Token is null or empty');
+        // throw Exception('Token is null or empty');
       }
       final request = await http.get(
         Uri.parse(url),

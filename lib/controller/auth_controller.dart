@@ -2,7 +2,6 @@ import 'package:financial_ai_mobile/core/models/user_model.dart';
 import 'package:financial_ai_mobile/core/services/api_services.dart';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
-import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/core/utils/utils.dart';
 import 'package:financial_ai_mobile/views/screens/auth/pass_set_screen.dart';
@@ -78,9 +77,9 @@ class AuthController extends GetxController {
           );
         }
       }
-      throw Exception(data['message']);
+      // throw Exception(data['message']);
     } catch (e) {
-      throw Exception('Error creating user: $e');
+      // throw Exception('Error creating user: $e');
     } finally {
       isLoading.value = false;
     }
@@ -102,7 +101,8 @@ class AuthController extends GetxController {
         }
       }
     } catch (e) {
-      throw Exception('Error signing in user: $e');
+      print('Error signing in user: $e');
+      // throw Exception('Error signing in user: $e');
     } finally {
       isLoading.value = false;
     }
@@ -128,7 +128,7 @@ class AuthController extends GetxController {
         GlobalBase.showToast(data['message'], true);
       }
     } catch (e) {
-      throw Exception('Error sending forgot password request: $e');
+      // throw Exception('Error sending forgot password request: $e');
     } finally {
       isLoading.value = false;
     }
@@ -159,7 +159,7 @@ class AuthController extends GetxController {
         GlobalBase.showToast(data['message'], true);
       }
     } catch (e) {
-      throw Exception('Error verifying OTP: $e');
+      // throw Exception('Error verifying OTP: $e');
     }
   }
 
@@ -182,7 +182,7 @@ class AuthController extends GetxController {
         GlobalBase.showToast(data['message'], true);
       }
     } catch (e) {
-      throw Exception('Error resetting password: $e');
+      // throw Exception('Error resetting password: $e');
     }
   }
 }
