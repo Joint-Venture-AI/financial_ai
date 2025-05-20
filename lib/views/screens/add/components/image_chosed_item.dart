@@ -1,17 +1,14 @@
 // image_chosed_item.dart
 import 'dart:io';
-
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:get/get.dart';
 
 class ImageChosedItem extends StatelessWidget {
   final XFile imageFile;
   final VoidCallback? onDelete; // Add onDelete callback
-  const ImageChosedItem({Key? key, required this.imageFile, this.onDelete})
-    : super(key: key);
+  const ImageChosedItem({super.key, required this.imageFile, this.onDelete});
 
   @override
   Widget build(BuildContext context) {

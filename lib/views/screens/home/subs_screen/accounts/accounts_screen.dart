@@ -12,8 +12,6 @@ import 'package:get/get.dart';
 class AccountsScreen extends StatelessWidget {
   AccountsScreen({super.key});
 
-  // Use Get.put only once, preferably higher up if needed elsewhere,
-  // or use Get.lazyPut in bindings. For this screen, Get.put is okay.
   final accountController = Get.put(AccountsController());
   final homeController =
       Get.find<
@@ -42,37 +40,31 @@ class AccountsScreen extends StatelessWidget {
                 headerBodySection(homeController), // Keep your header
                 SizedBox(height: 15.h),
                 // SizedBox(height: 20.h), // Removed extra space
-                Container(
-                  // ... (Tab bar container decoration - Keep as is) ...
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 5.h,
-                    ),
-                    child: Obx(() {
-                      // Obx rebuilds only this Row when selectedTab changes
-                      return Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children:
-                            accountController.accountTab.map((tab) {
-                              return Expanded(
-                                child: TabItem(
-                                  isSelected:
-                                      tab ==
-                                      accountController.selectedTab.value,
-                                  title: tab,
-                                  onTap: () {
-                                    // This automatically triggers the 'ever' listener
-                                    // in the controller to fetch new data
-                                    accountController.selectedTab.value = tab;
-                                  },
-                                ),
-                              );
-                            }).toList(),
-                      );
-                    }),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 5.h,
                   ),
+                  child: Obx(() {
+                    // Obx rebuilds only this Row when selectedTab changes
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children:
+                          accountController.accountTab.map((tab) {
+                            return Expanded(
+                              child: TabItem(
+                                isSelected:
+                                    tab == accountController.selectedTab.value,
+                                title: tab,
+                                onTap: () {
+                                  accountController.selectedTab.value = tab;
+                                },
+                              ),
+                            );
+                          }).toList(),
+                    );
+                  }),
                 ),
                 SizedBox(height: 10.h),
                 // Conditionally display Income or Expense Section based on selected tab

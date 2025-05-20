@@ -75,7 +75,6 @@ class ApiServices {
   Future<http.Response> getUserData(String url) async {
     try {
       final token = await PrefHelper.getString(Utils.TOKEN);
-      print('====> $token');
 
       if (token == null || token.isEmpty) {
         print('====> $token');

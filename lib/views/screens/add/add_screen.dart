@@ -47,10 +47,7 @@ class _AddScreenState extends State<AddScreen>
         backgroundColor: AppStyles.bgColor,
         appBar: WidgetHelper.showAppBar(
           isBack: true,
-          title:
-              _addDataController
-                  .selectedTab
-                  .value, // Changed title to be more generic
+          title: _addDataController.selectedTab.value,
           isCenter: false,
           showActions: true,
         ),

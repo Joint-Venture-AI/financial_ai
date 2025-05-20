@@ -1,14 +1,10 @@
-import 'dart:io';
-
 import 'package:financial_ai_mobile/controller/add_data_controller/add_data_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:financial_ai_mobile/views/glob_widgets/gradiunt_global_button.dart';
 import 'package:financial_ai_mobile/views/screens/add/components/base_helper.dart';
 import 'package:financial_ai_mobile/views/screens/add/components/image_chosed_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
