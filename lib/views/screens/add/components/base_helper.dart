@@ -5,16 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
+// Removed: import 'package:get/get_core/src/get_main.dart'; // Get.dart is sufficient
 
 class BaseHelper {
   static showIncomeBottomSheet({required BuildContext context}) {
     final addController = Get.find<AddDataController>();
-    return showBottomSheet(
+    return showModalBottomSheet(
+      // Using showModalBottomSheet for better dismiss behavior
       context: context,
+      backgroundColor: Colors.transparent, // For custom border radius
       builder: (context) {
         return Container(
-          height: 200.h,
+          height: 220.h, // Adjusted height slightly for padding
           decoration: BoxDecoration(
             color: AppStyles.darkGreyColor,
             borderRadius: BorderRadius.only(
@@ -28,7 +30,7 @@ class BaseHelper {
               children: [
                 Container(
                   width: 40.w,
-                  height: 2,
+                  height: 3.h, // Standardized handle height
                   decoration: BoxDecoration(
                     color: AppStyles.lightGreyColor,
                     borderRadius: BorderRadius.circular(10.r),
@@ -49,37 +51,57 @@ class BaseHelper {
                       IntrinsicHeight(
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment:
+                              MainAxisAlignment
+                                  .spaceAround, // Better distribution
                           children: [
-                            _buildCategoryCell(
-                              text: 'Salery',
-                              iconPath: AppIcons.saleryIcon,
-                              isIncome: true,
+                            Expanded(
+                              // Use Expanded for even distribution
+                              child: _buildCategoryCell(
+                                displayText: 'Salary',
+                                backendValue: 'salary',
+                                iconPath:
+                                    AppIcons
+                                        .saleryIcon, // Assuming this is AppIcons.salaryIcon
+                                isIncome: true,
+                                controller: addController,
+                              ),
                             ),
                             VerticalDivider(
                               width: 1,
                               color: AppStyles.greyColor,
                               thickness: 1,
                             ),
-                            _buildCategoryCell(
-                              text: 'Prety Cash',
-                              iconPath: AppIcons.cashIcon,
-                              isIncome: true,
+                            Expanded(
+                              child: _buildCategoryCell(
+                                displayText: 'Freelance',
+                                backendValue: 'freelance',
+                                iconPath:
+                                    AppIcons
+                                        .cashIcon, // Placeholder, consider AppIcons.freelanceIcon
+                                isIncome: true,
+                                controller: addController,
+                              ),
                             ),
                             VerticalDivider(
                               width: 1,
                               color: AppStyles.greyColor,
                               thickness: 1,
                             ),
-                            _buildCategoryCell(
-                              text: 'Bonus',
-                              iconPath: AppIcons.bonus,
-                              isIncome: true,
+                            Expanded(
+                              child: _buildCategoryCell(
+                                displayText: 'Investments',
+                                backendValue: 'investments',
+                                iconPath:
+                                    AppIcons
+                                        .bonus, // Placeholder, consider AppIcons.investmentsIcon
+                                isIncome: true,
+                                controller: addController,
+                              ),
                             ),
                           ],
                         ),
                       ),
-
                       Container(
                         width: double.infinity,
                         color: AppStyles.lightGreyColor,
@@ -89,23 +111,32 @@ class BaseHelper {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            final controller = Get.find<AddDataController>();
-                            controller.selectedIncomeCategory.value = 'Ohter';
+                            addController.selectedIncomeCategory.value =
+                                'other';
                             Get.back();
                           },
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.add, color: Colors.white),
-                              Text(
-                                'Other',
-                                style: AppStyles.mediumText.copyWith(
+                          child: Padding(
+                            // Added padding for better tap area
+                            padding: EdgeInsets.symmetric(vertical: 8.h),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add,
                                   color: Colors.white,
-                                  fontSize: 16.sp,
+                                  size: 20.sp,
                                 ),
-                              ),
-                            ],
+                                SizedBox(width: 8.w),
+                                Text(
+                                  'Other',
+                                  style: AppStyles.mediumText.copyWith(
+                                    color: Colors.white,
+                                    fontSize: 16.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -122,12 +153,15 @@ class BaseHelper {
   }
 
   static showExpenseBottomSheet({required BuildContext context}) {
-    return showBottomSheet(
+    final addController = Get.find<AddDataController>();
+    return showModalBottomSheet(
+      // Using showModalBottomSheet
       context: context,
-
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          height: 300.h,
+          // Adjusted height based on content: 4 rows + header + padding
+          height: 330.h, // Might need adjustment based on actual cell height
           decoration: BoxDecoration(
             color: AppStyles.darkGreyColor,
             borderRadius: BorderRadius.only(
@@ -138,7 +172,7 @@ class BaseHelper {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Dynamic height based on content
+            // mainAxisSize: MainAxisSize.min, // Keep if height is dynamic
             children: [
               Container(
                 width: 40.w,
@@ -149,131 +183,193 @@ class BaseHelper {
                 ),
               ),
               SizedBox(height: 20.h),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.75.w, color: AppStyles.greyColor),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Table(
-                  border: TableBorder(
-                    verticalInside: BorderSide(color: Colors.grey, width: 1),
-                    horizontalInside: BorderSide(color: Colors.grey, width: 1),
-                    top: BorderSide.none,
-                    bottom: BorderSide.none,
-                    left: BorderSide.none,
-                    right: BorderSide.none,
-                  ),
-                  columnWidths: {
-                    0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(1),
-                    2: FlexColumnWidth(1),
-                  },
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    // Row 1: Food, Social Life, Pets
-                    TableRow(
-                      children: [
-                        _buildCategoryCell(
-                          iconPath: AppIcons.myFoodIcon,
-                          text: 'Food',
-                          isIncome: false,
-                        ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.socialIcon,
-                          text: 'Social Life',
-                          isIncome: false,
-                        ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.petsIcon,
-                          text: 'Pets',
-                          isIncome: false,
-                        ),
-                      ],
+              Expanded(
+                // Allow table to take available space if needed
+                child: SingleChildScrollView(
+                  // In case content overflows
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 0.75.w,
+                        color: AppStyles.greyColor,
+                      ),
+                      borderRadius: BorderRadius.circular(10.r),
                     ),
-                    // Row 2: Education, Gift, Transport
-                    TableRow(
+                    child: Table(
+                      border: TableBorder(
+                        verticalInside: BorderSide(
+                          color: AppStyles.greyColor,
+                          width: 0.75.w,
+                        ),
+                        horizontalInside: BorderSide(
+                          color: AppStyles.greyColor,
+                          width: 0.75.w,
+                        ),
+                      ),
+                      columnWidths: {
+                        0: FlexColumnWidth(1),
+                        1: FlexColumnWidth(1),
+                        2: FlexColumnWidth(1),
+                      },
+                      defaultVerticalAlignment:
+                          TableCellVerticalAlignment.middle,
                       children: [
-                        _buildCategoryCell(
-                          iconPath: AppIcons.educationIcon,
-                          text: 'Education',
-                          isIncome: false,
+                        // Row 1
+                        TableRow(
+                          children: [
+                            _buildCategoryCell(
+                              iconPath: AppIcons.myFoodIcon,
+                              displayText: 'Food & Dining',
+                              backendValue: 'food_dining',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .transpost, // Assuming AppIcons.transportationIcon
+                              displayText: 'Transportation',
+                              backendValue: 'transportation',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .rentIcon, // Placeholder, use AppIcons.utilitiesIcon
+                              displayText: 'Utilities',
+                              backendValue: 'utilities',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                          ],
                         ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.gitIcon,
-                          text: 'Gift',
-                          isIncome: false,
+                        // Row 2
+                        TableRow(
+                          children: [
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .healthIcon, // Assuming AppIcons.healthMedicalIcon
+                              displayText: 'Health/Medical',
+                              backendValue: 'health_medical',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .socialIcon, // Assuming AppIcons.entertainmentIcon
+                              displayText: 'Entertainment',
+                              backendValue: 'entertainment',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .gitIcon, // Placeholder, use AppIcons.shoppingIcon
+                              displayText: 'Shopping',
+                              backendValue: 'shopping',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                          ],
                         ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.transpost,
-                          text: 'Transport',
-                          isIncome: false,
+                        // Row 3
+                        TableRow(
+                          children: [
+                            _buildCategoryCell(
+                              iconPath: AppIcons.educationIcon,
+                              displayText: 'Education',
+                              backendValue: 'education',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .apprarelIcon, // Placeholder, use AppIcons.travelIcon
+                              displayText: 'Travel',
+                              backendValue: 'travel',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .rentIcon, // Assuming AppIcons.rentMortgageIcon
+                              displayText: 'Rent/Mortgage',
+                              backendValue: 'rent_mortgage',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    // Row 3: Rent, Apparel, Beauty
-                    TableRow(
-                      children: [
-                        _buildCategoryCell(
-                          iconPath: AppIcons.rentIcon,
-                          text: 'Rent',
-                          isIncome: false,
-                        ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.apprarelIcon,
-                          text: 'Apparel',
-                          isIncome: false,
-                        ),
-                        _buildCategoryCell(
-                          iconPath: AppIcons.beautyIcon,
-                          text: 'Beauty',
-                          isIncome: false,
-                        ),
-                      ],
-                    ),
-                    // Row 4: Health, Other (spanning all columns)
-                    TableRow(
-                      children: [
-                        _buildCategoryCell(
-                          iconPath: AppIcons.healthIcon,
-                          text: 'Health',
-                          isIncome: false,
-                        ),
-                        TableCell(child: SizedBox.shrink()),
-                        TableCell(
-                          child: Center(
-                            child: InkWell(
-                              onTap: () {
-                                final controller =
-                                    Get.find<AddDataController>();
-                                controller.selectedExpenseCategory.value =
-                                    'Ohter';
-                                Get.back();
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 24.w,
+                        // Row 4
+                        TableRow(
+                          children: [
+                            _buildCategoryCell(
+                              iconPath:
+                                  AppIcons
+                                      .beautyIcon, // Assuming AppIcons.personalCareIcon
+                              displayText: 'Personal Care',
+                              backendValue: 'personal_care',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            _buildCategoryCell(
+                              // Placeholder, use AppIcons.insuranceIcon or a generic shield/security icon
+                              iconPath:
+                                  AppIcons
+                                      .healthIcon, // Reusing health icon as placeholder
+                              displayText: 'Insurance',
+                              backendValue: 'insurance',
+                              isIncome: false,
+                              controller: addController,
+                            ),
+                            TableCell(
+                              // For the "Other" button with Icon
+                              child: InkWell(
+                                onTap: () {
+                                  addController.selectedExpenseCategory.value =
+                                      'other';
+                                  Get.back();
+                                },
+                                child: Padding(
+                                  // Consistent padding
+                                  padding: EdgeInsets.all(10.w),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.add,
+                                        color: Colors.white,
+                                        size: 20.sp,
+                                      ),
+                                      SizedBox(width: 5.w),
+                                      Text(
+                                        'Other',
+                                        style: AppStyles.mediumText.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 12.sp, // Kept original size
+                                        ),
+                                        textAlign:
+                                            TextAlign
+                                                .center, // Ensure text is centered
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(width: 5.w),
-                                  Text(
-                                    'Other',
-                                    style: AppStyles.mediumText.copyWith(
-                                      color: Colors.white,
-                                      fontSize: 12.sp,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ],
@@ -284,12 +380,14 @@ class BaseHelper {
   }
 
   static showPayBottomSheet({required BuildContext context}) {
-    return showBottomSheet(
+    final addController = Get.find<AddDataController>();
+    return showModalBottomSheet(
+      // Using showModalBottomSheet
       context: context,
-
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return Container(
-          height: 300.h,
+          height: 180.h, // Adjusted height for 1 row of 2 items
           decoration: BoxDecoration(
             color: AppStyles.darkGreyColor,
             borderRadius: BorderRadius.only(
@@ -300,7 +398,7 @@ class BaseHelper {
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min, // Dynamic height based on content
+            // mainAxisSize: MainAxisSize.min, // Keep if height is dynamic
             children: [
               Container(
                 width: 40.w,
@@ -311,37 +409,47 @@ class BaseHelper {
                 ),
               ),
               SizedBox(height: 20.h),
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(width: 0.75.w, color: AppStyles.greyColor),
-                  borderRadius: BorderRadius.circular(10.r),
-                ),
-                child: Table(
-                  border: TableBorder(
-                    verticalInside: BorderSide(color: Colors.grey, width: 1),
-                    horizontalInside: BorderSide(color: Colors.grey, width: 1),
-                    top: BorderSide.none,
-                    bottom: BorderSide.none,
-                    left: BorderSide.none,
-                    right: BorderSide.none,
-                  ),
-                  columnWidths: {0: FlexColumnWidth(1), 1: FlexColumnWidth(1)},
-                  defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                  children: [
-                    // Row 1: Food, Social Life, Pets
-                    TableRow(
-                      children: [
-                        _buildPayCell(
-                          iconPath: AppIcons.myCashIcon,
-                          text: 'Cash',
-                        ),
-                        _buildPayCell(
-                          iconPath: AppIcons.cardIcon,
-                          text: 'Card',
-                        ),
-                      ],
+              Expanded(
+                // Allow table to take available space
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0.75.w,
+                      color: AppStyles.greyColor,
                     ),
-                  ],
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  child: Table(
+                    border: TableBorder(
+                      verticalInside: BorderSide(
+                        color: AppStyles.greyColor,
+                        width: 0.75.w,
+                      ),
+                    ),
+                    columnWidths: {
+                      0: FlexColumnWidth(1),
+                      1: FlexColumnWidth(1),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      TableRow(
+                        children: [
+                          _buildPayCell(
+                            iconPath: AppIcons.myCashIcon,
+                            displayText: 'Cash',
+                            backendValue: 'cash',
+                            controller: addController,
+                          ),
+                          _buildPayCell(
+                            iconPath: AppIcons.cardIcon,
+                            displayText: 'Card',
+                            backendValue: 'card',
+                            controller: addController,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -353,31 +461,45 @@ class BaseHelper {
 
   static Widget _buildCategoryCell({
     required String iconPath,
-    required String text,
+    required String displayText,
+    required String backendValue,
     required bool isIncome,
+    required AddDataController controller,
   }) {
     return InkWell(
       onTap: () {
-        final controller = Get.find<AddDataController>();
-        isIncome
-            ? controller.selectedIncomeCategory.value = text
-            : controller.selectedExpenseCategory.value = text;
+        if (isIncome) {
+          controller.selectedIncomeCategory.value = backendValue;
+        } else {
+          controller.selectedExpenseCategory.value = backendValue;
+        }
         Get.back();
       },
       child: Padding(
-        padding: EdgeInsets.all(10.w), // Responsive padding
-        child: Row(
+        padding: EdgeInsets.symmetric(
+          vertical: 12.h,
+          horizontal: 8.w,
+        ), // Adjusted padding
+        child: Column(
+          // Changed to Column for better icon-text alignment if text wraps
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(iconPath, width: 24.w, height: 24.h),
-            SizedBox(width: 5.w),
+            SvgPicture.asset(
+              iconPath,
+              width: 24.w,
+              height: 24.h,
+            ), // Ensure icon is white if needed
+            SizedBox(height: 6.h),
             Text(
-              text,
+              displayText,
+              textAlign: TextAlign.center,
               style: AppStyles.mediumText.copyWith(
                 color: Colors.white,
-                fontSize: 12.sp,
+                fontSize: 11.sp, // Slightly smaller to fit more text
               ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
@@ -387,27 +509,38 @@ class BaseHelper {
 
   static Widget _buildPayCell({
     required String iconPath,
-    required String text,
+    required String displayText,
+    required String backendValue,
+    required AddDataController controller,
   }) {
     return InkWell(
       onTap: () {
-        final controller = Get.find<AddDataController>();
-        controller.selectedPayMethod.value = text;
+        controller.selectedPayMethod.value = backendValue;
         Get.back();
       },
       child: Padding(
-        padding: EdgeInsets.all(10.w), // Responsive padding
-        child: Row(
+        padding: EdgeInsets.symmetric(
+          vertical: 12.h,
+          horizontal: 8.w,
+        ), // Adjusted padding
+        child: Column(
+          // Changed to Column
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SvgPicture.asset(iconPath, width: 24.w, height: 24.h),
-            SizedBox(width: 5.w),
+            SvgPicture.asset(
+              iconPath,
+              width: 28.w,
+              height: 28.h,
+              colorFilter: ColorFilter.mode(Colors.white, BlendMode.srcIn),
+            ),
+            SizedBox(height: 6.h),
             Text(
-              text,
+              displayText,
+              textAlign: TextAlign.center,
               style: AppStyles.mediumText.copyWith(
                 color: Colors.white,
-                fontSize: 12.sp,
+                fontSize: 14.sp, // Slightly larger for pay methods
               ),
             ),
           ],

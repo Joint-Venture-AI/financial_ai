@@ -46,7 +46,9 @@ class ProfileController extends GetxController {
       if (response.statusCode == 200 && data['success'] == true) {
         printInfo(info: 'Success got all the data=========>>>>>');
         profileModel = ProfileModel.fromJson(data['data']).obs;
-        GlobalBase.showToast(data['data'], false);
+
+        // ✅ Corrected line
+        GlobalBase.showToast("Profile fetched successfully", false);
       }
     } catch (e) {
       throw Exception('error: $e');
