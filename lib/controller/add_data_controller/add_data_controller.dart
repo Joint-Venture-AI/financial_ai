@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/utils.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -168,6 +169,7 @@ class AddDataController extends GetxController {
 
       if (response.statusCode == 200) {
         GlobalBase.showToast('Success : ${data['message']}', false);
+        Get.find<HomeController>().getUserPresentMonthData();
         amountController.clear();
         noteController.clear();
         descriptionController.clear();
@@ -206,7 +208,13 @@ class AddDataController extends GetxController {
 
       debugPrint('🔥 Error sending income data: $e');
     } finally {
-      isLoading.value = false;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Check if the controller is still mounted/initialized before updating state.
+        // This is good practice if the screen might be disposed before this callback runs.
+        if (!isClosed) {
+          isLoading.value = false;
+        }
+      });
     }
   }
 }

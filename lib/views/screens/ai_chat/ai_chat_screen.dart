@@ -130,11 +130,8 @@ class AiChatScreen extends StatelessWidget {
     );
   }
 
-  // Widget for handling Markdown message content
   Widget _buildMarkdownMessage(ChatModel message) {
-    return Flexible(
-      child: md.MarkdownBody(selectable: true, data: message.message),
-    );
+    return md.MarkdownBody(selectable: true, data: message.message);
   }
 
   // Widget for message input field and image selection
