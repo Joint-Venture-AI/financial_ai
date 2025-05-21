@@ -72,10 +72,10 @@ class ProfileController extends GetxController {
         profileModelData.toUpdateJson(),
         {'Authorization': 'Bearer $token'},
       );
-      // if (response.statusCode == 200) {
-      //   Get.back();
-      //   await getProfileInfo();
-      // }
+      if (response.statusCode == 200) {
+        Get.back();
+        await getProfileInfo();
+      }
     } catch (e) {
       throw Exception('error:======>>> $e');
     } finally {

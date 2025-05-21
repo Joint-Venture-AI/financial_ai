@@ -56,14 +56,14 @@ class WelcomeController extends GetxController {
           item['category']: int.tryParse(item['amount'].toString().trim()) ?? 0,
       };
 
-      // // ⚠️ Safety check: don't send empty expenseLimit
-      // if (expenseMap.isEmpty) {
-      //   GlobalBase.showToast(
-      //     "Please enter at least one expense category",
-      //     true,
-      //   );
-      //   return;
-      // }
+      // ⚠️ Safety check: don't send empty expenseLimit
+      if (expenseMap.isEmpty) {
+        GlobalBase.showToast(
+          "Please enter at least one expense category",
+          true,
+        );
+        return;
+      }
 
       final userData = {
         "userEmail": await PrefHelper.getString(Utils.EMAIL),
