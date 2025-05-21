@@ -24,6 +24,7 @@ class AddDataController extends GetxController {
   var selectedPayMethod = 'Pay method'.obs;
   final ImagePicker picker = ImagePicker();
   RxList<XFile> images = <XFile>[].obs; // Use RxList for reactivity
+
   // Reactive date-time variable
   final Rx<DateTime> selectedDateTime = DateTime.now().obs;
 

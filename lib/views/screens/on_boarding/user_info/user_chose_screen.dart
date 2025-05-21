@@ -6,10 +6,8 @@ import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart'
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/components/user_chose_item.dart';
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_financial_input_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class UserChoseScreen extends StatelessWidget {
   UserChoseScreen({super.key});

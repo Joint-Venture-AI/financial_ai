@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/core/utils/utils.dart';
@@ -29,6 +28,7 @@ class ApiServices {
         throw Exception('Unexpected error: ${request.body}');
       }
     } catch (e) {
+      print('=======>>>>>>> $e');
       Exception('Error occurred while making POST request: $e');
       rethrow;
     }
@@ -67,7 +67,10 @@ class ApiServices {
         throw Exception('Unexpected error: ${request.body}');
       }
     } catch (e) {
+      print('=======>>>>>>> $e');
       Exception('Error occurred while making POST request: $e');
+      print('=======>>>>>>> $e');
+
       rethrow;
     }
   }
@@ -107,7 +110,10 @@ class ApiServices {
         throw Exception('Unexpected error: ${request.body}');
       }
     } catch (e) {
+      print('=======>>>>>>> $e');
       Exception('Error occurred while getting user data: $e');
+      print('=======>>>>>>> $e');
+
       rethrow;
     } finally {
       // Perform any cleanup or finalization here if needed
@@ -149,7 +155,9 @@ class ApiServices {
         throw Exception('Unexpected error: ${request.body}');
       }
     } catch (e) {
+      print('=======>>>>>>> $e');
       Exception('Error occurred while saving user data: $e');
+
       rethrow;
     }
   }
@@ -185,7 +193,10 @@ class ApiServices {
         throw Exception('Unexpected error: ${request.body}');
       }
     } catch (e) {
+      print('=======>>>>>>> $e');
+
       Exception('Error occurred while saving user data: $e');
+
       rethrow;
     }
   }

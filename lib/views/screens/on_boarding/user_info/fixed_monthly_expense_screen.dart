@@ -8,6 +8,24 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
 
   final welcomeController = Get.find<WelcomeController>();
 
+  // --- Added: Mapping from UI display names to API category keys ---
+  final Map<String, String> _categoryApiKeyMapping = {
+    'Food': 'food_dining',
+    'Social Life': 'entertainment',
+    'Pets':
+        'other', // Mapped to 'other' as 'pets' is not in the specific API list
+    'Education': 'education',
+    'Gift':
+        'other', // Mapped to 'other' as 'gift' is not in the specific API list
+    'Transport': 'transportation',
+    'Rent': 'rent_mortgage',
+    'Apparel': 'shopping',
+    'Beauty': 'personal_care',
+    'Health': 'health_medical',
+    'Other': 'other', // UI 'Other' maps to API 'other'
+  };
+  // -----------------------------------------------------------------
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,14 +51,14 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
               style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 10.h),
-
             _buildCategoryGrid(context),
             const Spacer(),
             SizedBox(
               width: double.infinity,
               height: 50.h,
               child: ElevatedButton(
-                onPressed: () => Get.back(),
+                onPressed:
+                    () => Get.back(), // Or navigate to the next logical screen
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.teal,
                   shape: RoundedRectangleBorder(
@@ -52,6 +70,7 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16.sp,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white, // Explicitly set text color
                   ),
                 ),
               ),
@@ -85,6 +104,7 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
   }
 
   Widget _buildCategoryGrid(BuildContext context) {
+    // These are the UI display names for the grid
     final categories = [
       ['Food', 'Social Life', 'Pets'],
       ['Education', 'Gift', 'Transport'],
@@ -112,6 +132,7 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                 children:
                     row.map((item) {
                       if (item.isEmpty) return const SizedBox.shrink();
+                      // 'item' here is the UI display name (e.g., "Food")
                       return _buildCategoryCell(context, item);
                     }).toList(),
               );
@@ -120,7 +141,8 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildCategoryCell(BuildContext context, String title) {
+  Widget _buildCategoryCell(BuildContext context, String uiCategoryName) {
+    // Icons are keyed by UI display names
     final icons = {
       'Food': '🍽️',
       'Social Life': '🫂',
@@ -136,31 +158,34 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
     };
 
     return InkWell(
-      onTap: () => _showAmountBottomSheet(context, title),
+      // Pass the UI display name to the bottom sheet
+      onTap: () => _showAmountBottomSheet(context, uiCategoryName),
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: 18.h),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(icons[title] ?? '', style: TextStyle(fontSize: 24.sp)),
+            Text(
+              icons[uiCategoryName] ?? '',
+              style: TextStyle(fontSize: 24.sp),
+            ),
             SizedBox(width: 6.w),
-            Text(title, style: TextStyle(fontSize: 13.sp)),
+            Text(uiCategoryName, style: TextStyle(fontSize: 13.sp)),
           ],
         ),
       ),
     );
   }
 
-  void _showAmountBottomSheet(BuildContext context, String category) {
-    final TextEditingController _controller = TextEditingController();
+  void _showAmountBottomSheet(BuildContext context, String uiCategoryName) {
+    // uiCategoryName is the display name like "Food", "Social Life", etc.
+    final TextEditingController _amountController = TextEditingController();
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: const Color(
-        0xFF1C1C1E,
-      ), // dark background like screenshot
+      backgroundColor: const Color(0xFF1C1C1E),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(32.r)),
       ),
@@ -187,7 +212,7 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Amount',
+                  'Amount for $uiCategoryName', // Show the user-friendly category name
                   style: TextStyle(fontSize: 14.sp, color: Colors.white),
                 ),
               ),
@@ -200,12 +225,12 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: TextField(
-                  controller: _controller,
+                  controller: _amountController,
                   keyboardType: TextInputType.number,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: '1,000',
+                    hintText: '1,000', // Example hint
                     hintStyle: TextStyle(color: Colors.white70),
                   ),
                 ),
@@ -215,14 +240,34 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                 width: double.infinity,
                 height: 50.h,
                 child: ElevatedButton(
-                  onPressed: () async {
-                    Get.find<WelcomeController>().fixedMonthAmounts.add({
-                      'category': category,
-                      'amount': _controller.text,
+                  onPressed: () {
+                    final String amount = _amountController.text;
+                    if (amount.isEmpty) {
+                      // Basic validation: ensure amount is not empty
+                      Get.snackbar(
+                        "Input Required",
+                        "Please enter an amount.",
+                        snackPosition: SnackPosition.BOTTOM,
+                        backgroundColor: Colors.redAccent,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+
+                    // --- Modified: Use the mapping to get the API key ---
+                    String apiKey =
+                        _categoryApiKeyMapping[uiCategoryName] ?? 'other';
+                    // Fallback to 'other' if the uiCategoryName is not in our map
+                    // (should not happen if all grid items are in _categoryApiKeyMapping).
+                    // ----------------------------------------------------
+
+                    // Add to the controller's list using the API key
+                    welcomeController.fixedMonthAmounts.add({
+                      'category': apiKey, // THIS IS THE API KEY
+                      'amount': amount,
                     });
 
-                    // Handle save logic here
-                    Get.back();
+                    Get.back(); // Close the bottom sheet
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.teal,
@@ -235,6 +280,7 @@ class FixedMonthlyExpenseScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w600,
+                      color: Colors.white, // Explicitly set text color
                     ),
                   ),
                 ),

@@ -5,6 +5,7 @@ import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/custom_text_feild.dart';
 import 'package:financial_ai_mobile/views/glob_widgets/our_gob_text_button.dart';
+import 'package:financial_ai_mobile/views/screens/auth/sign_up_screen.dart';
 import 'package:financial_ai_mobile/views/screens/on_boarding/user_info/user_chose_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +148,7 @@ class SignInScreen extends StatelessWidget {
                     ),
                     SizedBox(width: 5.w),
                     InkWell(
-                      onTap: () => Get.back(),
+                      onTap: () => Get.to(SignUpScreen()),
                       child: Text(
                         'SignUp',
                         style: AppStyles.smallText.copyWith(

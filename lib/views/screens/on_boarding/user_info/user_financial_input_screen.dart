@@ -160,6 +160,27 @@ class UserFinancialInputScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () async {
+                    if (welcomeController
+                        .monthlyIncomeController
+                        .text
+                        .isEmpty) {
+                      Get.snackbar(
+                        'Error',
+                        'Please enter your monthly income',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
+                    if (welcomeController.fixedMonthAmounts.isEmpty) {
+                      Get.snackbar(
+                        'Error',
+                        'Please add at least one fixed expense',
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                      return;
+                    }
                     await welcomeController.saveUserFixedData();
                   },
                   child:

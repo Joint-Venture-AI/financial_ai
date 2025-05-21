@@ -69,7 +69,7 @@ class WelcomeController extends GetxController {
         "userEmail": await PrefHelper.getString(Utils.EMAIL),
         "data": {
           "balance": {
-            "income": int.tryParse(monthlyIncomeController.text.trim()) ?? 0,
+            "avgIncome": int.tryParse(monthlyIncomeController.text.trim()) ?? 0,
           },
           "expenseLimit": expenseMap,
         },

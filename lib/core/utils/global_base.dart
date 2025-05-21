@@ -19,4 +19,9 @@ class GlobalBase {
       margin: EdgeInsets.all(16),
     );
   }
+
+  static void printError(String error) {
+    print('API Error: $error');
+    // or use any logging tool you prefer
+  }
 }
