@@ -45,4 +45,7 @@ class ApiEndpoint {
   static const getWeekly = '$baseUrl/finance-report/get-weekly-summary';
 
   static const chat = '$baseUrl/finance-report/get-finanse-data-from-ai';
+
+  static const getReportCategory =
+      '$baseUrl/finance-report/get-present-month-expance-with-category-percent';
 }

@@ -27,10 +27,6 @@ class CashTabSection extends StatelessWidget {
           return const Center(child: CupertinoActivityIndicator());
         }
 
-        // 2. Handle empty data after loading
-        // Note: The original check for selectedTimeScheduleTab.isEmpty is less relevant now,
-        // as isLoading and accountsModel.isEmpty cover the states better.
-        // The controller initializes selectedTimeScheduleTab to 'Daily'.
         if (accountTabController.accountsDisplayModel.isEmpty) {
           return Center(
             child: Text(
@@ -47,33 +43,7 @@ class CashTabSection extends StatelessWidget {
             final AccountsModel accountData =
                 accountTabController.accountsDisplayModel[index];
 
-            // If the data in accountsModel (for both Daily and Weekly) is of type AccountsModel,
-            // we should use daily_transaction_item to display it.
-            // The original distinction for TransactionItem was for hardcoded data.
-            // To display fetched data consistently:
             return daily_transaction_item(accountData);
-
-            // Original logic from your snippet:
-            /*
-            return accountTabController.selectedTimeScheduleTab.value
-                    .contains('Daily')
-                ? daily_transaction_item(
-                    accountTabController.accountsModel[index],
-                  )
-                : TransactionItem( // This uses hardcoded data, not fetched data
-                    category: index == 1 ? "Sale" : "Food",
-                    description: "Buy for some b...",
-                    paymentMethod: index == 1 ? "Card" : "Cash", // This conflicts with "Cash" tab intent
-                    amount:
-                        index == 1 ? 220.00 : (index == 0 ? 80.00 : 40.00),
-                    isIncome: index == 1,
-                  );
-            */
-            // If weekly data needs a different widget AND uses the fetched 'accountData',
-            // you would introduce that widget here.
-            // e.g., if (accountTabController.selectedTimeScheduleTab.value == 'Weekly') {
-            //         return YourWeeklyCashWidget(accountData);
-            //       }
           },
         );
       }),
@@ -81,8 +51,6 @@ class CashTabSection extends StatelessWidget {
   }
 }
 
-// This is the daily_transaction_item widget exactly as you provided in this prompt.
-// It's used to display items from the accountsModel list.
 Widget daily_transaction_item(AccountsModel data) {
   return Container(
     padding: EdgeInsets.all(10.w),

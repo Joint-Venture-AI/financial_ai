@@ -93,9 +93,9 @@ class AuthController extends GetxController {
       if (response.statusCode == 200) {
         if (data["success"] == true) {
           await PrefHelper.setString(Utils.TOKEN, data['data']['accessToken']);
+          Get.offAll(MainScreen());
 
           GlobalBase.showToast('Login Successfully', false);
-          Get.offAll(MainScreen());
         } else {
           GlobalBase.showToast(data['message'], true);
         }
