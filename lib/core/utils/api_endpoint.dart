@@ -28,7 +28,7 @@ class ApiEndpoint {
   static const String getDailyExpense =
       '$baseUrl/expense/get-expense-data-by-date';
 
-  static const getDaily = '$baseUrl/finance-report/get-daily-summary?page=1';
+  static const getDaily = '$baseUrl/finance-report/get-daily-summary';
   static const getWeek = '$baseUrl/finance-report/get-weekly-summary';
   static const getMonthly = '$baseUrl/finance-report/get-present-month-summary';
 
