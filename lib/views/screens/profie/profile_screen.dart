@@ -109,6 +109,16 @@ class ProfileScreen extends StatelessWidget {
                       },
                     ),
                     _buildProfileOption(
+                      icon: SvgPicture.asset(
+                        AppIcons.bankIcon,
+                        width: 22.w,
+                        height: 22.h,
+                        color: Colors.black54,
+                      ),
+                      title: "Connect Bank",
+                      ontap: () {},
+                    ),
+                    _buildProfileOption(
                       icon: SvgPicture.asset(AppIcons.crownIcon),
                       title: "Upgrade Plan",
                       ontap: () => Get.to(UpgradeScreen()),

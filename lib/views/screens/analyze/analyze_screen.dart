@@ -1,21 +1,17 @@
 import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
-import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/tab_item.dart';
+import 'package:financial_ai_mobile/views/screens/analyze/components/analyze_expense_section.dart';
 import 'package:financial_ai_mobile/views/screens/profie/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import '../notification/notification_screen.dart';
 
 class AnalyzeScreen extends StatelessWidget {
-  AnalyzeScreen({super.key});
-  final analyzeController = Get.put(AnalyzeController());
+  AnalyzeScreen({super.key}) {}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,18 +21,16 @@ class AnalyzeScreen extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 15.w),
-              child: Column(children: [customAppBar()]),
+              child: customAppBar(),
             ),
-
-            Expanded(child: analyzeController.tabListWidget[0]),
-            SizedBox(height: 15.h),
+            AnalyzeExpenseSection(), // Uses Get.find() internally
           ],
         ),
       ),
     );
   }
 
-  Row customAppBar() {
+  Widget customAppBar() {
     return Row(
       children: [
         Text(
@@ -45,7 +39,7 @@ class AnalyzeScreen extends StatelessWidget {
         ),
         const Spacer(),
         InkWell(
-          onTap: () => Get.to(NotificationScreen()),
+          onTap: () => Get.to(() => NotificationScreen()),
           child: SvgPicture.asset(
             AppIcons.bellIcon,
             width: 24.w,
@@ -56,7 +50,7 @@ class AnalyzeScreen extends StatelessWidget {
         ),
         SizedBox(width: 10.w),
         InkWell(
-          onTap: () => Get.to(ProfileScreen()),
+          onTap: () => Get.to(() => ProfileScreen()),
           child: SvgPicture.asset(
             AppIcons.profileIcon,
             width: 24.w,

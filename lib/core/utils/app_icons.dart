@@ -17,6 +17,8 @@ class AppIcons {
   static String arrowUpIcon = '$iconsPath/arrow-up.svg';
   static String searchIcon = '$iconsPath/search_icon.svg';
 
+  static String bankIcon = '$iconsPath/bank_icon.svg';
+
   static String filterIcon = '$iconsPath/filter_icon.svg';
   static String dropDownMenu = '$iconsPath/drop_down_menu_icon.svg';
   static String addImage = '$iconsPath/add_image.svg';

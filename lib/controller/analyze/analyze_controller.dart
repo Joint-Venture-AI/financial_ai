@@ -25,6 +25,12 @@ class AnalyzeController extends GetxController {
   var showTransportationDetails = false.obs;
   var showFoodDetails = false.obs;
 
+  @override
+  void onInit() async {
+    super.onInit();
+    await getReportCategory();
+  }
+
   Future<void> getReportCategory() async {
     try {
       final response = await ApiServices().getUserData(
@@ -35,7 +41,7 @@ class AnalyzeController extends GetxController {
       if (response.statusCode == 200) {
         // Handle the response data
         // Process the data as needed
-        print('===========>>>>>>>>Data: $data');
+        print('===========>>>>>>>>expenseCategoryList: $data');
         expenseCategoryList.value =
             data
                 .map((item) => ExpenseCategory.fromJson(item))
