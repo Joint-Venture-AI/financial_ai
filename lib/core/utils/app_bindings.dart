@@ -7,6 +7,7 @@ import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/controller/profile_controller.dart';
 import 'package:financial_ai_mobile/controller/tab_controller.dart';
 import 'package:financial_ai_mobile/controller/welcome_controller.dart';
+import 'package:financial_ai_mobile/core/services/speech_services.dart';
 import 'package:get/get.dart';
 
 class AppBindings {
@@ -20,5 +21,6 @@ class AppBindings {
     Get.lazyPut(() => AnalyzeController(), fenix: true);
     Get.lazyPut(() => ProfileController(), fenix: true);
     Get.lazyPut(() => AccountsTabController(), fenix: true);
+    Get.lazyPut(() => SpeechService(), fenix: true);
   });
 }

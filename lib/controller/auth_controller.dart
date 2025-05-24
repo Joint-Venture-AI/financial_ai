@@ -24,6 +24,29 @@ class AuthController extends GetxController {
   var isLoading = false.obs;
   var isChecked = false.obs;
   var otpController = TextEditingController();
+  var selectedCountry = 'NONE'.obs;
+
+  final List<Map<String, dynamic>> countries = [
+    {"value": "NONE", "label": "Choose your country"},
+    {"value": "AT", "label": "Austria"},
+    {"value": "BE", "label": "Belgium"},
+    {"value": "DK", "label": "Denmark"},
+    {"value": "EE", "label": "Estonia"},
+    {"value": "FI", "label": "Finland"},
+    {"value": "FR", "label": "France"},
+    {"value": "DE", "label": "Germany"},
+    {"value": "IE", "label": "Ireland"},
+    {"value": "IT", "label": "Italy"},
+    {"value": "LV", "label": "Latvia"},
+    {"value": "LT", "label": "Lithuania"},
+    {"value": "NL", "label": "Netherlands"},
+    {"value": "NO", "label": "Norway"},
+    {"value": "PL", "label": "Poland"},
+    {"value": "PT", "label": "Portugal"},
+    {"value": "ES", "label": "Spain"},
+    {"value": "SE", "label": "Sweden"},
+    {"value": "GB", "label": "United Kingdom"},
+  ];
 
   @override
   onInit() {

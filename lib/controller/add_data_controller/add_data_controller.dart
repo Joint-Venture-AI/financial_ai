@@ -19,7 +19,8 @@ import 'package:http_parser/http_parser.dart'; // Import MediaType
 
 class AddDataController extends GetxController {
   var selectedTab = 'Income'.obs;
-
+  var isVoiceEnable = false.obs;
+  var spechText = 'Listenting...'.obs;
   var selectedIncomeCategory = 'Add your purpose'.obs;
   var selectedExpenseCategory = 'Add your purpose'.obs;
   var selectedPayMethod = 'Pay method'.obs;

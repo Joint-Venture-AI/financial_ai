@@ -51,6 +51,34 @@ class SignUpScreen extends StatelessWidget {
                         },
                       ),
                       SizedBox(height: 10.h),
+
+                      SizedBox(
+                        width: Get.width,
+                        height: context.height * 0.07,
+                        child: Obx(() {
+                          return DropdownMenu<String>(
+                            initialSelection:
+                                authController.selectedCountry.value.isNotEmpty
+                                    ? authController.selectedCountry.value
+                                    : 'NONE',
+                            dropdownMenuEntries:
+                                authController.countries
+                                    .map(
+                                      (country) => DropdownMenuEntry<String>(
+                                        value: country['value'],
+                                        label: country['label'],
+                                      ),
+                                    )
+                                    .toList(),
+                            onSelected: (value) {
+                              authController.selectedCountry.value =
+                                  value ?? 'NONE';
+                              printInfo(info: 'Selected country: ${value}');
+                            },
+                          );
+                        }),
+                      ),
+                      SizedBox(height: 10.h),
                       Text('Email', style: AppStyles.mediumText),
                       SizedBox(height: 5.h),
                       CustomTextFeild(
@@ -104,7 +132,7 @@ class SignUpScreen extends StatelessWidget {
                     }),
                     Expanded(
                       child: Text(
-                        'I agree to the proccessing of Personal date',
+                        'I agree to the processing of Personal data',
                         style: AppStyles.smallText.copyWith(
                           color: AppStyles.greyColor,
                           fontSize: 14.sp,
@@ -120,21 +148,26 @@ class SignUpScreen extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
-                        // Form is valid, proceed with sign-up logic
                         if (authController.isChecked.value) {
-                          // Create a new user object
+                          if (authController.selectedCountry.value == 'NONE') {
+                            GlobalBase.showToast(
+                              'Please choose a country',
+                              true,
+                            );
+                            return;
+                          }
+
                           final user = UserModel(
+                            country: authController.selectedCountry.value,
                             name: authController.nameController.text,
                             email: authController.emailController.text,
                             password: authController.passController.text,
                           );
-                          // Call the createUser method from the controller
+
                           await authController.createUser(user);
                         } else {
                           GlobalBase.showToast('Please check policy', true);
                         }
-                      } else {
-                        return;
                       }
                     },
                     child: Padding(
@@ -162,7 +195,7 @@ class SignUpScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Already have a account?',
+                      'Already have an account?',
                       style: AppStyles.smallText.copyWith(
                         color: AppStyles.greyColor,
                         fontSize: 12.sp,
