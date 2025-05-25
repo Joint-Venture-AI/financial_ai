@@ -98,111 +98,103 @@ class HomeScreen extends StatelessWidget {
                 child: financialHealth(homeController),
               ),
               SizedBox(height: 15.h),
-              InkWell(
-                onTap: () => Get.to(AiOptimizesScreen()),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white, // White background
-                      borderRadius: BorderRadius.circular(32.r),
-                      boxShadow: [
-                        BoxShadow(
-                          blurRadius: 36,
-                          color: Colors.black.withOpacity(
-                            0.1,
-                          ), // More visible shadow
-                          offset: const Offset(
-                            0,
-                            4,
-                          ), // Slight offset for better effect
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 15.w,
-                        vertical: 20.h,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white, // White background
+                    borderRadius: BorderRadius.circular(32.r),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 36,
+                        color: Colors.black.withOpacity(
+                          0.1,
+                        ), // More visible shadow
+                        offset: const Offset(
+                          0,
+                          4,
+                        ), // Slight offset for better effect
                       ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                'Ai',
-                                style: AppStyles.mediumText.copyWith(
-                                  color: AppStyles.primaryColor,
-                                  fontSize: 20.sp,
+                    ],
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 20.h,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Ai',
+                              style: AppStyles.mediumText.copyWith(
+                                color: AppStyles.primaryColor,
+                                fontSize: 20.sp,
+                              ),
+                            ),
+                            SizedBox(width: 5.w),
+                            Text(
+                              'Financial Alert!',
+                              style: AppStyles.mediumText.copyWith(
+                                color: const Color.fromARGB(255, 221, 202, 202),
+                                fontSize: 20.sp,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Text.rich(
+                          TextSpan(
+                            text: "You're Spending ",
+                            style: AppStyles.smallText.copyWith(
+                              color: Colors.grey,
+                              fontSize: 12.sp,
+                            ),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text: '93%',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold, // Make it bold
+                                  color:
+                                      Colors
+                                          .black, // You can adjust the color if needed
+                                  fontSize: 12.sp, // Make it responsive
                                 ),
                               ),
-                              SizedBox(width: 5.w),
-                              Text(
-                                'Financial Alert!',
-                                style: AppStyles.mediumText.copyWith(
-                                  color: const Color.fromARGB(
-                                    255,
-                                    221,
-                                    202,
-                                    202,
-                                  ),
-                                  fontSize: 20.sp,
+                              TextSpan(
+                                text: ' of your income',
+                                style: AppStyles.smallText.copyWith(
+                                  color: Colors.grey,
+                                  fontSize: 12.sp,
                                 ),
                               ),
                             ],
                           ),
-                          Text.rich(
-                            TextSpan(
-                              text: "You're Spending ",
-                              style: AppStyles.smallText.copyWith(
-                                color: Colors.grey,
-                                fontSize: 12.sp,
-                              ),
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: '93%',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold, // Make it bold
-                                    color:
-                                        Colors
-                                            .black, // You can adjust the color if needed
-                                    fontSize: 12.sp, // Make it responsive
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' of your income',
-                                  style: AppStyles.smallText.copyWith(
-                                    color: Colors.grey,
-                                    fontSize: 12.sp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 20.h),
-                          Obx(() {
-                            if (controller.expenseCategoryList.isEmpty) {
-                              // Show nothing or a placeholder if the list is empty
-                              return SizedBox.shrink();
-                            }
-                            return Column(
-                              children:
-                                  controller.expenseCategoryList.map((expense) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: 5.h),
-                                      child: financial_item(
-                                        iconPath: _getIconForCategory(
-                                          expense.category,
-                                        ),
-                                        title: expense.category,
-                                        percents: expense.percent,
+                        ),
+                        SizedBox(height: 20.h),
+                        Obx(() {
+                          if (controller.expenseCategoryList.isEmpty) {
+                            // Show nothing or a placeholder if the list is empty
+                            return SizedBox.shrink();
+                          }
+                          return Column(
+                            children:
+                                controller.expenseCategoryList.map((expense) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: 5.h),
+                                    child: financial_item(
+                                      iconPath: _getIconForCategory(
+                                        expense.category,
                                       ),
-                                    );
-                                  }).toList(),
-                            );
-                          }),
-                        ],
-                      ),
+                                      title: expense.category,
+                                      percents: expense.percent,
+                                    ),
+                                  );
+                                }).toList(),
+                          );
+                        }),
+                      ],
                     ),
                   ),
                 ),

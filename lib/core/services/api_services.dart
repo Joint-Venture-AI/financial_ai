@@ -4,6 +4,8 @@ import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/core/utils/utils.dart';
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
 
 class ApiServices {
   Future<http.Response> postData(String url, Map<String, dynamic>? body) async {
@@ -207,13 +209,9 @@ class ApiServices {
     String endpoint,
     Map<String, String> textFields, {
     File? imageFile,
-    String imageFieldKey = 'image', // Default field name for the image
+    String imageFieldKey = 'image',
   }) async {
     final String? token = await PrefHelper.getString(Utils.TOKEN);
-    if (token == null || token.isEmpty) {
-      GlobalBase.showToast('Invalid User', true);
-      throw Exception('Token is null or empty');
-    }
     final url = Uri.parse(endpoint);
     print('Multipart POST Request URL: $url');
     print('Multipart POST Text Fields: $textFields');
@@ -221,32 +219,47 @@ class ApiServices {
       print('Multipart POST Image File: ${imageFile.path}');
     }
 
-    var request = http.MultipartRequest('GET', url);
+    var request = http.MultipartRequest('POST', url);
 
-    // Add headers
-    request.headers.addAll({'Authorization': 'Bearer $token'});
+    request.headers.addAll({
+      'Accept': 'application/json',
+      if (token != null) 'Authorization': 'Bearer $token',
+    });
 
-    // Add text fields
     textFields.forEach((key, value) {
       request.fields[key] = value;
     });
 
-    // Add image file if provided
     if (imageFile != null) {
       try {
         var stream = http.ByteStream(imageFile.openRead());
-        stream.cast();
         var length = await imageFile.length();
+        String? mimeType = lookupMimeType(imageFile.path); // Lookup MIME type
+
+        // Fallback if MIME type can't be determined, though this is less ideal
+        // You might want to restrict file types in your image picker instead.
+        MediaType? contentType;
+        if (mimeType != null) {
+          var typeParts = mimeType.split('/');
+          contentType = MediaType(typeParts[0], typeParts[1]);
+        } else {
+          print(
+            'Warning: Could not determine MIME type for ${imageFile.path}.',
+          );
+        }
+
+        print('Determined MIME type: $mimeType, ContentType: $contentType');
+
         var multipartFile = http.MultipartFile(
-          imageFieldKey, // The field name your API expects for the image
+          imageFieldKey,
           stream,
           length,
-          filename: imageFile.path.split('/').last, // Extract filename
+          filename: imageFile.path.split('/').last,
+          contentType: contentType, // <<< SET THE CONTENT TYPE HERE
         );
         request.files.add(multipartFile);
       } catch (e) {
         print("Error adding image to multipart request: $e");
-        // Optionally, rethrow or handle this error (e.g., inform the user)
       }
     }
 

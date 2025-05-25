@@ -221,92 +221,88 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
   }
 
   Widget _buildOptimizedSpendingCard() {
-    return InkWell(
-      onTap: () => Get.to(() => AiOptimizesScreen()),
-      borderRadius: BorderRadius.circular(32.r),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(32.r),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 36,
-              color: Colors.black.withOpacity(0.1),
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    'Ai',
-                    style: AppStyles.mediumText.copyWith(
-                      color: AppStyles.primaryColor,
-                      fontSize: 20.sp,
-                    ),
-                  ),
-                  SizedBox(width: 5.w),
-                  Text(
-                    'Optimized Your Spending',
-                    style: AppStyles.mediumText.copyWith(
-                      color: Colors.black,
-                      fontSize: 20.sp,
-                    ),
-                  ),
-                  const Spacer(),
-                  Container(
-                    width: 32.w,
-                    height: 32.h,
-                    decoration: BoxDecoration(
-                      color: AppStyles.lightGreyColor,
-                      borderRadius: BorderRadius.circular(100.r),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        AppIcons.verticalSend,
-                        color: AppStyles.greyColor,
-                        width: 16.w,
-                        height: 16.h,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Text(
-                'AI optimizes your expenses by cutting unnecessary costs.',
-                style: AppStyles.smallText.copyWith(
-                  color: AppStyles.greyColor,
-                  fontSize: 14.sp,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Obx(() {
-                if (controller.expenseCategoryList.isEmpty) {
-                  // Show nothing or a placeholder if the list is empty
-                  return SizedBox.shrink();
-                }
-                return Column(
-                  children:
-                      controller.expenseCategoryList.map((expense) {
-                        return Padding(
-                          padding: EdgeInsets.only(bottom: 5.h),
-                          child: financial_item(
-                            iconPath: _getIconForCategory(expense.category),
-                            title: expense.category,
-                            percents: expense.percent,
-                          ),
-                        );
-                      }).toList(),
-                );
-              }),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(32.r),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 36,
+            color: Colors.black.withOpacity(0.1),
+            offset: const Offset(0, 4),
           ),
+        ],
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 20.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Text(
+                  'Ai',
+                  style: AppStyles.mediumText.copyWith(
+                    color: AppStyles.primaryColor,
+                    fontSize: 20.sp,
+                  ),
+                ),
+                SizedBox(width: 5.w),
+                Text(
+                  'Optimized Your Spending',
+                  style: AppStyles.mediumText.copyWith(
+                    color: Colors.black,
+                    fontSize: 20.sp,
+                  ),
+                ),
+                // const Spacer(),
+                // Container(
+                //   width: 32.w,
+                //   height: 32.h,
+                //   decoration: BoxDecoration(
+                //     color: AppStyles.lightGreyColor,
+                //     borderRadius: BorderRadius.circular(100.r),
+                //   ),
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(8.0),
+                //     child: SvgPicture.asset(
+                //       AppIcons.verticalSend,
+                //       color: AppStyles.greyColor,
+                //       width: 16.w,
+                //       height: 16.h,
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+            Text(
+              'AI optimizes your expenses by cutting unnecessary costs.',
+              style: AppStyles.smallText.copyWith(
+                color: AppStyles.greyColor,
+                fontSize: 14.sp,
+              ),
+            ),
+            SizedBox(height: 20.h),
+            Obx(() {
+              if (controller.expenseCategoryList.isEmpty) {
+                // Show nothing or a placeholder if the list is empty
+                return SizedBox.shrink();
+              }
+              return Column(
+                children:
+                    controller.expenseCategoryList.map((expense) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: 5.h),
+                        child: financial_item(
+                          iconPath: _getIconForCategory(expense.category),
+                          title: expense.category,
+                          percents: expense.percent,
+                        ),
+                      );
+                    }).toList(),
+              );
+            }),
+          ],
         ),
       ),
     );
