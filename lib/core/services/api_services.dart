@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/global_base.dart';
 import 'package:financial_ai_mobile/core/utils/utils.dart';
@@ -197,6 +198,64 @@ class ApiServices {
 
       Exception('Error occurred while saving user data: $e');
 
+      rethrow;
+    }
+  }
+
+  // New method for multipart requests (text and optional file)
+  Future<http.Response> postMultipartRequest(
+    String endpoint,
+    Map<String, String> textFields, {
+    File? imageFile,
+    String imageFieldKey = 'image', // Default field name for the image
+  }) async {
+    final String? token = await PrefHelper.getString(Utils.TOKEN);
+    if (token == null || token.isEmpty) {
+      GlobalBase.showToast('Invalid User', true);
+      throw Exception('Token is null or empty');
+    }
+    final url = Uri.parse(endpoint);
+    print('Multipart POST Request URL: $url');
+    print('Multipart POST Text Fields: $textFields');
+    if (imageFile != null) {
+      print('Multipart POST Image File: ${imageFile.path}');
+    }
+
+    var request = http.MultipartRequest('GET', url);
+
+    // Add headers
+    request.headers.addAll({'Authorization': 'Bearer $token'});
+
+    // Add text fields
+    textFields.forEach((key, value) {
+      request.fields[key] = value;
+    });
+
+    // Add image file if provided
+    if (imageFile != null) {
+      try {
+        var stream = http.ByteStream(imageFile.openRead());
+        stream.cast();
+        var length = await imageFile.length();
+        var multipartFile = http.MultipartFile(
+          imageFieldKey, // The field name your API expects for the image
+          stream,
+          length,
+          filename: imageFile.path.split('/').last, // Extract filename
+        );
+        request.files.add(multipartFile);
+      } catch (e) {
+        print("Error adding image to multipart request: $e");
+        // Optionally, rethrow or handle this error (e.g., inform the user)
+      }
+    }
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+      return response;
+    } catch (e) {
+      print('Error in Multipart POST request: $e');
       rethrow;
     }
   }

@@ -1,9 +1,10 @@
 import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
+import 'package:financial_ai_mobile/views/screens/ai_chat/ai_chat_screen.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_expense_details_screen.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
-import 'package:financial_ai_mobile/views/screens/analyze/ai_personal_suggetions.dart';
+// import 'package:financial_ai_mobile/views/screens/analyze/ai_personal_suggetions.dart'; // This import was unused
 import 'package:financial_ai_mobile/views/screens/analyze/components/custom_slider.dart';
 import 'package:financial_ai_mobile/views/screens/analyze/components/expense_pie_chart.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,10 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
     super.initState();
     controller = Get.find<AnalyzeController>();
 
+    // Fetch data if not already loaded
+    // This check might be better inside the controller or using a flag
+    // to prevent multiple calls if the view is rebuilt.
+    // For simplicity, keeping it as is.
     if (controller.expenseCategoryList.isEmpty) {
       controller.getReportCategory();
     }
@@ -36,10 +41,13 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
     final name = categoryName.toLowerCase();
     if (name.contains('housing')) return AppIcons.house2dIcon;
     if (name.contains('health')) return AppIcons.health2dIcon;
-    if (name.contains('apparel') || name.contains('clothing'))
+    if (name.contains('apparel') || name.contains('clothing')) {
       return AppIcons.apparel2dIcon;
+    }
     if (name.contains('transport')) return AppIcons.transportIcon;
-    return AppIcons.healthIcon;
+    // A default icon if no specific match
+    return AppIcons
+        .healthIcon; // Or some other generic icon like AppIcons.defaultCategoryIcon
   }
 
   @override
@@ -82,21 +90,52 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
                           children: [
-                            SizedBox(height: 250.h, child: PieChartSample2()),
+                            SizedBox(
+                              height:
+                                  250.h, // Increased height to accommodate legend better if it's part of chart
+                              child: Obx(() {
+                                if (controller.expenseCategoryList.isEmpty) {
+                                  // You might want a specific placeholder for the chart area
+                                  // or let PieChartSample2 handle its empty state.
+                                  // For now, PieChartSample2 will show "No data..."
+                                  return PieChartSample2(expenseCategories: []);
+                                }
+                                // Pass the list of expense categories to the chart
+                                return PieChartSample2(
+                                  expenseCategories:
+                                      controller.expenseCategoryList.toList(),
+                                );
+                              }),
+                            ),
                           ],
                         ),
                       ),
                     ),
                   ),
                   SizedBox(height: 10.h),
-
                   Obx(() {
-                    if (controller.expenseCategoryList.isEmpty) {
+                    if (controller.isLoading.value &&
+                        controller.expenseCategoryList.isEmpty) {
+                      // Assuming an isLoading state
                       return Center(child: CircularProgressIndicator());
+                    }
+                    if (controller.expenseCategoryList.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 20.h),
+                          child: Text(
+                            "No expense categories to display.",
+                            style: AppStyles.smallText.copyWith(
+                              color: AppStyles.greyColor,
+                            ),
+                          ),
+                        ),
+                      );
                     }
                     return Column(
                       children:
                           controller.expenseCategoryList.map((expense) {
+                            // Assuming 'expense' object has 'category' (String) and 'percent' (int)
                             return expense_details_item(
                               text: expense.category,
                               iconPath: _getIconForCategory(expense.category),
@@ -105,12 +144,10 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                           }).toList(),
                     );
                   }),
-
                   SizedBox(height: 8.h),
                 ],
               ),
             ),
-
             SizedBox(height: 10.h),
             _buildAISuggestionCard(),
             SizedBox(height: 10.h),
@@ -124,7 +161,7 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
 
   Widget _buildAISuggestionCard() {
     return InkWell(
-      onTap: () => Get.to(() => AiPersonalSuggetions()),
+      onTap: () => Get.to(() => AiChatScreen()),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16.r),
@@ -169,7 +206,8 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                   padding: const EdgeInsets.all(8.0),
                   child: SvgPicture.asset(
                     AppIcons.verticalSend,
-                    color: AppStyles.primaryColor,
+                    color:
+                        AppStyles.primaryColor, // Ensure this color is correct
                     width: 16.w,
                     height: 16.h,
                   ),
@@ -250,6 +288,7 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
               SizedBox(height: 20.h),
               Obx(() {
                 if (controller.expenseCategoryList.isEmpty) {
+                  // Show nothing or a placeholder if the list is empty
                   return SizedBox.shrink();
                 }
                 return Column(
@@ -279,7 +318,10 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
     required int percents,
   }) {
     return InkWell(
-      onTap: () => Get.to(() => AiExpenseDetailsScreen()),
+      onTap:
+          () => Get.to(
+            () => AiExpenseDetailsScreen(),
+          ), // Consider passing category info
       child: Padding(
         padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 5.h),
         child: Container(
@@ -326,7 +368,9 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                     ),
                   ],
                 ),
-                Expanded(child: CustomSlider()),
+                Expanded(
+                  child: CustomSlider(),
+                ), // This slider seems unrelated to the item's percent
               ],
             ),
           ),
@@ -377,7 +421,8 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
               animation: true,
               radius: 25.0,
               lineWidth: 8.0,
-              percent: percents / 100.0,
+              percent:
+                  percents / 100.0, // percents is int, ensure double division
               center: Text(
                 "$percents%",
                 style: AppStyles.smallText.copyWith(

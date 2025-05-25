@@ -1,3 +1,4 @@
+import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
 import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
@@ -19,6 +20,20 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final homeController = Get.put(HomeController());
+  final controller = Get.put(AnalyzeController());
+
+  String _getIconForCategory(String categoryName) {
+    final name = categoryName.toLowerCase();
+    if (name.contains('housing')) return AppIcons.house2dIcon;
+    if (name.contains('health')) return AppIcons.health2dIcon;
+    if (name.contains('apparel') || name.contains('clothing')) {
+      return AppIcons.apparel2dIcon;
+    }
+    if (name.contains('transport')) return AppIcons.transportIcon;
+    // A default icon if no specific match
+    return AppIcons
+        .healthIcon; // Or some other generic icon like AppIcons.defaultCategoryIcon
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,19 +180,27 @@ class HomeScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 20.h),
-
-                          financialItem(
-                            iconPath: AppIcons.houseIcon,
-                            title: 'Housing',
-                            percents: 30,
-                          ),
-                          SizedBox(height: 5.h),
-                          financialItem(
-                            iconPath: AppIcons.foodIcon,
-                            title: 'Food & Groceries',
-                            percents: 10,
-                          ),
-                          SizedBox(height: 5.h),
+                          Obx(() {
+                            if (controller.expenseCategoryList.isEmpty) {
+                              // Show nothing or a placeholder if the list is empty
+                              return SizedBox.shrink();
+                            }
+                            return Column(
+                              children:
+                                  controller.expenseCategoryList.map((expense) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 5.h),
+                                      child: financial_item(
+                                        iconPath: _getIconForCategory(
+                                          expense.category,
+                                        ),
+                                        title: expense.category,
+                                        percents: expense.percent,
+                                      ),
+                                    );
+                                  }).toList(),
+                            );
+                          }),
                         ],
                       ),
                     ),
@@ -192,7 +215,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Container financialItem({
+  Widget financial_item({
     required String iconPath,
     required String title,
     required int percents,
@@ -203,18 +226,12 @@ class HomeScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: 10.w,
-          vertical: 5.h,
-        ), // Reduced vertical padding for responsiveness
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.start, // Ensure items align correctly
           children: [
-            // Icon Container
             Container(
-              height: 44.h, // Use .h for responsiveness
-              width: 44.w, // Use .w for responsiveness
+              height: 44.h,
+              width: 44.w,
               decoration: BoxDecoration(
                 color: AppStyles.primaryColor,
                 borderRadius: BorderRadius.circular(8.r),
@@ -226,23 +243,22 @@ class HomeScreen extends StatelessWidget {
             ),
             SizedBox(width: 12.w),
             Expanded(
-              // Added Expanded widget
               child: Text(
                 title,
                 style: AppStyles.smallText.copyWith(
                   color: Colors.black,
                   fontSize: 14.sp,
                 ),
-                overflow: TextOverflow.ellipsis, // Added overflow property
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Spacer(), // To align the CircularPercentIndicator properly
-            // CircularPercentIndicator
+            SizedBox(width: 8.w),
             CircularPercentIndicator(
               animation: true,
-              radius: 25.0, // Adjust radius if necessary for smaller screens
-              lineWidth: 10.0, // Set width to 10
-              percent: percents / 100, //Progress should be between 0 to 1
+              radius: 25.0,
+              lineWidth: 8.0,
+              percent:
+                  percents / 100.0, // percents is int, ensure double division
               center: Text(
                 "$percents%",
                 style: AppStyles.smallText.copyWith(
@@ -251,9 +267,8 @@ class HomeScreen extends StatelessWidget {
                   fontSize: 12.sp,
                 ),
               ),
-              progressColor: AppStyles.primaryColor, // Filled progress color
-              backgroundColor:
-                  AppStyles.lightGreyColor, // Non-filled (remaining) color
+              progressColor: AppStyles.primaryColor,
+              backgroundColor: AppStyles.lightGreyColor,
             ),
           ],
         ),
