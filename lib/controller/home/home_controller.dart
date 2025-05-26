@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class HomeController extends GetxController {
   var isLoading = false.obs;
+
   var availableBalancePer = 0.0.obs; // Changed to RxDouble
   var espenseBalancePer = 0.0.obs; // Changed to RxDouble
 

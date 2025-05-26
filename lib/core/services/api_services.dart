@@ -172,9 +172,10 @@ class ApiServices {
         GlobalBase.showToast('Invalid User', true);
         // throw Exception('Token is null or empty');
       }
-      final request = await http.get(
+      final request = await http.post(
         Uri.parse(url),
         headers: {'Authorization': 'Bearer $token'},
+        body: body,
       );
       final data = json.decode(request.body);
       if (request.statusCode == 200) {
@@ -236,8 +237,6 @@ class ApiServices {
         var length = await imageFile.length();
         String? mimeType = lookupMimeType(imageFile.path); // Lookup MIME type
 
-        // Fallback if MIME type can't be determined, though this is less ideal
-        // You might want to restrict file types in your image picker instead.
         MediaType? contentType;
         if (mimeType != null) {
           var typeParts = mimeType.split('/');

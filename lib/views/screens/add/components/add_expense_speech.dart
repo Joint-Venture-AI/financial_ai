@@ -123,6 +123,30 @@ class AddExpenseSpeech extends StatelessWidget {
                           SizedBox(height: 40),
                           // Animated Microphone Button
                           _buildMicButton(),
+                          SizedBox(height: 30),
+                          speechController.isListening.value == false &&
+                                  speechController.fullMessage.value != ''
+                              ? ElevatedButton(
+                                onPressed: speechController.saveExpense,
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Save Expense',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              )
+                              : SizedBox.shrink(),
                         ],
                       ),
                     ),

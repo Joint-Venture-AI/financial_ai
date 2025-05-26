@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+import 'package:financial_ai_mobile/controller/home/home_controller.dart';
+import 'package:financial_ai_mobile/core/helper/widget_helper.dart';
+import 'package:financial_ai_mobile/core/services/api_services.dart';
+import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -27,8 +33,37 @@ class SpeechController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    // Optionally, you can start listening automatically when the controller is ready
-    // startListening();
+  }
+
+  Future<void> saveExpense() async {
+    if (fullMessage.value.isEmpty) {
+      lastError.value = 'Please speak something to save.';
+      return;
+    }
+    final body = {'promt': fullMessage.value};
+    final response = await ApiServices().post(
+      ApiEndpoint.addExpenseVoice,
+      body,
+    );
+    final responseBody = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      WidgetHelper.showToast(
+        isSuccess: true,
+        message: 'Successfully saved expense',
+      );
+      Get.find<HomeController>().getUserPresentMonthData();
+      lastWords.value = 'Expense saved successfully!';
+      speechConroller.text = 'Expense Saved';
+      lastError.value = '';
+    } else {
+      lastWords.value = 'Failed to save expense: ${responseBody['message']}';
+      lastError.value = responseBody['message'];
+    }
+
+    lastWords.value = 'Expense saved: ${fullMessage.value}';
+    fullMessage.value = '';
+    speechConroller.clear();
+    update();
   }
 
   @override

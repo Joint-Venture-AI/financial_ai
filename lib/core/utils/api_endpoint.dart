@@ -48,4 +48,6 @@ class ApiEndpoint {
 
   static const getReportCategory =
       '$baseUrl/finance-report/get-present-month-expance-with-category-percent';
+
+  static const addExpenseVoice = '$baseUrl/expense/add-expense-by-voice';
 }

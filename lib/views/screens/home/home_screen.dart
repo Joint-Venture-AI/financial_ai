@@ -23,16 +23,26 @@ class HomeScreen extends StatelessWidget {
   final controller = Get.put(AnalyzeController());
 
   String _getIconForCategory(String categoryName) {
-    final name = categoryName.toLowerCase();
-    if (name.contains('housing')) return AppIcons.house2dIcon;
-    if (name.contains('health')) return AppIcons.health2dIcon;
-    if (name.contains('apparel') || name.contains('clothing')) {
-      return AppIcons.apparel2dIcon;
-    }
-    if (name.contains('transport')) return AppIcons.transportIcon;
-    // A default icon if no specific match
-    return AppIcons
-        .healthIcon; // Or some other generic icon like AppIcons.defaultCategoryIcon
+    final Map<String, String> categoryIconMap = {
+      "food_dining": AppIcons.foodIcon,
+      "transportation": AppIcons.transportIcon,
+      "utilities": AppIcons.utilitiesIcon,
+      "health_medical": AppIcons.health2dIcon,
+      "entertainment": AppIcons.entertainment,
+      "shopping": AppIcons.shopingBag,
+      "education": AppIcons.educationIcon,
+      "travel": AppIcons.transpost,
+      "rent_mortgage": AppIcons.home, // for housing/rent/mortgage
+      "personal_care": AppIcons.profileIcon,
+      "insurance": AppIcons.insuranceIcon,
+      "transfer": AppIcons.transferIcon,
+      "other": AppIcons.otherIcon,
+    };
+
+    final key = categoryName.toLowerCase();
+
+    // Return the matching icon or default if not found
+    return categoryIconMap[key] ?? AppIcons.otherIcon;
   }
 
   @override

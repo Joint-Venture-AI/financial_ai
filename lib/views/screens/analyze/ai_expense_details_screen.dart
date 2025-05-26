@@ -124,7 +124,7 @@ class AiExpenseDetailsScreen extends StatelessWidget {
               ],
             ),
 
-            Expanded(child: CustomSlider()),
+            Expanded(child: CustomSlider(value: percents.toDouble())),
           ],
         ),
       ),

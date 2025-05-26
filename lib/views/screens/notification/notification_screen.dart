@@ -31,11 +31,18 @@ class NotificationScreen extends StatelessWidget {
           itemCount: homeController.notifications.length,
           itemBuilder: (context, index) {
             final notification = homeController.notifications[index];
-            return _notificationCard(
-              icon: notification.icon ?? AppIcons.bellIcon,
-              title: notification.title,
-              subtitle: notification.description,
-            );
+            homeController.notifications.isEmpty
+                ? Center(
+                  child: Text(
+                    'No notifications available',
+                    style: TextStyle(fontSize: 16.sp, color: Colors.grey),
+                  ),
+                )
+                : _notificationCard(
+                  icon: notification.icon ?? AppIcons.bellIcon,
+                  title: notification.title,
+                  subtitle: notification.description,
+                );
           },
         ),
       ),
