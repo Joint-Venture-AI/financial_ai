@@ -45,6 +45,29 @@ class HomeScreen extends StatelessWidget {
     return categoryIconMap[key] ?? AppIcons.otherIcon;
   }
 
+  String _getTitleForCategory(String categoryName) {
+    final Map<String, String> categoryTitleMap = {
+      "food_dining": 'Food & Dining',
+      "transportation": 'Transportation',
+      "utilities": 'Utilities',
+      "health_medical": 'Health & Medical',
+      "entertainment": 'Entertainment',
+      "shopping": 'Shopping',
+      "education": 'Education',
+      "travel": 'Travel',
+      "rent_mortgage": 'Housing / Rent / Mortgage',
+      "personal_care": 'Personal Care',
+      "insurance": 'Insurance',
+      "transfer": 'Transfer',
+      "other": 'Other',
+    };
+
+    final key = categoryName.toLowerCase();
+
+    // Return the matching title or default if not found
+    return categoryTitleMap[key] ?? 'Empty';
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -197,7 +220,9 @@ class HomeScreen extends StatelessWidget {
                                       iconPath: _getIconForCategory(
                                         expense.category,
                                       ),
-                                      title: expense.category,
+                                      title: _getTitleForCategory(
+                                        expense.category,
+                                      ),
                                       percents: expense.percent,
                                     ),
                                   );

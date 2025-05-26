@@ -125,6 +125,29 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
     return categoryIconMap[key] ?? AppIcons.otherIcon;
   }
 
+  String _getTitleForCategory(String categoryName) {
+    final Map<String, String> categoryTitleMap = {
+      "food_dining": 'Food & Dining',
+      "transportation": 'Transportation',
+      "utilities": 'Utilities',
+      "health_medical": 'Health & Medical',
+      "entertainment": 'Entertainment',
+      "shopping": 'Shopping',
+      "education": 'Education',
+      "travel": 'Travel',
+      "rent_mortgage": 'Housing / Rent / Mortgage',
+      "personal_care": 'Personal Care',
+      "insurance": 'Insurance',
+      "transfer": 'Transfer',
+      "other": 'Other',
+    };
+
+    final key = categoryName.toLowerCase();
+
+    // Return the matching title or default if not found
+    return categoryTitleMap[key] ?? 'Empty';
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -213,7 +236,7 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                       children:
                           controller.expenseCategoryList.map((expense) {
                             return expense_details_item(
-                              text: expense.category,
+                              text: _getTitleForCategory(expense.category),
                               iconPath: _getIconForCategory(expense.category),
                               percents: expense.percent,
                             );
@@ -381,7 +404,7 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
                         padding: EdgeInsets.only(bottom: 8.h),
                         child: financial_item(
                           iconPath: _getIconForCategory(expense.category),
-                          title: expense.category,
+                          title: _getTitleForCategory(expense.category),
                           percents: expense.percent,
                         ),
                       );
@@ -399,81 +422,75 @@ class _AnalyzeExpenseSectionState extends State<AnalyzeExpenseSection> {
     required String iconPath,
     required int percents,
   }) {
-    return InkWell(
-      onTap:
-          () => Get.to(
-            () => AiExpenseDetailsScreen(),
-          ), // Consider passing category info
-      child: Padding(
-        padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 8.h),
-        child: Container(
-          width: double.infinity,
-          decoration: BoxDecoration(
-            border: Border.all(width: 1, color: AppStyles.lightGreyColor),
-            borderRadius: BorderRadius.circular(8.r),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 44.w,
-                  height: 44.h,
-                  decoration: BoxDecoration(
-                    color: AppStyles.simpleGreenColor.withOpacity(0.50),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SvgPicture.asset(
-                      iconPath,
-                      colorFilter: ColorFilter.mode(
-                        AppStyles.primaryColor,
-                        BlendMode.srcIn,
-                      ),
+    return Padding(
+      padding: EdgeInsets.only(left: 15.w, right: 15.w, bottom: 8.h),
+      child: Container(
+        width: double.infinity,
+        decoration: BoxDecoration(
+          border: Border.all(width: 1, color: AppStyles.lightGreyColor),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 44.w,
+                height: 44.h,
+                decoration: BoxDecoration(
+                  color: AppStyles.simpleGreenColor.withOpacity(0.50),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SvgPicture.asset(
+                    iconPath,
+                    colorFilter: ColorFilter.mode(
+                      AppStyles.primaryColor,
+                      BlendMode.srcIn,
                     ),
                   ),
                 ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        text,
-                        style: AppStyles.mediumText.copyWith(
-                          color: Colors.black,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        overflow: TextOverflow.ellipsis,
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      text,
+                      style: AppStyles.mediumText.copyWith(
+                        color: Colors.black,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
                       ),
-                      Text(
-                        '$percents%',
-                        style: AppStyles.mediumText.copyWith(
-                          color: AppStyles.greyColor,
-                          fontSize: 14.sp,
-                        ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      '$percents%',
+                      style: AppStyles.mediumText.copyWith(
+                        color: AppStyles.greyColor,
+                        fontSize: 14.sp,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  flex: 3,
-                  child: CustomSlider(
-                    value:
-                        percents
-                            .toDouble(), // Assuming percents is between 0 and 100
-                    // value: percents / 100.0, // If CustomSlider needs a value
-                    // onChanged: (newValue) {},
-                  ),
+              ),
+              SizedBox(width: 10.w),
+              Expanded(
+                flex: 3,
+                child: CustomSlider(
+                  value:
+                      percents
+                          .toDouble(), // Assuming percents is between 0 and 100
+                  // value: percents / 100.0, // If CustomSlider needs a value
+                  // onChanged: (newValue) {},
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
