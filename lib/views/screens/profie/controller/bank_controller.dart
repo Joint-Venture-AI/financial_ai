@@ -1,144 +1,431 @@
 import 'dart:convert';
-
-// Ensure your models (ApiResponse, Data, BankDataModel, etc.) are correctly defined
-// and apiResponseFromJson is available.
-import 'package:financial_ai_mobile/core/models/bank_data_model.dart';
+import 'package:financial_ai_mobile/core/models/bank_data_model.dart'; // Ensure BankDataModel has a toJson() as expected by the API
 import 'package:financial_ai_mobile/core/services/api_services.dart';
+import 'package:financial_ai_mobile/core/services/pref_helper.dart';
 import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
-import 'package:flutter/material.dart'; // For Color, etc. in bottom sheet
+import 'package:financial_ai_mobile/core/utils/global_base.dart';
+import 'package:financial_ai_mobile/core/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/response/response.dart' as get_http;
+import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 
-class BankController extends GetxController {
-  // For bankAuthentication
-  var message = ''.obs;
+// Assume these are defined globally or in a helper file
+void printInfo({required String info}) {
+  Get.log("INFO: $info"); // Using Get.log for consistency if preferred
+}
+
+void printError({required String info}) {
+  Get.log("ERROR: $info", isError: true); // Using Get.log for consistency
+}
+
+// Placeholder for your ApiResponse structure, ensure it matches your actual model
+// This is used by apiResponseFromJson in fetchBankTransactions
+class ApiResponse {
+  final bool success;
+  final int
+  statusCode; // Assuming statusCode is part of the JSON body for ApiResponse
+  final String message;
+  final Data data;
+
+  ApiResponse({
+    required this.success,
+    required this.statusCode,
+    required this.message,
+    required this.data,
+  });
+
+  factory ApiResponse.fromJson(Map<String, dynamic> json) {
+    return ApiResponse(
+      success: json["success"] ?? false,
+      statusCode: json["statusCode"] ?? 0, // Provide default or handle null
+      message: json["message"] ?? '',
+      data: Data.fromJson(json["data"] ?? {}), // Provide default or handle null
+    );
+  }
+}
+
+class Data {
+  final List<BankDataModel> categorised;
+  final List<BankDataModel> nonCategorised;
+
+  Data({required this.categorised, required this.nonCategorised});
+
+  factory Data.fromJson(Map<String, dynamic> json) {
+    return Data(
+      categorised:
+          (json["categorised"] as List?)
+              ?.map((x) => BankDataModel.fromJson(x))
+              .toList() ??
+          [],
+      nonCategorised:
+          (json["nonCategorised"] as List?)
+              ?.map((x) => BankDataModel.fromJson(x))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+// Utility function to parse ApiResponse from JSON string
+ApiResponse apiResponseFromJson(String str) =>
+    ApiResponse.fromJson(json.decode(str));
+
+class BankController extends GetxController
+    with GetSingleTickerProviderStateMixin {
+  var authMessage = ''.obs;
   var bankUrl = ''.obs;
 
-  // For fetchBankTransactions
-  var isLoading = false.obs;
-  var transactions = <BankDataModel>[].obs;
-  var errorMessage = ''.obs;
+  var isLoadingTransactions = false.obs;
+  var categorisedTransactions = <BankDataModel>[].obs;
+  var nonCategorisedTransactions = <BankDataModel>[].obs;
+  var fetchErrorMessage = ''.obs;
 
-  // It's good practice to have a single instance of ApiServices
-  // You might provide this via Get.put in your app's bindings or main.dart
+  late TabController tabController;
+  var selectedTabIndex = 0.obs;
+
   final ApiServices _apiServices = ApiServices();
 
   @override
   void onInit() {
     super.onInit();
-    // Initialize your controller here if needed
+    tabController = TabController(length: 2, vsync: this);
+    tabController.addListener(() {
+      selectedTabIndex.value = tabController.index;
+    });
+    fetchBankTransactions();
+  }
+
+  @override
+  void onClose() {
+    tabController.dispose();
+    super.onClose();
   }
 
   Future<void> bankAuthentication() async {
-    // Reset state for a new authentication attempt
     bankUrl.value = '';
-    message.value = 'Authenticating...';
-    _showAuthBottomSheet(); // Show bottom sheet with loading state
+    authMessage.value = 'Authenticating...';
+    _showAuthBottomSheet();
 
     try {
-      // Assuming ApiServices().getUserData returns an object similar to http.Response
-      // with 'body' (String) and 'statusCode' (int) properties.
+      // Note: The endpoint name '/bank/get-bank-list-transection' for authentication seems unusual.
+      // Typically, auth endpoints might be more specific like '/bank/auth/initiate' or '/bank/auth/url'.
+      // Please verify this endpoint is correct for initiating bank authentication.
       final responseFromApiService = await _apiServices.getUserData(
         '${ApiEndpoint.baseUrl}/bank/get-bank-list-transection',
-        // Note: This endpoint name suggests it's for transactions,
-        // ensure it's also the correct one for getting an auth URL.
       );
-
       final dynamic decodedBody = jsonDecode(responseFromApiService.body);
 
       if (decodedBody is! Map<String, dynamic>) {
-        message.value = 'Bank authentication failed: Invalid response format.';
-        return; // The bottom sheet will update via Obx
+        authMessage.value =
+            'Bank authentication failed: Invalid response format.';
+        return;
       }
       final Map<String, dynamic> bodyMap = decodedBody;
 
       if (responseFromApiService.statusCode == 200 &&
           bodyMap['success'] == true) {
         final dynamic dataField = bodyMap['data'];
-        // For authentication, we expect the 'data' field to be a URL string
         if (dataField is String) {
           bankUrl.value = dataField;
-          message.value =
-              bodyMap['message'] as String? ??
-              'Authentication URL ready. Click to open.';
+          authMessage.value =
+              bodyMap['message'] as String? ?? 'Authentication URL ready.';
         } else {
-          message.value =
-              'Bank authentication failed: Expected a URL string in "data", but received different format.';
-          print('DEBUG (BankAuth): "data" field was not a String: $dataField');
+          authMessage.value =
+              'Bank authentication failed: Expected URL, received different format.';
         }
       } else {
         String apiMsg =
             bodyMap['message'] as String? ?? 'Unknown authentication error';
-        message.value =
+        authMessage.value =
             'Bank authentication failed (Status ${responseFromApiService.statusCode}): $apiMsg';
       }
-    } catch (e, s) {
-      print("Error in bankAuthentication: $e\n$s");
-      if (e is FormatException) {
-        message.value =
-            'Bank authentication failed: Could not parse server response.';
-      } else {
-        message.value = 'Bank authentication failed: ${e.toString()}';
-      }
+    } catch (e) {
+      authMessage.value = 'Bank authentication failed: ${e.toString()}';
     }
-    // The Obx in _showAuthBottomSheet will update with the final message/URL
   }
 
   Future<void> fetchBankTransactions() async {
     try {
-      isLoading(true);
-      errorMessage('');
-      transactions.clear();
+      isLoadingTransactions(true);
+      fetchErrorMessage('');
+      categorisedTransactions.clear();
+      nonCategorisedTransactions.clear();
 
-      final String url =
-          '${ApiEndpoint.baseUrl}/bank/get-bank-list-transection';
-      // Assuming ApiServices().getUserData() returns an object with .body (String) and .statusCode (int)
+      final String url = '${ApiEndpoint.baseUrl}/bank/get-transactions-from-db';
       final responseFromApiService = await _apiServices.getUserData(url);
 
-      // Use your ApiResponse.fromJson for robust parsing
-      // This assumes apiResponseFromJson is correctly defined in your bank_data_model.dart
+      Get.log(
+        'Bank Transactions API Response Body: ${responseFromApiService.body}',
+      );
+
+      // Ensure ApiResponse and its nested models (Data, BankDataModel)
+      // correctly parse the structure of responseFromApiService.body
       final ApiResponse parsedResponse = apiResponseFromJson(
         responseFromApiService.body,
       );
 
-      if (parsedResponse.success && parsedResponse.statusCode == 200) {
-        transactions.assignAll(parsedResponse.data.nonCategorised);
-        if (transactions.isEmpty &&
-            parsedResponse.data.nonCategorised.isNotEmpty) {
-          // This indicates that data was present but parsing to BankDataModel might have failed for all items.
-          // Check BankDataModel.fromJson and its sub-models if this occurs.
-          errorMessage(
-            'Transaction data found, but failed to parse items correctly.',
-          );
-        } else if (transactions.isEmpty) {
-          errorMessage('No transactions found.');
+      // Check based on HTTP status code from the response object itself,
+      // and then the 'success' flag from the parsed body.
+      if (responseFromApiService.statusCode == 200 && parsedResponse.success) {
+        categorisedTransactions.assignAll(parsedResponse.data.categorised);
+        nonCategorisedTransactions.assignAll(
+          parsedResponse.data.nonCategorised,
+        );
+
+        if (parsedResponse.data.categorised.isEmpty &&
+            parsedResponse.data.nonCategorised.isEmpty) {
+          fetchErrorMessage('No bank transactions found.');
         }
-        // If transactions are successfully populated, errorMessage remains empty.
       } else {
-        errorMessage(
-          'API Error (Status ${parsedResponse.statusCode}): ${parsedResponse.message}',
+        // Use message from parsed response if available, otherwise provide a generic one.
+        String message =
+            parsedResponse.message.isNotEmpty
+                ? parsedResponse.message
+                : "Failed to fetch transactions.";
+        fetchErrorMessage(
+          'API Error (Status ${responseFromApiService.statusCode}): $message',
         );
       }
     } catch (e, s) {
-      print("Error in fetchBankTransactions: $e\n$s");
+      Get.log("Error in fetchBankTransactions: $e\n$s", isError: true);
       if (e is FormatException || e.toString().toLowerCase().contains('json')) {
-        // This catches errors from jsonDecode or issues within your fromJson factories if the JSON is malformed
-        errorMessage(
-          'Failed to parse server response. Please check API output or model structure.',
+        fetchErrorMessage(
+          'Failed to parse server response. Check API output or model structure.',
         );
       } else {
-        errorMessage('An unexpected error occurred: ${e.toString()}');
+        fetchErrorMessage('An unexpected error occurred: ${e.toString()}');
       }
     } finally {
-      isLoading(false);
+      isLoadingTransactions(false);
+    }
+  }
+
+  Future<http.Response> _customPostWithAuth(
+    String url,
+    Map<String, dynamic> requestBodyMap,
+  ) async {
+    final token = await PrefHelper.getString(Utils.TOKEN);
+
+    if (token == null || token.isEmpty) {
+      GlobalBase.showToast(
+        'Authentication token is missing. Please log in again.',
+        true,
+      );
+      throw Exception('Authentication token is missing.');
+    }
+
+    final headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    };
+
+    final String encodedBody = jsonEncode(requestBodyMap);
+    printInfo(info: "Custom POST to URL: $url");
+    // printInfo(info: "Custom POST Headers: $headers"); // Optional: for deep debugging
+    printInfo(info: "Custom POST Encoded Body: $encodedBody");
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: headers,
+      body: encodedBody,
+    );
+
+    printInfo(info: "Custom POST Response Status: ${response.statusCode}");
+    // printInfo(info: "Custom POST Response Body: ${response.body}"); // Optional: for deep debugging
+    return response;
+  }
+
+  Future<void> makeAllTransactionsCategorized(
+    List<BankDataModel> uncategorizedTransactionsList,
+  ) async {
+    if (uncategorizedTransactionsList.isEmpty) {
+      Get.snackbar(
+        "Info",
+        "No transactions to categorize.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    Get.dialog(
+      const Center(child: CupertinoActivityIndicator()),
+      barrierDismissible: false,
+    );
+
+    try {
+      final List<Map<String, dynamic>> transactionJsonList =
+          uncategorizedTransactionsList.map((transaction) {
+            // CRITICAL: Ensure transaction.toJson() produces the exact structure
+            // for each item as shown in your API example. This means it must output
+            // fields like "amount" (not "amountDetails"), "descriptions" (not "description"),
+            // and include all required fields like "tId", "accId", "user", "__v",
+            // "updatedAt", "isCategorised", and the nested "amount.value".
+            //
+            // Example structure for ONE item from transaction.toJson():
+            // {
+            //     "_id": "68317201ca86e787dbdb94b9",
+            //     "tId": "2a6a65c4cca149f9b51d565a9936070e",
+            //     "accId": "3e7dcabf660948d9bff863148c498a2d",
+            //     "amount": {
+            //         "value": {"unscaledValue": "-379", "scale": "2"},
+            //         "currencyCode": "EUR",
+            //         "actualAmount": -3.79
+            //     },
+            //     "descriptions": {"display": "Cafetería"},
+            //     "status": "PENDING",
+            //     "user": "6811cbf65b95d49c59b99550",
+            //     "__v": 0,
+            //     "createdAt": "2025-05-24T07:15:13.187Z",
+            //     "updatedAt": "2025-05-24T07:15:13.187Z",
+            //     "isCategorised": false
+            // }
+            return transaction.toJson();
+          }).toList();
+
+      // This bodyMap structure matches your API requirement: {"data": [transactions]}
+      final bodyMap = {'data': transactionJsonList};
+
+      printInfo(info: 'Request body for categorization (Dart Map): $bodyMap');
+      try {
+        printInfo(
+          info:
+              'Request body for categorization (JSON String): ${jsonEncode(bodyMap)}',
+        );
+      } catch (e) {
+        printError(info: 'Error encoding body to JSON for printing: $e');
+      }
+
+      final response = await _customPostWithAuth(
+        '${ApiEndpoint.baseUrl}/bank/categorise-transection',
+        bodyMap,
+      );
+
+      Get.back(); // Dismiss dialog
+
+      if (response.statusCode == 200) {
+        final responseBodyJson = jsonDecode(response.body);
+        if (responseBodyJson['success'] == true) {
+          Get.snackbar(
+            "Success",
+            responseBodyJson['message'] ??
+                "All transactions have been categorized successfully.",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.green,
+            colorText: Colors.white,
+          );
+          // Assuming you have a method like this to refresh your data
+          // fetchBankTransactions();
+        } else {
+          Get.snackbar(
+            "Error",
+            "Failed to categorize: ${responseBodyJson['message'] ?? 'Unknown error'}",
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.red,
+            colorText: Colors.white,
+          );
+        }
+      } else {
+        String errorMessage = "API Error (${response.statusCode}).";
+        try {
+          final errorBodyJson = jsonDecode(response.body);
+          errorMessage +=
+              " Message: ${errorBodyJson['message'] ?? response.body}";
+        } catch (e) {
+          errorMessage += " Response: ${response.body}";
+        }
+        Get.snackbar(
+          "Error",
+          errorMessage,
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) {
+        Get.back();
+      }
+      printError(info: 'Error in makeAllTransactionsCategorized: $e');
+      String displayError = e.toString();
+      Get.snackbar(
+        "Error",
+        "Operation failed: $displayError",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> categorizeTransaction(
+    BankDataModel transaction,
+    String category,
+  ) async {
+    Get.dialog(
+      const Center(child: CircularProgressIndicator()),
+      barrierDismissible: false,
+    );
+
+    try {
+      // **TODO: Implement API call to categorize the single transaction**
+      // Example structure for the API call:
+      // final Map<String, dynamic> payload = {
+      //   'transactionId': transaction.id, // or transaction.tId, depending on API
+      //   'category': category,
+      //   // Potentially other fields the API might need from the transaction
+      // };
+      // final response = await _apiServices.postData(
+      //   '${ApiEndpoint.baseUrl}/bank/categorize-single-transaction', // Example endpoint
+      //   payload,
+      // );
+      // final body = jsonDecode(response.body);
+      // if (response.statusCode == 200 && body['success'] == true) {
+      //   Get.back(); // Close loading dialog
+      //   Get.snackbar(
+      //     "Success",
+      //     "Transaction '${transaction.descriptions.display}' categorized as '$category'.",
+      //     snackPosition: SnackPosition.BOTTOM,
+      //     backgroundColor: Colors.green,
+      //     colorText: Colors.white,
+      //   );
+      //   fetchBankTransactions(); // Refresh list
+      // } else {
+      //   Get.back(); // Close loading dialog
+      //   Get.snackbar("Error", "Failed to categorize: ${body['message'] ?? 'Unknown error'}", snackPosition: SnackPosition.BOTTOM);
+      // }
+
+      // Simulate API call delay (REMOVE THIS IN ACTUAL IMPLEMENTATION)
+      await Future.delayed(const Duration(seconds: 1));
+
+      Get.back(); // Close loading dialog
+      Get.snackbar(
+        "Success (Simulated)",
+        "Transaction '${transaction}' categorized as '$category'.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+      fetchBankTransactions();
+    } catch (e) {
+      if (Get.isDialogOpen ?? false) {
+        Get.back(); // Close loading dialog
+      }
+      Get.snackbar(
+        "Error",
+        "Error during categorization: $e",
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 
   void _showAuthBottomSheet() {
     Get.bottomSheet(
       Container(
-        height: 160.h, // Adjusted height slightly for padding and content
+        height: 160.h,
         width: double.infinity,
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
         decoration: const BoxDecoration(
@@ -150,7 +437,7 @@ class BankController extends GetxController {
         ),
         child: Obx(() {
           bool isLoadingUrl =
-              message.value == 'Authenticating...' && bankUrl.value.isEmpty;
+              authMessage.value == 'Authenticating...' && bankUrl.value.isEmpty;
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -162,27 +449,38 @@ class BankController extends GetxController {
                   onPressed: () async {
                     if (bankUrl.value.isNotEmpty) {
                       await _launchUrl(bankUrl.value);
-                      Get.back(); // Close bottom sheet after attempting to launch
+                      Get.back();
                     }
                   },
                   child: const Text('Open Bank URL'),
                 )
               else
-                const SizedBox(
-                  height: 40,
-                ), // Placeholder if no button and not loading to keep text centered
-
-              SizedBox(height: 15.h),
-              Expanded(
-                child: SingleChildScrollView(
-                  // In case message is long
-                  child: Text(
-                    message.value,
-                    style: TextStyle(fontSize: 16.sp, color: Colors.black54),
-                    textAlign: TextAlign.center,
+                // Show a message or a retry button if authMessage indicates failure but no URL
+                Text(
+                  authMessage.value.isNotEmpty
+                      ? authMessage.value
+                      : "Ready to authenticate.",
+                  textAlign: TextAlign.center,
+                ),
+              if (!isLoadingUrl &&
+                  bankUrl.value.isEmpty &&
+                  authMessage.value != 'Authenticating...')
+                SizedBox(height: 15.h), // Spacing if text is shown
+              if (isLoadingUrl || bankUrl.value.isNotEmpty)
+                SizedBox(height: 15.h),
+              if (!isLoadingUrl &&
+                  bankUrl
+                      .value
+                      .isEmpty) // Show auth message only if no URL and not loading
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Text(
+                      authMessage.value,
+                      style: TextStyle(fontSize: 16.sp, color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
-              ),
             ],
           );
         }),
@@ -195,28 +493,21 @@ class BankController extends GetxController {
   Future<void> _launchUrl(String urlValue) async {
     final Uri uri = Uri.parse(urlValue);
     if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
-      // Update message or show a snackbar if launch fails
-      message.value =
-          'Could not launch $urlValue. Please check the URL or browser settings.';
+      authMessage.value = 'Could not launch $urlValue.';
       Get.snackbar(
         "Launch Error",
-        "Could not open the URL. Please try again.",
+        "Could not open the URL.",
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
       );
-      // throw Exception('Could not launch $urlValue'); // Throwing might be too disruptive for UX
     }
   }
 
-  // Placeholder methods from your original code
+  // Placeholders - Implement as needed
   void fetchBankDetails() {
-    // Logic to fetch bank details
-    Get.snackbar("Info", "fetchBankDetails called");
+    Get.snackbar("Info", "fetchBankDetails called - Not implemented");
   }
 
   void updateBankDetails() {
-    // Logic to update bank details
-    Get.snackbar("Info", "updateBankDetails called");
+    Get.snackbar("Info", "updateBankDetails called - Not implemented");
   }
 }

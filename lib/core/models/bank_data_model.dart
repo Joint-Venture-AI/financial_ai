@@ -19,17 +19,15 @@ class ApiResponse {
   });
 
   factory ApiResponse.fromJson(Map<String, dynamic> json) {
-    // Defensive check for the top-level 'data' field
     if (json['data'] is! Map<String, dynamic>) {
       print(
         'CRITICAL PARSE ERROR: Top-level "data" field is not a Map. Received: ${json['data'].runtimeType} - Value: ${json['data']}',
       );
-      // Fallback to an empty Data object or throw a more specific error
       return ApiResponse(
         success: json["success"] ?? false,
         message: json["message"] ?? 'Error: Invalid data structure from API',
         statusCode: json["statusCode"] ?? 500,
-        data: Data(categorised: [], nonCategorised: []), // Provide empty data
+        data: Data(categorised: [], nonCategorised: []),
       );
     }
     return ApiResponse(
@@ -67,15 +65,23 @@ class Data {
           print(
             'PARSE WARNING: Item in "$listName" is not a Map. Received: ${item.runtimeType} - Value: $item. Skipping.',
           );
-          // Return a default/error model or filter it out later.
-          // For now, let's create an error placeholder.
+          // Create a placeholder/error BankDataModel
           return BankDataModel(
-            id: 'error_item_${DateTime.now().millisecondsSinceEpoch}', // <<< ADDED A PLACEHOLDER ID
-            actualAmount: 0.0,
-            currencyCode: 'ERR',
-            descriptionDisplay: 'Invalid item format',
+            id: 'error_item_${DateTime.now().millisecondsSinceEpoch}',
+            tId: null,
+            accId: null,
+            amount: Amount(
+              value: AmountValue(unscaledValue: "0", scale: "0"),
+              currencyCode: "ERR",
+              actualAmount: 0.0,
+            ),
+            descriptions: Descriptions(display: "Invalid item format"),
             status: 'ERROR',
-            createdAt: DateTime.now(), // Placeholder
+            user: null,
+            v: null,
+            createdAt: DateTime.now(),
+            updatedAt: null,
+            isCategorised: null,
           );
         }
       }).toList();
@@ -99,70 +105,133 @@ class Data {
   };
 }
 
-// ... (BankDataModel and the rest of the file remain the same as the previous good version) ...
-class BankDataModel {
-  final double actualAmount;
-  final String currencyCode;
-  final String descriptionDisplay;
-  final String status;
-  final DateTime createdAt;
+// --- Helper Classes for BankDataModel ---
+class AmountValue {
+  String unscaledValue;
+  String scale;
 
-  // Optional: include _id if you need a unique key for list items
-  final String id;
+  AmountValue({required this.unscaledValue, required this.scale});
+
+  factory AmountValue.fromJson(Map<String, dynamic> json) {
+    return AmountValue(
+      unscaledValue: json['unscaledValue'] as String? ?? '0',
+      scale: json['scale'] as String? ?? '0',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'unscaledValue': unscaledValue,
+    'scale': scale,
+  };
+}
+
+class Amount {
+  AmountValue value;
+  String currencyCode;
+  double actualAmount;
+
+  Amount({
+    required this.value,
+    required this.currencyCode,
+    required this.actualAmount,
+  });
+
+  factory Amount.fromJson(Map<String, dynamic> json) {
+    return Amount(
+      value: AmountValue.fromJson(json['value'] as Map<String, dynamic>? ?? {}),
+      currencyCode: json['currencyCode'] as String? ?? 'N/A',
+      actualAmount: (json['actualAmount'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'value': value.toJson(),
+    'currencyCode': currencyCode,
+    'actualAmount': actualAmount,
+  };
+}
+
+class Descriptions {
+  String display;
+
+  Descriptions({required this.display});
+
+  factory Descriptions.fromJson(Map<String, dynamic> json) {
+    return Descriptions(
+      display: json['display'] as String? ?? 'No description',
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'display': display};
+}
+// --- End of Helper Classes ---
+
+class BankDataModel {
+  final String id; // Corresponds to _id
+  final String? tId;
+  final String? accId;
+  final Amount amount;
+  final Descriptions descriptions;
+  final String status;
+  final String? user;
+  final int? v; // Corresponds to __v
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  final bool? isCategorised;
 
   BankDataModel({
     required this.id,
-    required this.actualAmount,
-    required this.currencyCode,
-    required this.descriptionDisplay,
+    this.tId,
+    this.accId,
+    required this.amount,
+    required this.descriptions,
     required this.status,
+    this.user,
+    this.v,
     required this.createdAt,
+    this.updatedAt,
+    this.isCategorised,
   });
 
   factory BankDataModel.fromJson(Map<String, dynamic> json) {
-    // Defensive parsing for nested objects 'amount' and 'descriptions'
-    Map<String, dynamic>? amountMap;
-    if (json['amount'] is Map<String, dynamic>) {
-      amountMap = json['amount'] as Map<String, dynamic>;
-    } else if (json['amount'] != null) {
-      print(
-        'PARSE WARNING: "amount" field is not a Map for id ${json['_id']}. Received: ${json['amount'].runtimeType} - Value: ${json['amount']}',
-      );
-    }
-
-    Map<String, dynamic>? descriptionsMap;
-    if (json['descriptions'] is Map<String, dynamic>) {
-      descriptionsMap = json['descriptions'] as Map<String, dynamic>;
-    } else if (json['descriptions'] != null) {
-      print(
-        'PARSE WARNING: "descriptions" field is not a Map for id ${json['_id']}. Received: ${json['descriptions'].runtimeType} - Value: ${json['descriptions']}',
-      );
-    }
-
     return BankDataModel(
       id:
           json["_id"] as String? ??
-          'unknown_id_${DateTime.now().millisecondsSinceEpoch}', // Added timestamp to unknown_id for more uniqueness
-      actualAmount: (amountMap?['actualAmount'] as num?)?.toDouble() ?? 0.0,
-      currencyCode: amountMap?['currencyCode'] as String? ?? 'N/A',
-      descriptionDisplay:
-          descriptionsMap?['display'] as String? ?? 'No description',
+          'unknown_id_${DateTime.now().millisecondsSinceEpoch}',
+      tId: json["tId"] as String?,
+      accId: json["accId"] as String?,
+      amount: Amount.fromJson(json['amount'] as Map<String, dynamic>? ?? {}),
+      descriptions: Descriptions.fromJson(
+        json['descriptions'] as Map<String, dynamic>? ?? {},
+      ),
       status: json["status"] as String? ?? 'UNKNOWN',
+      user: json["user"] as String?,
+      v: json["__v"] as int?,
       createdAt:
           (json["createdAt"] != null && json["createdAt"] is String)
               ? DateTime.tryParse(json["createdAt"]) ?? DateTime.now()
-              : DateTime.now(), // Fallback
+              : DateTime.now(),
+      updatedAt:
+          (json["updatedAt"] != null && json["updatedAt"] is String)
+              ? DateTime.tryParse(json["updatedAt"])
+              : null,
+      isCategorised: json["isCategorised"] as bool?,
     );
   }
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "amountDetails": {
-      "actualAmount": actualAmount,
-      "currencyCode": currencyCode,
-    },
-    "description": descriptionDisplay,
+    "tId": tId,
+    "accId": accId,
+    "amount": amount.toJson(),
+    "descriptions": descriptions.toJson(),
     "status": status,
+    "user": user,
+    "__v": v,
     "createdAt": createdAt.toIso8601String(),
+    "updatedAt": updatedAt?.toIso8601String(),
+    // When sending to categorize, you typically send the current state.
+    // The server then changes it. If you want to explicitly send it as false:
+    "isCategorised": isCategorised ?? false,
   };
 }

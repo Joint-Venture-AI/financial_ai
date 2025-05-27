@@ -1,111 +1,234 @@
 // In a file like: lib/views/screens/profie/bank_screen.dart
+import 'package:financial_ai_mobile/core/models/bank_data_model.dart'; // Import your model
+// Make sure your BankController is correctly imported
 import 'package:financial_ai_mobile/views/screens/profie/controller/bank_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-// Import your transaction item model if you need to access its properties directly
-// import '../../../../models/bank_models.dart'; // Adjust path
 
 class BankScreen extends StatelessWidget {
   BankScreen({super.key});
 
-  // Initialize or find your controller.
-  // Using Get.put() here will create a new instance if one doesn't exist.
-  // If you manage bindings elsewhere, Get.find<BankController>() is appropriate.
   final BankController bankController = Get.put(BankController());
+
+  Widget _buildTransactionList(
+    List<BankDataModel> transactions,
+    bool isUncategorizedList,
+  ) {
+    if (transactions.isEmpty) {
+      return Center(
+        child: Text(
+          isUncategorizedList
+              ? 'No uncategorized transactions.'
+              : 'No categorized transactions.',
+          style: TextStyle(fontSize: 18.sp, color: Colors.grey.shade600),
+          textAlign: TextAlign.center,
+        ),
+      );
+    }
+    return Column(
+      children: [
+        // Only show "Make all categorized" button for uncategorized list
+        // and if there are transactions
+        if (isUncategorizedList && transactions.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: ElevatedButton(
+              // Changed to ElevatedButton for better styling
+              style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
+              onPressed: () {
+                // Ensure you pass the correct list instance
+                bankController.makeAllTransactionsCategorized(
+                  bankController.nonCategorisedTransactions
+                      .toList(), // Pass a copy
+                );
+              },
+              child: const Text('Categorize All These Transactions'),
+            ),
+          ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: transactions.length,
+            itemBuilder: (context, index) {
+              final transaction = transactions[index];
+              return Card(
+                key: ValueKey(transaction.id), // Use the main ID
+                margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(10.sp),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 18.r,
+                            backgroundColor:
+                                Theme.of(context).primaryColorLight,
+                            child: Text(
+                              // UPDATED: Access from nested Amount object
+                              transaction.amount.currencyCode,
+                              style: TextStyle(
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).primaryColorDark,
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Text(
+                              // UPDATED: Access from nested Descriptions object
+                              transaction.descriptions.display,
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Text(
+                            // UPDATED: Access from nested Amount object
+                            transaction.amount.actualAmount.toStringAsFixed(2),
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  transaction.amount.actualAmount < 0
+                                      ? Colors.red.shade700
+                                      : Colors.green.shade700,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8.h),
+                      Text(
+                        'Status: ${transaction.status}',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      Text(
+                        // Displaying tId if available (optional, for debugging/info)
+                        'tId: ${transaction.tId ?? "N/A"}',
+                        style: TextStyle(
+                          fontSize: 12.sp,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      Text(
+                        'Created: ${transaction.createdAt.toLocal().toString().substring(0, 16)}',
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Colors.grey.shade700,
+                        ),
+                      ),
+                      // Optionally, show other fields if needed for UI/debug
+                      // Text('User: ${transaction.user ?? "N/A"}'),
+                      // Text('Categorised: ${transaction.isCategorised}'),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(title: const Text('Bank Details'), centerTitle: true),
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: const Text('Bank Transactions'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        centerTitle: true,
+        bottom: TabBar(
+          controller: bankController.tabController,
+          indicatorColor: Theme.of(context).colorScheme.secondary,
+          labelColor: Theme.of(context).colorScheme.secondary,
+          unselectedLabelColor: Colors.grey.shade600,
+          tabs: const [Tab(text: 'Uncategorized'), Tab(text: 'Categorized')],
+        ),
+      ),
       body: Obx(() {
-        // Use Obx to listen to observable changes
-        if (bankController.isLoading.value) {
+        if (bankController.isLoadingTransactions.value) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (bankController.errorMessage.value.isNotEmpty &&
-            bankController.transactions.isEmpty) {
+        if (bankController.fetchErrorMessage.value.isNotEmpty &&
+            bankController.nonCategorisedTransactions.isEmpty &&
+            bankController.categorisedTransactions.isEmpty) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: EdgeInsets.all(16.sp),
               child: Text(
-                ' ${bankController.errorMessage.value}',
-                style: const TextStyle(fontSize: 18, color: Colors.red),
+                bankController.fetchErrorMessage.value,
+                style: TextStyle(fontSize: 18.sp, color: Colors.red.shade700),
                 textAlign: TextAlign.center,
               ),
             ),
           );
         }
-        if (bankController.transactions.isEmpty) {
-          return const Center(
-            child: Text(
-              'No transactions to display. Tap "View Transactions".',
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-          );
-        }
 
-        // Display the list of transactions
-        return ListView.builder(
-          itemCount: bankController.transactions.length,
-          itemBuilder: (context, index) {
-            // In BankScreen.dart, inside ListView.builder:
-            final transaction = bankController.transactions[index];
-            return Card(
-              key: ValueKey(
-                transaction.id,
-              ), // Good practice to add a key if 'id' is available
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              child: ListTile(
-                leading: CircleAvatar(
-                  child: Text(
-                    transaction.currencyCode,
-                  ), // Directly access from transaction
-                ),
-                title: Text(transaction.descriptionDisplay), // Directly access
-                subtitle: Text(
-                  'Status: ${transaction.status} \nCreated: ${transaction.createdAt.toLocal().toString().substring(0, 16)}', // Directly access
-                ),
-                trailing: Text(
-                  transaction.actualAmount.toStringAsFixed(
-                    2,
-                  ), // Directly access
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color:
-                        transaction.actualAmount < 0
-                            ? Colors.red
-                            : Colors.green,
-                  ),
-                ),
-                isThreeLine: true,
-              ),
-            );
-          },
+        return TabBarView(
+          controller: bankController.tabController,
+          children: [
+            _buildTransactionList(
+              bankController.nonCategorisedTransactions,
+              true,
+            ),
+            _buildTransactionList(
+              bankController.categorisedTransactions,
+              false,
+            ),
+          ],
         );
       }),
       bottomNavigationBar: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: EdgeInsets.all(10.sp),
           child: Row(
             children: [
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                  ),
                   onPressed: () {
                     bankController.bankAuthentication();
                   },
-                  child: const Text('Add Bank'),
+                  child: Text(
+                    'Add/Link Bank',
+                    style: TextStyle(fontSize: 15.sp),
+                  ),
                 ),
               ),
-              const SizedBox(width: 5),
+              SizedBox(width: 10.w),
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                  ),
                   onPressed: () {
-                    // Call the method to fetch transactions
                     bankController.fetchBankTransactions();
                   },
-                  child: const Text('View Transactions'),
+                  child: Text(
+                    'Refresh Transactions',
+                    style: TextStyle(fontSize: 15.sp),
+                  ),
                 ),
               ),
             ],
