@@ -1,165 +1,215 @@
 import 'dart:convert';
 
-import 'package:financial_ai_mobile/core/models/income_expense_model.dart';
-import 'package:financial_ai_mobile/core/services/api_services.dart';
-import 'package:financial_ai_mobile/core/utils/api_endpoint.dart';
-// Remove unused imports if ExpenseSection/IncomeSection are not directly used here
-// import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/expense_section.dart';
-// import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/components/income_section.dart';
+import 'package:financial_ai_mobile/core/models/income_expense_model.dart'; // Ensure this path is correct
+import 'package:financial_ai_mobile/core/services/api_services.dart'; // Ensure this path is correct
+import 'package:financial_ai_mobile/core/utils/api_endpoint.dart'; // Ensure this path is correct
 import 'package:get/get.dart';
 
 class AccountsController extends GetxController {
   var accountTab = ['Income', 'Expense'].obs;
   var selectedTab = 'Income'.obs;
-  // Removed selectedIndexTab and tabListWidget as they weren't used effectively
-  // var selectedIndexTab = 0.obs;
-  // var tabListWidget = [IncomeSection(), ExpenseSection()].obs; // Better to render conditionally in UI
 
-  var todayDate =
-      DateTime.now().toString(); // Consider formatting this if needed for API
+  // todayDate is declared but not explicitly used in API calls in the provided snippet.
+  // If your ApiServices().getUserData needs it, you'll have to pass it.
+  var todayDate = DateTime.now().toString();
+
   RxList<IncomeExpenseModel> incomeData = <IncomeExpenseModel>[].obs;
   RxList<IncomeExpenseModel> expenseData = <IncomeExpenseModel>[].obs;
-  var isLoadingIncome = false.obs; // Add loading state for income
-  var isLoadingExpense = false.obs; // Add loading state for expense
-  var incomeError = ''.obs; // Add error message state
-  var expenseError = ''.obs; // Add error message state
+  var isLoadingIncome = false.obs;
+  var isLoadingExpense = false.obs;
+  var incomeError = ''.obs;
+  var expenseError = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
-    // Fetch initial data when the controller is initialized
-    fetchDataForSelectedTab();
+    fetchDataForSelectedTab(); // Fetch data for the initial tab
 
     // Listen to tab changes to fetch data accordingly
     ever(selectedTab, (_) => fetchDataForSelectedTab());
   }
 
-  // Helper to fetch data based on the currently selected tab
   void fetchDataForSelectedTab() {
     if (selectedTab.value == 'Income') {
-      getTodayUserData(true);
+      getTodayUserData(isIncome: true);
     } else {
-      getTodayUserData(false);
+      getTodayUserData(isIncome: false);
     }
   }
 
-  Future<void> getTodayUserData(bool isIncome) async {
-    // Set loading state and clear previous errors/data
+  Future<void> getTodayUserData({required bool isIncome}) async {
     if (isIncome) {
       isLoadingIncome.value = true;
       incomeError.value = '';
-      // Optional: Clear data immediately or only on success
-      // incomeData.clear();
     } else {
       isLoadingExpense.value = true;
       expenseError.value = '';
-      // Optional: Clear data immediately or only on success
-      // expenseData.clear();
     }
-    update(); // Notify GetBuilder/Obx if needed immediately
+    update();
 
     try {
       final response = await ApiServices().getUserData(
         isIncome ? ApiEndpoint.getDailyIncome : ApiEndpoint.getDailyExpense,
-        // Pass any necessary parameters like date or token if ApiServices requires them
       );
       final body = jsonDecode(response.body);
 
-      printInfo(
-        info:
-            'API Response for ${isIncome ? 'Income' : 'Expense'}: ${response.statusCode} \nBody: ${response.body}',
-      ); // Log the full response
+      Get.log(
+        'API Response for ${isIncome ? 'Income' : 'Expense'}: ${response.statusCode}\nBody: ${response.body}',
+        isError: response.statusCode != 200 || body['success'] != true,
+      );
 
       if (response.statusCode == 200 && body['success'] == true) {
-        // Check if 'data' array exists and is not empty
+        // 1. Check if 'data' array exists and is not empty
         if (body['data'] != null &&
             body['data'] is List &&
-            body['data'].isNotEmpty) {
-          // Determine the correct key for details based on isIncome
-          String detailsKey =
-              isIncome
-                  ? 'incomeDetails'
-                  : 'expenseDetails'; // Adjust 'expenseDetails' if needed
+            (body['data'] as List).isNotEmpty) {
+          // 2. Access the first element of the 'data' array, which is a Map
+          var dailyDataObject = (body['data'] as List)[0];
+          if (dailyDataObject is Map<String, dynamic>) {
+            // 3. Determine the key for the details list ('incomeDetails' or 'expenseDetails')
+            String detailsKey = isIncome ? 'incomeDetails' : 'expenseDetails';
 
-          // Access the first element of the 'data' array
-          var dailyData = body['data'][0];
+            // 4. Check if the detailsKey exists and its value is a List
+            if (dailyDataObject[detailsKey] != null &&
+                dailyDataObject[detailsKey] is List) {
+              List<dynamic> rawItemsList =
+                  dailyDataObject[detailsKey] as List<dynamic>;
+              List<IncomeExpenseModel> tempData = [];
+              bool parsingErrorOccurred = false;
 
-          // Check if the details key exists and the list is not null/empty
-          if (dailyData[detailsKey] != null &&
-              dailyData[detailsKey] is List &&
-              dailyData[detailsKey].isNotEmpty) {
-            var detailsList = dailyData[detailsKey] as List; // Cast to List
+              if (rawItemsList.isEmpty) {
+                String msg =
+                    'No ${isIncome ? 'income' : 'expense'} details found for today.';
+                if (isIncome) {
+                  incomeData.clear();
+                  incomeError.value = msg;
+                } else {
+                  expenseData.clear();
+                  expenseError.value = msg;
+                }
+                Get.log(msg);
+              } else {
+                for (var item in rawItemsList) {
+                  if (item is Map<String, dynamic>) {
+                    try {
+                      tempData.add(IncomeExpenseModel.fromJson(item));
+                    } catch (e, s) {
+                      parsingErrorOccurred = true;
+                      Get.log(
+                        'Error parsing ${isIncome ? 'income' : 'expense'} item: $item\nError: $e\nStackTrace: $s',
+                        isError: true,
+                      );
+                    }
+                  } else {
+                    parsingErrorOccurred = true;
+                    Get.log(
+                      'Skipping invalid ${isIncome ? 'income' : 'expense'} item (not a Map): $item',
+                      isError: true,
+                    );
+                  }
+                }
 
-            // Map the details to your IncomeExpenseModel
-            List<IncomeExpenseModel> tempData =
-                detailsList.map<IncomeExpenseModel>((item) {
-                  // The fromJson factory already handles String/int conversion for amount
-                  return IncomeExpenseModel.fromJson(item);
-                }).toList();
-
-            // Save data into the appropriate list
-            if (isIncome) {
-              incomeData.value = tempData;
-              printInfo(
-                info: 'Successfully parsed ${tempData.length} income items.',
-              );
+                // Update data and error messages based on parsing results
+                if (tempData.isEmpty && rawItemsList.isNotEmpty) {
+                  // All items failed parsing
+                  String msg =
+                      'Could not parse any ${isIncome ? 'income' : 'expense'} items. Check item structure and model.';
+                  if (isIncome) {
+                    incomeData.clear();
+                    incomeError.value = msg;
+                  } else {
+                    expenseData.clear();
+                    expenseError.value = msg;
+                  }
+                  Get.log(msg, isError: true);
+                } else {
+                  // Some or all items parsed successfully
+                  if (isIncome) {
+                    incomeData.value = tempData;
+                    if (parsingErrorOccurred && tempData.isNotEmpty) {
+                      incomeError.value =
+                          'Some income items had parsing issues. Displaying successfully parsed items.';
+                    } else {
+                      incomeError.value = '';
+                    }
+                  } else {
+                    expenseData.value = tempData;
+                    if (parsingErrorOccurred && tempData.isNotEmpty) {
+                      expenseError.value =
+                          'Some expense items had parsing issues. Displaying successfully parsed items.';
+                    } else {
+                      expenseError.value = '';
+                    }
+                  }
+                  Get.log(
+                    'Successfully processed ${tempData.length} out of ${rawItemsList.length} ${isIncome ? 'income' : 'expense'} items.',
+                  );
+                }
+              }
             } else {
-              expenseData.value = tempData;
-              printInfo(
-                info: 'Successfully parsed ${tempData.length} expense items.',
+              // The 'expenseDetails' or 'incomeDetails' key is missing or not a list
+              String msg =
+                  'No "${isIncome ? 'incomeDetails' : 'expenseDetails'}" list found in the API response data.';
+              if (isIncome) {
+                incomeData.clear();
+                incomeError.value = msg;
+              } else {
+                expenseData.clear();
+                expenseError.value = msg;
+              }
+              Get.log(
+                msg + ' Daily Data Object: $dailyDataObject',
+                isError: true,
               );
             }
           } else {
-            // Handle case where details list is empty or missing
+            // The first element of 'data' is not a Map
+            String msg =
+                'API response data item is not in the expected format (should be a Map).';
             if (isIncome) {
-              incomeData.clear(); // Clear existing data
-              incomeError.value = 'No income details found for today.';
-              printError(
-                info:
-                    'No income details found in the response data for key "$detailsKey".',
-              );
+              incomeData.clear();
+              incomeError.value = msg;
             } else {
-              expenseData.clear(); // Clear existing data
-              expenseError.value = 'No expense details found for today.';
-              printError(
-                info:
-                    'No expense details found in the response data for key "$detailsKey".',
-              );
+              expenseData.clear();
+              expenseError.value = msg;
             }
+            Get.log(msg + ' First data item: $dailyDataObject', isError: true);
           }
         } else {
-          // Handle case where 'data' array is empty or null
+          // 'data' array is null, empty, or not a list
+          String msg =
+              'No ${isIncome ? 'income' : 'expense'} data available or API data structure is unexpected.';
           if (isIncome) {
             incomeData.clear();
-            incomeError.value = 'No income data available for today.';
-            printError(
-              info: 'API returned empty or null "data" array for income.',
-            );
+            incomeError.value = msg;
           } else {
             expenseData.clear();
-            expenseError.value = 'No expense data available for today.';
-            printError(
-              info: 'API returned empty or null "data" array for expense.',
-            );
+            expenseError.value = msg;
           }
+          Get.log(msg + ' Body: ${response.body}', isError: true);
         }
       } else {
-        // Handle non-200 status code or success: false
+        // Non-200 status code or success: false
         String errorMessage =
             body['message'] ??
             'Failed to fetch data. Status code: ${response.statusCode}';
         if (isIncome) {
           incomeData.clear();
           incomeError.value = errorMessage;
-          printError(info: 'Income API Error: $errorMessage');
         } else {
           expenseData.clear();
           expenseError.value = errorMessage;
-          printError(info: 'Expense API Error: $errorMessage');
         }
+        Get.log(
+          '${isIncome ? 'Income' : 'Expense'} API Error: $errorMessage',
+          isError: true,
+        );
       }
     } catch (e, stackTrace) {
       String errorMsg = 'An unexpected error occurred: $e';
+      if (e is FormatException) {
+        errorMsg = 'Error decoding API response. Ensure valid JSON. ($e)';
+      }
       if (isIncome) {
         incomeData.clear();
         incomeError.value = errorMsg;
@@ -167,18 +217,17 @@ class AccountsController extends GetxController {
         expenseData.clear();
         expenseError.value = errorMsg;
       }
-      printError(
-        info:
-            'Error fetching ${isIncome ? 'income' : 'expense'} data: $e\nStackTrace: $stackTrace',
+      Get.log(
+        'Critical error fetching ${isIncome ? 'income' : 'expense'} data: $e\nStackTrace: $stackTrace',
+        isError: true,
       );
     } finally {
-      // Reset loading state
       if (isIncome) {
         isLoadingIncome.value = false;
       } else {
         isLoadingExpense.value = false;
       }
-      update(); // Notify GetBuilder/Obx
+      update();
     }
   }
 }

@@ -222,7 +222,7 @@ class _ExpenseDetailsScreenState extends State<ExpenseDetailsScreen> {
                         },
                         child: FinancialItem(
                           iconPath: AppIcons.houseIcon,
-                          title: 'Income Rules',
+                          title: 'Expense Rules',
                           isExpanded: _incomeRulesExpanded,
                         ),
                       ),
