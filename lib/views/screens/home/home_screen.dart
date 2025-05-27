@@ -303,6 +303,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
+  ///financial health report item
   Widget financialHealth(HomeController homeController) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
