@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/models/bank_data_model.dart'; // Ensure BankDataModel has a toJson() as expected by the API
 import 'package:financial_ai_mobile/core/services/api_services.dart';
 import 'package:financial_ai_mobile/core/services/pref_helper.dart';
@@ -317,8 +318,8 @@ class BankController extends GetxController
             backgroundColor: Colors.green,
             colorText: Colors.white,
           );
-          // Assuming you have a method like this to refresh your data
-          // fetchBankTransactions();
+          await fetchBankTransactions();
+          await Get.find<HomeController>().getUserPresentMonthData();
         } else {
           Get.snackbar(
             "Error",
@@ -371,34 +372,6 @@ class BankController extends GetxController
     );
 
     try {
-      // **TODO: Implement API call to categorize the single transaction**
-      // Example structure for the API call:
-      // final Map<String, dynamic> payload = {
-      //   'transactionId': transaction.id, // or transaction.tId, depending on API
-      //   'category': category,
-      //   // Potentially other fields the API might need from the transaction
-      // };
-      // final response = await _apiServices.postData(
-      //   '${ApiEndpoint.baseUrl}/bank/categorize-single-transaction', // Example endpoint
-      //   payload,
-      // );
-      // final body = jsonDecode(response.body);
-      // if (response.statusCode == 200 && body['success'] == true) {
-      //   Get.back(); // Close loading dialog
-      //   Get.snackbar(
-      //     "Success",
-      //     "Transaction '${transaction.descriptions.display}' categorized as '$category'.",
-      //     snackPosition: SnackPosition.BOTTOM,
-      //     backgroundColor: Colors.green,
-      //     colorText: Colors.white,
-      //   );
-      //   fetchBankTransactions(); // Refresh list
-      // } else {
-      //   Get.back(); // Close loading dialog
-      //   Get.snackbar("Error", "Failed to categorize: ${body['message'] ?? 'Unknown error'}", snackPosition: SnackPosition.BOTTOM);
-      // }
-
-      // Simulate API call delay (REMOVE THIS IN ACTUAL IMPLEMENTATION)
       await Future.delayed(const Duration(seconds: 1));
 
       Get.back(); // Close loading dialog

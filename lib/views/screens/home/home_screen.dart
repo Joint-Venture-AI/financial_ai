@@ -89,35 +89,35 @@ class HomeScreen extends StatelessWidget {
                       onTap: () => Get.to(AccountsScreen()),
                       child: headerBodySection(homeController),
                     ),
-                    SizedBox(height: 15.h),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Financial Academy',
-                          style: AppStyles.mediumText.copyWith(
-                            color: Colors.black,
-                            fontSize: 16.sp, //Added font size responsiveness
-                          ),
-                        ),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () => Get.to(() => CoursesScreen()),
-                          child: Text(
-                            'See all',
-                            style: AppStyles.smallText.copyWith(
-                              color: AppStyles.greyColor,
-                              fontSize: 12.sp, //Added font size responsiveness
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // SizedBox(height: 15.h),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.start,
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   children: [
+                    //     Text(
+                    //       'Financial Academy',
+                    //       style: AppStyles.mediumText.copyWith(
+                    //         color: Colors.black,
+                    //         fontSize: 16.sp, //Added font size responsiveness
+                    //       ),
+                    //     ),
+                    //     const Spacer(),
+                    //     TextButton(
+                    //       onPressed: () => Get.to(() => CoursesScreen()),
+                    //       child: Text(
+                    //         'See all',
+                    //         style: AppStyles.smallText.copyWith(
+                    //           color: AppStyles.greyColor,
+                    //           fontSize: 12.sp, //Added font size responsiveness
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
-              courseSection(homeController),
+              // courseSection(homeController),
               SizedBox(height: 15.h),
               InkWell(
                 onTap:
