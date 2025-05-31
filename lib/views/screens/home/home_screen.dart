@@ -1,12 +1,13 @@
+import 'package:custom_refresh_indicator/custom_refresh_indicator.dart';
 import 'package:financial_ai_mobile/controller/analyze/analyze_controller.dart';
 import 'package:financial_ai_mobile/controller/home/home_controller.dart';
 import 'package:financial_ai_mobile/core/utils/app_icons.dart';
 import 'package:financial_ai_mobile/core/utils/app_routes.dart';
 import 'package:financial_ai_mobile/core/utils/app_styles.dart';
-import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
+// import 'package:financial_ai_mobile/views/screens/analyze/ai_optimizes_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/accounts/accounts_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_item.dart';
-import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_screen.dart';
+// import 'package:financial_ai_mobile/views/screens/home/subs_screen/courses/courses_screen.dart';
 import 'package:financial_ai_mobile/views/screens/home/subs_screen/expense_details/espense_details_screen.dart';
 import 'package:financial_ai_mobile/views/screens/notification/notification_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -20,7 +21,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
   final homeController = Get.put(HomeController());
-  final controller = Get.put(AnalyzeController());
+  final controller = Get.put(AnalyzeController()); // This is AnalyzeController
 
   String _getIconForCategory(String categoryName) {
     final Map<String, String> categoryIconMap = {
@@ -32,16 +33,13 @@ class HomeScreen extends StatelessWidget {
       "shopping": AppIcons.shopingBag,
       "education": AppIcons.educationIcon,
       "travel": AppIcons.transpost,
-      "rent_mortgage": AppIcons.home, // for housing/rent/mortgage
+      "rent_mortgage": AppIcons.home,
       "personal_care": AppIcons.profileIcon,
       "insurance": AppIcons.insuranceIcon,
       "transfer": AppIcons.transferIcon,
       "other": AppIcons.otherIcon,
     };
-
     final key = categoryName.toLowerCase();
-
-    // Return the matching icon or default if not found
     return categoryIconMap[key] ?? AppIcons.otherIcon;
   }
 
@@ -61,10 +59,7 @@ class HomeScreen extends StatelessWidget {
       "transfer": 'Transfer',
       "other": 'Other',
     };
-
     final key = categoryName.toLowerCase();
-
-    // Return the matching title or default if not found
     return categoryTitleMap[key] ?? 'Empty';
   }
 
@@ -73,169 +68,281 @@ class HomeScreen extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppStyles.bgColor,
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    customAppBar(),
-                    SizedBox(height: 26.h),
-                    InkWell(
-                      onTap: () => Get.to(AccountsScreen()),
-                      child: headerBodySection(homeController),
-                    ),
-                    // SizedBox(height: 15.h),
-                    // Row(
-                    //   mainAxisAlignment: MainAxisAlignment.start,
-                    //   crossAxisAlignment: CrossAxisAlignment.center,
-                    //   children: [
-                    //     Text(
-                    //       'Financial Academy',
-                    //       style: AppStyles.mediumText.copyWith(
-                    //         color: Colors.black,
-                    //         fontSize: 16.sp, //Added font size responsiveness
-                    //       ),
-                    //     ),
-                    //     const Spacer(),
-                    //     TextButton(
-                    //       onPressed: () => Get.to(() => CoursesScreen()),
-                    //       child: Text(
-                    //         'See all',
-                    //         style: AppStyles.smallText.copyWith(
-                    //           color: AppStyles.greyColor,
-                    //           fontSize: 12.sp, //Added font size responsiveness
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
-                  ],
-                ),
-              ),
-              // courseSection(homeController),
-              SizedBox(height: 15.h),
-              InkWell(
-                onTap:
-                    () => Get.to(
-                      ExpenseDetailsScreen(
-                        totalCost: homeController.espenseBalancePer.value,
-                        availableBalance:
-                            homeController.availableBalancePer.value,
-                      ),
-                    ),
-                child: financialHealth(homeController),
-              ),
-              SizedBox(height: 15.h),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white, // White background
-                    borderRadius: BorderRadius.circular(32.r),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 36,
-                        color: Colors.black.withOpacity(
-                          0.1,
-                        ), // More visible shadow
-                        offset: const Offset(
-                          0,
-                          4,
-                        ), // Slight offset for better effect
+        body: CustomMaterialIndicator(
+          onRefresh: () async {
+            print("[HomeScreen - onRefresh] Refresh initiated by user.");
+            // It's generally better if isLoading flags are managed within the controllers
+            // themselves, tied to their specific data fetching operations.
+            // For example, homeController.isLoading.value could be set true/false
+            // within getUserPresentMonthData.
+
+            try {
+              print(
+                "[HomeScreen - onRefresh] Starting homeController.getUserPresentMonthData()...",
+              );
+              // Ensure getUserPresentMonthData is an async function that returns a Future
+              // and correctly updates Rx variables within HomeController.
+              await homeController.getUserPresentMonthData();
+              print(
+                "[HomeScreen - onRefresh] Finished homeController.getUserPresentMonthData().",
+              );
+
+              print(
+                "[HomeScreen - onRefresh] Starting controller.getReportCategory()...",
+              ); // 'controller' is AnalyzeController
+              // Ensure getReportCategory is an async function that returns a Future
+              // and correctly updates Rx variables within AnalyzeController.
+              await controller.getReportCategory();
+              print(
+                "[HomeScreen - onRefresh] Finished controller.getReportCategory().",
+              );
+
+              // If the UI isn't updating after these calls, the primary suspects are:
+              // 1. The controller methods are not actually fetching new data.
+              // 2. New data is fetched, but Rx variables (e.g., homeController.availableMoney, controller.expenseCategoryList)
+              //    are not being updated correctly (e.g., using .value = newValue, or list.assignAll(newListData)).
+              // 3. There are silent errors occurring within these controller methods.
+
+              print(
+                "[HomeScreen - onRefresh] All data fetching tasks complete.",
+              );
+            } catch (error, stackTrace) {
+              print("[HomeScreen - onRefresh] Error during refresh: $error");
+              print("[HomeScreen - onRefresh] StackTrace: $stackTrace");
+              // Optionally, show a user-facing error message
+              if (Get.isSnackbarOpen == false) {
+                // Prevent multiple snackbars if already open
+                Get.snackbar(
+                  "Refresh Error",
+                  "Could not update data. Please try again.",
+                  snackPosition: SnackPosition.BOTTOM,
+                  backgroundColor: Colors.redAccent,
+                  colorText: Colors.white,
+                  duration: const Duration(seconds: 3),
+                );
+              }
+            } finally {
+              // Any UI cleanup or state reset if needed, though CustomMaterialIndicator handles its own state.
+              print("[HomeScreen - onRefresh] Refresh process finalized.");
+            }
+            // The CustomMaterialIndicator automatically hides when this Future completes.
+            // No explicit "stop" signal is usually needed if using async/await correctly.
+          },
+          indicatorBuilder: (context, indicatorController) {
+            // Renamed 'controller' to 'indicatorController' to avoid confusion
+            // indicatorController is of type IndicatorController from the package
+            return const CupertinoActivityIndicator();
+          },
+          child: SingleChildScrollView(
+            physics:
+                const AlwaysScrollableScrollPhysics(), // Ensure it's always scrollable for pull-to-refresh
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 15.w,
+                    vertical: 15.h,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      customAppBar(),
+                      SizedBox(height: 26.h),
+                      InkWell(
+                        onTap: () => Get.to(() => AccountsScreen()),
+                        child: headerBodySection(homeController),
                       ),
                     ],
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 15.w,
-                      vertical: 20.h,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Ai',
-                              style: AppStyles.mediumText.copyWith(
-                                color: AppStyles.primaryColor,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                            SizedBox(width: 5.w),
-                            Text(
-                              'Financial Alert!',
-                              style: AppStyles.mediumText.copyWith(
-                                color: const Color.fromARGB(255, 221, 202, 202),
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                          ],
+                ),
+                SizedBox(height: 15.h),
+                InkWell(
+                  onTap:
+                      () => Get.to(
+                        () => ExpenseDetailsScreen(
+                          totalCost: homeController.espenseBalancePer.value,
+                          availableBalance:
+                              homeController.availableBalancePer.value,
                         ),
-                        Text.rich(
-                          TextSpan(
-                            text: "You're Spending ",
-                            style: AppStyles.smallText.copyWith(
-                              color: Colors.grey,
-                              fontSize: 12.sp,
-                            ),
-                            children: <TextSpan>[
-                              TextSpan(
-                                text: '93%',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold, // Make it bold
-                                  color:
-                                      Colors
-                                          .black, // You can adjust the color if needed
-                                  fontSize: 12.sp, // Make it responsive
-                                ),
+                      ),
+                  child: financialHealth(homeController),
+                ),
+                SizedBox(height: 15.h),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15.w),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(32.r),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 36,
+                          color: Colors.black.withOpacity(0.1),
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 15.w,
+                        vertical: 20.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Ai',
+                                style:
+                                    AppStyles.mediumText?.copyWith(
+                                      color: AppStyles.primaryColor,
+                                      fontSize: 20.sp,
+                                    ) ??
+                                    TextStyle(
+                                      color: AppStyles.primaryColor,
+                                      fontSize: 20.sp,
+                                    ),
                               ),
-                              TextSpan(
-                                text: ' of your income',
-                                style: AppStyles.smallText.copyWith(
-                                  color: Colors.grey,
-                                  fontSize: 12.sp,
-                                ),
+                              SizedBox(width: 5.w),
+                              Text(
+                                'Financial Alert!',
+                                style:
+                                    AppStyles.mediumText?.copyWith(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        221,
+                                        202,
+                                        202,
+                                      ),
+                                      fontSize: 20.sp,
+                                    ) ??
+                                    TextStyle(
+                                      color: const Color.fromARGB(
+                                        255,
+                                        221,
+                                        202,
+                                        202,
+                                      ),
+                                      fontSize: 20.sp,
+                                    ),
                               ),
                             ],
                           ),
-                        ),
-                        SizedBox(height: 20.h),
-                        Obx(() {
-                          if (controller.expenseCategoryList.isEmpty) {
-                            // Show nothing or a placeholder if the list is empty
-                            return SizedBox.shrink();
-                          }
-                          return Column(
-                            children:
-                                controller.expenseCategoryList.map((expense) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: 5.h),
-                                    child: financial_item(
-                                      iconPath: _getIconForCategory(
-                                        expense.category,
-                                      ),
-                                      title: _getTitleForCategory(
-                                        expense.category,
-                                      ),
-                                      percents: expense.percent,
+                          Obx(() {
+                            final totalIncome =
+                                homeController.totalIncome.value;
+                            final totalExpense =
+                                homeController.totalExpense.value;
+                            String percentageText;
+
+                            if (homeController.isLoading.value &&
+                                (totalIncome == 0 && totalExpense == 0)) {
+                              // Show loading if still loading initial data perhaps
+                              percentageText = "...";
+                            } else if (totalIncome > 0) {
+                              final percentage =
+                                  (totalExpense / totalIncome) * 100;
+                              percentageText =
+                                  '${percentage.toStringAsFixed(0)}%';
+                            } else if (totalExpense > 0 && totalIncome <= 0) {
+                              percentageText = "N/A";
+                            } else {
+                              percentageText = "0%";
+                            }
+
+                            return Text.rich(
+                              TextSpan(
+                                text: "You're Spending ",
+                                style:
+                                    AppStyles.smallText?.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ) ??
+                                    TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
                                     ),
-                                  );
-                                }).toList(),
-                          );
-                        }),
-                      ],
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: percentageText,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                      fontSize: 12.sp,
+                                    ),
+                                  ),
+                                  TextSpan(
+                                    text: ' of your income',
+                                    style:
+                                        AppStyles.smallText?.copyWith(
+                                          color: Colors.grey,
+                                          fontSize: 12.sp,
+                                        ) ??
+                                        TextStyle(
+                                          color: Colors.grey,
+                                          fontSize: 12.sp,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                          SizedBox(height: 20.h),
+                          Obx(() {
+                            if (controller.isLoading.value &&
+                                controller.expenseCategoryList.isEmpty) {
+                              // Assuming AnalyzeController has isLoadingReport
+                              return Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                                  child: CupertinoActivityIndicator(),
+                                ),
+                              );
+                            }
+                            if (controller.expenseCategoryList.isEmpty) {
+                              return Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20.h),
+                                  child: Text(
+                                    "No expense categories to display.",
+                                    style:
+                                        AppStyles.smallText?.copyWith(
+                                          color: Colors.grey,
+                                        ) ??
+                                        const TextStyle(color: Colors.grey),
+                                  ),
+                                ),
+                              );
+                            }
+                            return Column(
+                              children:
+                                  controller.expenseCategoryList.map((expense) {
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 5.h),
+                                      child: financial_item(
+                                        iconPath: _getIconForCategory(
+                                          expense.category,
+                                        ),
+                                        title: _getTitleForCategory(
+                                          expense.category,
+                                        ),
+                                        percents: expense.percent,
+                                      ),
+                                    );
+                                  }).toList(),
+                            );
+                          }),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: 50.h),
-            ],
+                SizedBox(height: 50.h),
+              ],
+            ),
           ),
         ),
       ),
@@ -249,7 +356,10 @@ class HomeScreen extends StatelessWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: AppStyles.lightGreyColor),
+        border: Border.all(
+          width: 1,
+          color: AppStyles.lightGreyColor ?? Colors.grey.shade300,
+        ),
         borderRadius: BorderRadius.circular(12.r),
       ),
       child: Padding(
@@ -265,17 +375,25 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: SvgPicture.asset(iconPath, color: Colors.white),
+                child: SvgPicture.asset(
+                  iconPath,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
             SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 title,
-                style: AppStyles.smallText.copyWith(
-                  color: Colors.black,
-                  fontSize: 14.sp,
-                ),
+                style:
+                    AppStyles.smallText?.copyWith(
+                      color: Colors.black,
+                      fontSize: 14.sp,
+                    ) ??
+                    TextStyle(color: Colors.black, fontSize: 14.sp),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -284,18 +402,26 @@ class HomeScreen extends StatelessWidget {
               animation: true,
               radius: 25.0,
               lineWidth: 8.0,
-              percent:
-                  percents / 100.0, // percents is int, ensure double division
+              percent: (percents / 100.0).clamp(
+                0.0,
+                1.0,
+              ), // Ensure percent is between 0.0 and 1.0
               center: Text(
                 "$percents%",
-                style: AppStyles.smallText.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 12.sp,
-                ),
+                style:
+                    AppStyles.smallText?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 12.sp,
+                    ) ??
+                    TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 12.sp,
+                    ),
               ),
               progressColor: AppStyles.primaryColor,
-              backgroundColor: AppStyles.lightGreyColor,
+              backgroundColor: AppStyles.lightGreyColor ?? Colors.grey.shade300,
             ),
           ],
         ),
@@ -303,167 +429,217 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  ///financial health report item
   Widget financialHealth(HomeController homeController) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: Obx(() {
-        return homeController.isLoading.value
-            ? CupertinoActivityIndicator()
-            : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(32.r),
-                    boxShadow: [
-                      BoxShadow(
-                        blurRadius: 36,
-                        color: Colors.black.withOpacity(0.1),
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
+        // Check if still loading and data might be stale or zero
+        if (homeController.isLoading.value &&
+            (homeController.espenseBalancePer.value == 0 &&
+                homeController.availableBalancePer.value == 0)) {
+          return Container(
+            // Placeholder for loading state
+            width: double.infinity,
+            height: 180.h, // Adjust height to match the loaded content
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(32.r),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 36,
+                  color: Colors.black.withOpacity(0.1),
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: const Center(child: CupertinoActivityIndicator()),
+          );
+        }
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(32.r),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 36,
+                    color: Colors.black.withOpacity(0.1),
+                    offset: const Offset(0, 4),
                   ),
-                  child: Padding(
-                    padding: EdgeInsets.all(20.r),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                ],
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(20.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      // Removed Row as it was redundant for a single Text
+                      'Your Financial Health',
+                      style:
+                          AppStyles.mediumText?.copyWith(
+                            color: Colors.black,
+                            fontSize: 16.sp,
+                          ) ??
+                          TextStyle(color: Colors.black, fontSize: 16.sp),
+                    ),
+                    SizedBox(height: 15.h),
+                    Row(
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              'Your Financial Health',
-                              style: AppStyles.mediumText.copyWith(
-                                color: Colors.black,
-                                fontSize: 16.sp,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Column(
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 16.w,
-                                        height: 16.h,
-                                        decoration: BoxDecoration(
-                                          color: Color(0xffF38042),
-                                          borderRadius: BorderRadius.circular(
-                                            5.r,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5.w),
-                                      Expanded(
-                                        child: Text(
-                                          'Total cost in month',
-                                          style: AppStyles.smallText.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 12.sp,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 5.h),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 16.w,
-                                        height: 16.h,
-                                        decoration: BoxDecoration(
-                                          color: AppStyles.primaryColor,
-                                          borderRadius: BorderRadius.circular(
-                                            5.r,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 5.w),
-                                      Expanded(
-                                        child: Text(
-                                          'Save in month',
-                                          style: AppStyles.smallText.copyWith(
-                                            color: Colors.grey,
-                                            fontSize: 12.sp,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.h),
-                                  Text(
-                                    'Use AI to cut non-essentials and reduce fixed costs.',
-                                    style: AppStyles.smallText.copyWith(
-                                      color: Colors.grey,
-                                      fontSize: 12.sp,
+                                  Container(
+                                    width: 16.w,
+                                    height: 16.h,
+                                    decoration: BoxDecoration(
+                                      color:
+                                          AppStyles.orangeColor ??
+                                          const Color(
+                                            0xffF38042,
+                                          ), // Use AppStyles.orangeColor if defined
+                                      borderRadius: BorderRadius.circular(5.r),
                                     ),
-                                    textAlign: TextAlign.start,
+                                  ),
+                                  SizedBox(width: 5.w),
+                                  Expanded(
+                                    child: Text(
+                                      'Total cost in month',
+                                      style:
+                                          AppStyles.smallText?.copyWith(
+                                            color: Colors.grey,
+                                            fontSize: 12.sp,
+                                          ) ??
+                                          TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12.sp,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              width: 100.w,
-                              height: 100.h,
-                              child: Obx(
-                                () => PieChart(
-                                  PieChartData(
-                                    sections: [
-                                      PieChartSectionData(
-                                        value:
-                                            homeController
-                                                .espenseBalancePer
-                                                .value,
-                                        title:
-                                            '${homeController.espenseBalancePer.value.toStringAsFixed(0)}%',
-                                        radius: 30,
-                                        titleStyle: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        color: AppStyles.orangeColor,
-                                      ),
-                                      PieChartSectionData(
-                                        value:
-                                            homeController
-                                                .availableBalancePer
-                                                .value,
-                                        title:
-                                            '${homeController.availableBalancePer.value.toStringAsFixed(0)}%',
-                                        radius: 30,
-                                        titleStyle: TextStyle(
-                                          fontSize: 10.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        color: AppStyles.primaryColor,
-                                      ),
-                                    ],
-                                    centerSpaceRadius: 0,
-                                    borderData: FlBorderData(show: false),
-                                    sectionsSpace: 0,
+                              SizedBox(height: 5.h),
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 16.w,
+                                    height: 16.h,
+                                    decoration: BoxDecoration(
+                                      color: AppStyles.primaryColor,
+                                      borderRadius: BorderRadius.circular(5.r),
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(width: 5.w),
+                                  Expanded(
+                                    child: Text(
+                                      'Save in month',
+                                      style:
+                                          AppStyles.smallText?.copyWith(
+                                            color: Colors.grey,
+                                            fontSize: 12.sp,
+                                          ) ??
+                                          TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12.sp,
+                                          ),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                          ],
+                              SizedBox(height: 15.h),
+                              Text(
+                                'Use AI to cut non-essentials and reduce fixed costs.',
+                                style:
+                                    AppStyles.smallText?.copyWith(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ) ??
+                                    TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12.sp,
+                                    ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100.w,
+                          height: 100.h,
+                          child:
+                              (homeController.espenseBalancePer.value == 0 &&
+                                      homeController
+                                              .availableBalancePer
+                                              .value ==
+                                          0 &&
+                                      !homeController.isLoading.value)
+                                  ? Center(
+                                    child: Text(
+                                      "No data",
+                                      style: TextStyle(
+                                        fontSize: 10.sp,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )
+                                  : PieChart(
+                                    PieChartData(
+                                      sections: [
+                                        PieChartSectionData(
+                                          value:
+                                              homeController
+                                                  .espenseBalancePer
+                                                  .value,
+                                          title:
+                                              '${homeController.espenseBalancePer.value.toStringAsFixed(0)}%',
+                                          radius: 30,
+                                          titleStyle: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          color:
+                                              AppStyles.orangeColor ??
+                                              const Color(0xffF38042),
+                                        ),
+                                        PieChartSectionData(
+                                          value:
+                                              homeController
+                                                  .availableBalancePer
+                                                  .value,
+                                          title:
+                                              '${homeController.availableBalancePer.value.toStringAsFixed(0)}%',
+                                          radius: 30,
+                                          titleStyle: TextStyle(
+                                            fontSize: 10.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          color: AppStyles.primaryColor,
+                                        ),
+                                      ],
+                                      centerSpaceRadius: 0,
+                                      borderData: FlBorderData(show: false),
+                                      sectionsSpace: 0,
+                                    ),
+                                  ),
                         ),
                       ],
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            );
+              ),
+            ),
+          ],
+        );
       }),
     );
   }
@@ -476,21 +652,26 @@ class HomeScreen extends StatelessWidget {
           height: 32.h,
           child: Image.asset(
             AppIcons.appBrandLogo,
-            fit: BoxFit.contain, //Added fit
+            fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
-              return const Icon(Icons.error);
+              return const Icon(Icons.error_outline, color: Colors.red);
             },
           ),
         ),
         const Spacer(),
         InkWell(
-          onTap: () => Get.to(NotificationScreen()),
+          onTap: () => Get.to(() => NotificationScreen()),
           child: SvgPicture.asset(
             AppIcons.bellIcon,
             width: 24.w,
             height: 24.h,
-            color: Colors.black,
-            placeholderBuilder: (context) => const Icon(Icons.error),
+            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            placeholderBuilder:
+                (context) => const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CupertinoActivityIndicator(),
+                ),
           ),
         ),
         SizedBox(width: 10.w),
@@ -502,11 +683,16 @@ class HomeScreen extends StatelessWidget {
             AppIcons.profileIcon,
             width: 24.w,
             height: 24.h,
-            color: Colors.black,
-            placeholderBuilder: (context) => const Icon(Icons.error),
+            colorFilter: const ColorFilter.mode(Colors.black, BlendMode.srcIn),
+            placeholderBuilder:
+                (context) => const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CupertinoActivityIndicator(),
+                ),
           ),
         ),
-        SizedBox(width: 10.w),
+        // SizedBox(width: 10.w), // This last SizedBox might be unnecessary unless there's content after it.
       ],
     );
   }
@@ -515,21 +701,56 @@ class HomeScreen extends StatelessWidget {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Obx(() {
-        return homeController.isLoading.value
-            ? CupertinoActivityIndicator()
-            : Row(
-              children: List.generate(homeController.coursesModel.length, (
-                index,
-              ) {
-                return CoursesItem(course: homeController.coursesModel[index]);
-              }),
-            );
+        if (homeController.isLoading.value &&
+            homeController.coursesModel.isEmpty) {
+          return SizedBox(
+            height: 100.h, // Example height for course items
+            child: const Center(child: CupertinoActivityIndicator()),
+          );
+        }
+        if (homeController.coursesModel.isEmpty) {
+          return SizedBox(
+            height: 100.h,
+            child: Center(
+              child: Text(
+                "No courses available.",
+                style: AppStyles.smallText?.copyWith(color: Colors.grey),
+              ),
+            ),
+          );
+        }
+        return Row(
+          children: List.generate(homeController.coursesModel.length, (index) {
+            return CoursesItem(course: homeController.coursesModel[index]);
+          }),
+        );
       }),
     );
   }
 
   Widget headerBodySection(HomeController homeController) {
     return Obx(() {
+      // Show a shimmer or loading placeholder if data isn't ready
+      if (homeController.isLoading.value &&
+          homeController.availableMoney.value == 0) {
+        return Container(
+          // Placeholder for loading state
+          width: double.infinity,
+          height: 250.h, // Adjust height to match the loaded content
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(32.r),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 36,
+                color: Colors.black.withOpacity(0.1),
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: const Center(child: CupertinoActivityIndicator()),
+        );
+      }
       return Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -553,8 +774,8 @@ class HomeScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(28.r),
                   gradient: LinearGradient(
                     colors: [
-                      AppStyles.primaryColor,
-                      AppStyles.primarySecondColor,
+                      AppStyles.primaryColor ?? Colors.blue,
+                      AppStyles.primarySecondColor ?? Colors.lightBlue,
                     ],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
@@ -656,7 +877,11 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14.sp,
                                 ) ??
-                                TextStyle(color: Colors.green, fontSize: 14.sp),
+                                TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                ),
                           ),
                         ],
                       ),
@@ -664,7 +889,7 @@ class HomeScreen extends StatelessWidget {
                     VerticalDivider(
                       width: 1,
                       thickness: 1,
-                      color: AppStyles.lightGreyColor ?? Colors.grey,
+                      color: AppStyles.lightGreyColor ?? Colors.grey.shade300,
                     ),
                     Expanded(
                       child: Column(
@@ -688,7 +913,11 @@ class HomeScreen extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                   fontSize: 14.sp,
                                 ) ??
-                                TextStyle(color: Colors.red, fontSize: 14.sp),
+                                TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14.sp,
+                                ),
                           ),
                         ],
                       ),
